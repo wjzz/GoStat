@@ -1,0 +1,7 @@
+======
+GoStat
+======
+
+A program for generating statistical data about a collection of go games. 
+
+Written in Haskell, powered by GHC, Cabal, QuickCheck, HUnit, test-framework.
