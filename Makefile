@@ -1,18 +1,17 @@
-COMPILER=ghc
-OPTIONS=--make -W -Wall -O2 -isrc -odir bin -hidir bin
+#COMPILER=ghc
+#OPTIONS=--make -W -Wall -O2 -isrc -odir bin -hidir bin
 APP=GoStat
+TEST=$(APP)Tests
 
 all:
-	$(COMPILER) $(OPTIONS) -o dist/$(APP).exe src/Main.hs
+# 	$(COMPILER) $(OPTIONS) -o dist/$(APP).exe src/Main.hs
+	cabal configure && cabal build
 
 run:
-	./dist/$(APP).exe
+	./dist/build/$(APP)/$(APP)
 
-docs:
-	cd src && haddock -o ../docs/ -h -t $(APP) Main.hs && cd ..
+test:	all
+	./dist/build/$(TEST)/$(TEST) --maximum-generated-tests=5000
 
-test:	Tests.exe
-	./dist/Tests.exe --maximum-generated-tests=5000
-
-Tests.exe: #src/Tests.hs
-	ghc --make -odir bin -hidir bin -isrc/ -o dist/Tests.exe test/Tests.hs
+#docs:
+##cd src && haddock -o ../docs/ -h -t $(APP) Main.hs && cd ..

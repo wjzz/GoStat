@@ -1,0 +1,16 @@
+(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
+RU[Chinese]SZ[9]KM[7.50]TM[600]
+PW[tomago]PB[masec]WR[10k]DT[2011-04-07]PC[The KGS Go Server at http://www.gokgs.com/]C[masec [-\]: GTP Engine for masec (black): MoGo version MoGo release 1. Please read http://www.lri.fr/~gelly/MoGo.htm for more information. That is NOT an official developpement MoGo version, but it is a public release. Its strength highly depends on your hardware and the time settings.
+]RE[B+Resign]
+;B[ee]BL[599.54]
+;W[gd]WL[593.568]
+;B[ge]BL[599.256]
+;W[fd]WL[589.17]
+;B[fe]BL[574.328]
+;W[dc]WL[585.987]
+;B[ce]BL[545.449]
+;W[cg]WL[578.142]C[masec [-\]: GTP Engine for masec (black): MoGo version MoGo release 1. Please read http://www.lri.fr/~gelly/MoGo.htm for more information. That is NOT an official developpement MoGo version, but it is a public release. Its strength highly depends on your hardware and the time settings.
+]
+;B[ec]BL[497.114]C[tomago [10k\]: gg
+]
+;W[ed]WL[568.014])

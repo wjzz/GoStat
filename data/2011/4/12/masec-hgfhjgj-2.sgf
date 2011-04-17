@@ -1,0 +1,38 @@
+(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
+RU[Chinese]SZ[9]KM[7.50]TM[600]
+PW[masec]PB[hgfhjgj]DT[2011-04-12]PC[The KGS Go Server at http://www.gokgs.com/]C[masec [-\]: GTP Engine for masec (white): MoGo version MoGo release 1. Please read http://www.lri.fr/~gelly/MoGo.htm for more information. That is NOT an official developpement MoGo version, but it is a public release. Its strength highly depends on your hardware and the time settings.
+]RE[W+Resign]
+;B[ef]BL[598.357]
+;W[dd]WL[569.785]
+;B[fd]BL[584.211]
+;W[cf]WL[536.257]
+;B[cc]BL[581.833]C[masec [-\]: GTP Engine for masec (white): MoGo version MoGo release 1. Please read http://www.lri.fr/~gelly/MoGo.htm for more information. That is NOT an official developpement MoGo version, but it is a public release. Its strength highly depends on your hardware and the time settings.
+]
+;W[dc]WL[497.327]C[SashaZ [26k?\]: 010203040506070809101112
+]
+;B[de]BL[574.182]
+;W[cd]WL[475.72]
+;B[ce]BL[570.796]
+;W[be]WL[455.197]
+;B[bd]BL[569.139]
+;W[ee]WL[435.449]
+;B[df]BL[566.473]
+;W[bc]WL[414.507]
+;B[bf]BL[562.303]
+;W[ad]WL[396.227]
+;B[ed]BL[545.683]
+;W[cg]WL[378.605]
+;B[dg]BL[535.136]C[SashaZ [26k?\]: ээээээээээээээээээээээээээээ
+]
+;W[he]WL[360.023]
+;B[hg]BL[510.628]C[SashaZ [26k?\]: SashaZ
+]
+;W[gc]WL[342.716]
+;B[fb]BL[490.181]C[SashaZ [26k?\]: \]\]\]\]\]\]\]\]\]\]\]\]\]\\\\\\\\
+]
+;W[gb]WL[327.988]
+;B[id]BL[426.833]
+;W[gd]WL[311.98]C[SashaZ [26k?\]: вы  писать
+]
+;B[ge]BL[419.809]
+;W[fc]WL[298.72])

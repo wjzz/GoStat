@@ -1,0 +1,44 @@
+(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
+RU[Chinese]SZ[9]KM[7.50]TM[600]
+PW[masec]PB[columjus]BR[24k]DT[2011-04-06]PC[The KGS Go Server at http://www.gokgs.com/]C[masec [-\]: GTP Engine for masec (white): MoGo version MoGo release 1. Please read http://www.lri.fr/~gelly/MoGo.htm for more information. That is NOT an official developpement MoGo version, but it is a public release. Its strength highly depends on your hardware and the time settings.
+]
+;B[ee]BL[597.846]
+;W[dc]WL[599.732]
+;B[ec]BL[596.486]
+;W[eb]WL[599.44]
+;B[dd]BL[595.142]
+;W[cc]WL[599.159]
+;B[db]BL[593.936]
+;W[fc]WL[574.291]
+;B[ed]BL[592.024]
+;W[fb]WL[549.403]C[columjus [24k?\]: do
+]
+;B[cb]BL[588.186]C[columjus [24k?\]: do
+columjus [24k?\]: do
+columjus [24k?\]: do
+columjus [24k?\]: do
+]
+;W[bc]WL[523.269]
+;B[bb]BL[582.257]C[columjus [24k?\]: put a stone
+columjus [24k?\]: now
+]
+;W[be]WL[499.423]
+;B[cd]BL[578.53]
+;W[bd]WL[477.983]
+;B[bf]BL[575.044]C[columjus [24k?\]: put a stone i have to eat
+]
+;W[cf]WL[457.626]
+;B[af]BL[570.711]
+;W[bg]WL[437.851]
+;B[ce]BL[567.913]
+;W[cg]WL[417.069]C[columjus [24k?\]: please
+]
+;B[ae]BL[565.527]C[columjus [24k?\]: please
+]
+;W[ag]WL[399.362]
+;B[ac]BL[559.401]C[columjus [24k?\]: do
+]
+;W[ad]WL[382.737]C[columjus [24k?\]: fast
+]
+;B[ab]BL[557.246]
+;W[hb]WL[361.223])

@@ -5,5 +5,7 @@
 -}
 module Main where
 
+import Data.SGF.Parsing
+
 main :: IO ()
 main = putStrLn "Hello, World!"

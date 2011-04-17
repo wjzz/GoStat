@@ -1,20 +1,19 @@
+{-# OPTIONS -Wall #-}
+
 {-
   @author: Wojciech Jedynak (wjedynak@gmail.com)
 -}
 module Main where
 
-import Test.Framework (defaultMain, testGroup)
-import Test.Framework.Providers.HUnit
-import Test.Framework.Providers.QuickCheck (testProperty)
+import Test.Framework (defaultMain, Test)
 
-import Test.QuickCheck
-import Test.HUnit
-
-
+import Data.SGF.Types.Tests
+import Data.SGF.Parsing.Tests
+  
 main :: IO ()
 main = defaultMain tests
 
-tests = []
--- tests = [ tst_color
---         , tst_piece
---         ]
+tests :: [Test]
+tests = [ data_sgf_types_tests
+        , data_sgf_parsing_tests
+        ]

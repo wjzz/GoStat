@@ -1,0 +1,107 @@
+(;GM[1]FF[4]CA[UTF-8]AP[CGoban:3]ST[2]
+RU[Chinese]SZ[9]KM[7.50]TM[600]
+PW[masec]PB[Mocotan]BR[3d]DT[2011-04-17]PC[The KGS Go Server at http://www.gokgs.com/]C[masec [-\]: GTP Engine for masec (white): MoGo version MoGo release 1. Please read http://www.lri.fr/~gelly/MoGo.htm for more information. That is NOT an official developpement MoGo version, but it is a public release. Its strength highly depends on your hardware and the time settings.
+]RE[B+Resign]
+;B[fe]BL[597.571]
+;W[de]WL[571.468]
+;B[ce]BL[594.333]C[KGShaizin [4d\]: それ前ふとっしーとさとけが話してた手だな(　´_ω`)
+]
+;W[dd]WL[527.225]
+;B[cg]BL[590.845]C[KGShaizin [4d\]: 白半目勝ちのパターンとかいってた記憶がある(　´_ω`)
+]
+;W[ef]WL[503.455]
+;B[df]BL[585.47]
+;W[ee]WL[466.93]
+;B[fc]BL[582.216]
+;W[cd]WL[444.897]
+;B[eg]BL[578.087]
+;W[ff]WL[425.934]
+;B[ge]BL[574.065]
+;W[fg]WL[405.154]
+;B[be]BL[567.571]
+;W[eh]WL[386.35]
+;B[dg]BL[565.085]
+;W[bd]WL[364.635]
+;B[dh]BL[560.048]
+;W[fh]WL[341.949]
+;B[eb]BL[547.188]
+;W[ae]WL[321.748]
+;B[af]BL[545.371]
+;W[hf]WL[301.385]
+;B[gf]BL[542.3]
+;W[hg]WL[286.019]
+;B[gg]BL[539.664]
+;W[gh]WL[265.057]
+;B[he]BL[538.105]
+;W[hc]WL[252.901]
+;B[if]BL[528.068]
+;W[bh]WL[234.196]
+;B[bg]BL[521.715]
+;W[gb]WL[222.889]
+;B[hh]BL[513.853]
+;W[hi]WL[212.743]
+;B[ig]BL[511.822]
+;W[fb]WL[196.627]
+;B[ec]BL[504.56]
+;W[cb]WL[187.89]
+;B[ad]BL[500.231]
+;W[di]WL[177.005]
+;B[ci]BL[497.873]
+;W[ei]WL[169.341]
+;B[ch]BL[489.795]
+;W[hd]WL[158.385]
+;B[gi]BL[478.051]
+;W[bc]WL[148.057]C[KGShaizin [4d\]: 全部殺しにいってる(　´_ω`)…
+]
+;B[ii]BL[455.032]
+;W[dc]WL[139.892]
+;B[ha]BL[449.269]
+;W[hb]WL[132.799]
+;B[ea]BL[432.616]
+;W[id]WL[127.573]
+;B[ib]BL[425.704]
+;W[hg]WL[119.384]
+;B[hi]BL[413.299]
+;W[ga]WL[112.441]
+;B[ia]BL[411.442]
+;W[ac]WL[105.114]
+;B[ae]BL[408.448]
+;W[da]WL[98.001]
+;B[db]BL[399.583]
+;W[ca]WL[91.935]
+;B[ed]BL[397.968]
+;W[fd]WL[86.141]
+;B[gd]BL[396.408]
+;W[gc]WL[81.498]
+;B[hf]BL[387.848]C[Mocotan [3d\]: thx
+KGShaizin [4d\]: ty
+Mocotan [3d\]: 正直なとこ
+Mocotan [3d\]: 何が最善かわからん
+KGShaizin [4d\]: 高段の人たちが
+KGShaizin [4d\]: なんか序盤のツケは白半目負けだっていってた(　´_ω`
+KGShaizin [4d\]: まぁ最善とかわからんが´_ω`
+KGShaizin [4d\]: 白半目勝ちだった
+Mocotan [3d\]: コミが7.5なんだけど関係あるかな
+Mocotan [3d\]: でもまあ白半目は
+KGShaizin [4d\]: いや
+Mocotan [3d\]: 人間が最善を尽くした場合だから
+KGShaizin [4d\]: 中国ルールの石数計算考えると
+KGShaizin [4d\]: うぬ
+Mocotan [3d\]: コンピュータ相手なら勝ち目はある
+KGShaizin [4d\]: しかし
+KGShaizin [4d\]: プロが
+KGShaizin [4d\]: コンピューターに負けてたよね(　´_ω`)
+KGShaizin [4d\]: 最近
+KGShaizin [4d\]: KGSでやってたやつ(　´_ω`)
+Mocotan [3d\]: うん
+Mocotan [3d\]: 台湾の人たちらしい
+KGShaizin [4d\]: まぁトップレベルなら
+KGShaizin [4d\]: 最善尽くしあって
+KGShaizin [4d\]: 白がいいらしいが(　´_ω`)
+Mocotan [3d\]: へえー
+KGShaizin [4d\]: 石数計算だから
+KGShaizin [4d\]: 6.5も7.5もかわらんのかなｗ
+KGShaizin [4d\]: 中国ルールよくわからん
+Mocotan [3d\]: いったんとじー
+KGShaizin [4d\]: おつお(　´_ω`)
+])
