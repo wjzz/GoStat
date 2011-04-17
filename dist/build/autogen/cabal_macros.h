@@ -18,6 +18,12 @@
   (major1) == 4 && (major2) <  3 || \
   (major1) == 4 && (major2) == 3 && (minor) <= 1
 
+/* package filemanip-0.3.5.2 */
+#define MIN_VERSION_filemanip(major1,major2,minor) \
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  3 || \
+  (major1) == 0 && (major2) == 3 && (minor) <= 5
+
 /* package parsec-2.1.0.1 */
 #define MIN_VERSION_parsec(major1,major2,minor) \
   (major1) <  2 || \

@@ -5,19 +5,20 @@
 -}
 module Data.SGF.Types where
 
+import Control.Applicative
 import Data.List(isPrefixOf)
 import Text.Printf
 
 type Move = (Int, Int)
 type Moves = [Move]
 
-data Header = Black | White | Ruleset | Application | 
+data Header = BlackName | WhiteName | Ruleset | Application | 
               Handicap | BlackRank | WhiteRank | BoardSize | Komi | Time | Date | Result | Unknown
               deriving (Show, Eq)
 
 headerFromString :: String -> Header
-headerFromString "PW" = White
-headerFromString "PB" = Black
+headerFromString "PW" = WhiteName
+headerFromString "PB" = BlackName
 headerFromString "RU" = Ruleset
 headerFromString "AP" = Application
 headerFromString "SZ" = BoardSize
@@ -37,7 +38,10 @@ newtype MetaData = MetaData { fromMeta :: [(Header, String)] }
 
 type PlayerName = String
 
-data Result = Unfinished | Draw | BlackWin PlayerName | WhiteWin PlayerName
+data Winner = Black | White
+              deriving Show
+                       
+data Result = Unfinished | Draw | Win Winner PlayerName
               deriving Show
                        
 getResult :: SGF -> Result
@@ -47,18 +51,25 @@ getResult sgf@(SGF (MetaData meta) _) =
     Just res -> parseResult res 
       where
       parseResult result
-        | "B+" `isPrefixOf` result = BlackWin (black sgf)
-        | "W+" `isPrefixOf` result = WhiteWin (white sgf)
+        | "B+" `isPrefixOf` result = Win Black (black sgf)
+        | "W+" `isPrefixOf` result = Win White (white sgf)
         | otherwise                = Unfinished
 
-getWinnerName :: SGF -> Maybe PlayerName
-getWinnerName sgf = 
+
+getWinnerInfo :: SGF -> Maybe (Winner, PlayerName)
+getWinnerInfo sgf = 
   case getResult sgf of
     Unfinished -> Nothing
     Draw       -> Nothing
-    BlackWin p -> Just p
-    WhiteWin p -> Just p
-    
+    Win w p    -> Just (w, p)
+
+getWinner :: SGF -> Maybe Winner
+getWinner sgf = fst <$> getWinnerInfo sgf
+
+getWinnerName :: SGF -> Maybe PlayerName
+getWinnerName sgf = snd <$> getWinnerInfo sgf
+
+
 getMeta :: String -> SGF -> String
 getMeta str sgf = 
   case (map snd $ filter ((==str) . show . fst) (fromMeta $ metaData sgf)) of
@@ -67,8 +78,8 @@ getMeta str sgf =
        
 
 black, white, blackRank, whiteRank :: SGF -> String
-black = getMeta "Black"
-white = getMeta "White"
+black = getMeta "BlackName"
+white = getMeta "WhiteName"
 blackRank = getMeta "BlackRank"
 whiteRank = getMeta "WhiteRank"
 
