@@ -34,9 +34,9 @@ isRight :: Either a b -> Bool
 isRight (Right _ ) = True
 isRight _          = False
 
-test_right, test_len, test_black, test_white :: Assertion
+test_right, test_len, test_black, test_white, test_winner :: Assertion
 
-test_right = unsafePerformIO (print sgf) `seq` (isRight sgf) @?= True
+test_right = unsafePerformIO (print sgf >> print (sgfSummary `fmap` sgf)) `seq` (isRight sgf) @?= True
 
 test_len = Right 46 @?= (length . moves) `fmap` sgf
    
@@ -44,7 +44,7 @@ test_black = Right "Andrew87" @?= black `fmap` sgf
 
 test_white = Right "masec" @?= white `fmap` sgf
 
-
+test_winner = Right (Just "masec" ) @?= getWinnerName `fmap` sgf
 
 data_sgf_parsing_tests :: Test.Framework.Test
 data_sgf_parsing_tests = testGroup "Data.SGF.Parsing" 
@@ -52,6 +52,7 @@ data_sgf_parsing_tests = testGroup "Data.SGF.Parsing"
                          , testCase "parseSGF no of moves" test_len
                          , testCase "parseSGF black" test_black
                          , testCase "parseSGF white" test_white
+                         , testCase "parseSGF winner" test_winner
                          ]
 
 example_sgf :: String
