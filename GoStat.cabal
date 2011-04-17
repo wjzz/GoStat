@@ -22,6 +22,7 @@ Executable GoStat
   Main-is:    	      Main.hs
   Build-depends:      base >= 3 && < 5,
                       filemanip == 0.3.*,
+                      strict == 0.3.*,
                       parsec >= 2.1 && < 3
 
 Executable GoStatTests

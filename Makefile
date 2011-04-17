@@ -7,7 +7,7 @@ all:
 # 	$(COMPILER) $(OPTIONS) -o dist/$(APP).exe src/Main.hs
 	cabal configure && cabal build
 
-run:
+run:	all
 	./dist/build/$(APP)/$(APP)
 
 test:	all

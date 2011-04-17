@@ -39,7 +39,7 @@ newtype MetaData = MetaData { fromMeta :: [(Header, String)] }
 type PlayerName = String
 
 data Winner = Black | White
-              deriving Show
+              deriving (Show, Eq, Ord)
                        
 data Result = Unfinished | Draw | Win Winner PlayerName
               deriving Show

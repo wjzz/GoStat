@@ -5,8 +5,13 @@
 -}
 module Main where
 
+import Control.Arrow
+import Data.Function
+import Data.List
+
 import Data.SGF.Parsing
 import SgfBatching
 
 main :: IO ()
-main = putStrLn "Hello, World!"
+main = --putStrLn "Hello, World!"
+  loadSGFs >>= \l -> print (sortBy (compare `on` snd) $ map (head &&& length) $ group $ sort $ map (head . moves) l)

@@ -30,6 +30,12 @@
   (major1) == 2 && (major2) <  1 || \
   (major1) == 2 && (major2) == 1 && (minor) <= 0
 
+/* package strict-0.3.2 */
+#define MIN_VERSION_strict(major1,major2,minor) \
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  3 || \
+  (major1) == 0 && (major2) == 3 && (minor) <= 2
+
 /* package test-framework-0.3.3 */
 #define MIN_VERSION_test_framework(major1,major2,minor) \
   (major1) <  0 || \
