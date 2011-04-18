@@ -58,7 +58,7 @@ maybeMove :: (Maybe Char, Maybe Char) -> Maybe Move
 maybeMove (m1, m2) = do
   f <- m1
   s <- m2
-  return $ (ord f - ord 'a' + 1, ord s - ord 'a' + 1)
+  return $ (9 - (ord f - ord 'a'), ord s - ord 'a' + 1)
 
 moveParser :: Parser (Maybe Move)
 moveParser = do

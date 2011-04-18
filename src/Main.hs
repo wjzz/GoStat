@@ -11,6 +11,7 @@ import Data.List
 
 import Data.SGF.Parsing
 import SgfBatching
+import Transformations
 
 main :: IO ()
 main = --putStrLn "Hello, World!"
