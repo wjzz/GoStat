@@ -61,6 +61,12 @@ findTriangle = minimum . findTriangles
 isOnMainDiagonal :: Move -> Bool
 isOnMainDiagonal (x,y) = x == y
 
+isAboveMainDiagonal :: Move -> Bool
+isAboveMainDiagonal (x,y) = x > y
+
+isBelowMainDiagonal :: Move -> Bool
+isBelowMainDiagonal (x,y) = x < y
+
 -- |Performs a horizontal mirror transformation
 horizontal :: Move -> Move
 horizontal (x,y) = (x, 10 - y)
@@ -68,6 +74,10 @@ horizontal (x,y) = (x, 10 - y)
 -- |Performs a 90 degrees rotation (counter clock-wise)
 rotate90 :: Move -> Move
 rotate90 (x,y) = (10-y, x)
+
+-- |Performs a mirror transformation with respect to the main diagonal
+mainDiagonalMirror :: Move -> Move
+mainDiagonalMirror (x,y) = (y,x)
 
 -- |Returns a transformation that will make any move in the given triangle
 -- |to appear in the first triangle
@@ -81,3 +91,9 @@ transformIntoFirst n
 getTransformation :: Move -> (Move -> Move)
 getTransformation = transformIntoFirst . findTriangle
 
+
+-- |Transforms a list of moves so that:
+-- |
+-- |* The first move will be in the first triangle
+-- |
+-- |* The first move not on the first diagonal will be under the diagonal

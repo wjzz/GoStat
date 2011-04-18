@@ -158,6 +158,33 @@ rotate90_tests = [ testCase     "rotate90 fixpoint"         test_rotate90_fixpoi
                  , testProperty "rotate90 and triangle "    property_rotate90_triangle
                  ]  
 
+--------------------------
+--  mainDiagonalMirror  --
+--------------------------
+
+property_mainDiagonalMirror_fixpoints :: Move -> Property
+property_mainDiagonalMirror_fixpoints p = isOnMainDiagonal m ==> m == (mainDiagonalMirror m) where
+  m = normalize p
+
+property_mainDiagonalMirror_above :: Move -> Property
+property_mainDiagonalMirror_above p = isAboveMainDiagonal m ==> isBelowMainDiagonal (mainDiagonalMirror m) where
+  m = normalize p
+
+property_mainDiagonalMirror_below :: Move -> Property
+property_mainDiagonalMirror_below p = isBelowMainDiagonal m ==> isAboveMainDiagonal (mainDiagonalMirror m) where
+  m = normalize p
+
+property_mainDiagonalMirror_involutive :: Move -> Bool
+property_mainDiagonalMirror_involutive p = m ==  mainDiagonalMirror (mainDiagonalMirror m) where
+  m = normalize p
+
+mainDiagonalMirror_tests :: [Test.Framework.Test]
+mainDiagonalMirror_tests = [ testProperty "mainDiagonalMirror fixpoints"  property_mainDiagonalMirror_fixpoints
+                           , testProperty "mainDiagonalMirror above"      property_mainDiagonalMirror_above
+                           , testProperty "mainDiagonalMirror below"      property_mainDiagonalMirror_below
+                           , testProperty "mainDiagonalMirror involutive" property_mainDiagonalMirror_involutive
+                           ]
+
 -------------------------
 --  getTransformation  --
 -------------------------
@@ -180,4 +207,5 @@ transformations_tests = testGroup "Transformations" $ concat [ isInside_tests
                                                              , horizontal_tests
                                                              , rotate90_tests
                                                              , getTransformation_tests
+                                                             , mainDiagonalMirror_tests
                                                              ]
