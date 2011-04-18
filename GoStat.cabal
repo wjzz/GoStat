@@ -10,14 +10,14 @@ Build-type:          Simple
 Cabal-version:       >=1.2
 
 library
-  ghc-options: -Wall -fno-warn-unused-do-bind
+  ghc-options: -Wall -fno-warn-unused-do-bind -rtsopts
   Build-depends:       base >= 3 && < 5,
                        parsec >= 2.1 && < 3
   exposed-modules: Data.SGF.Types, Data.SGF.Parsing
   hs-source-dirs: src
 
 Executable GoStat
-  GHC-Options: -W -Wall -O3
+  GHC-Options: -W -Wall -O3 -rtsopts
   Hs-source-dirs: src 
   Main-is:    	      Main.hs
   Build-depends:      base >= 3 && < 5,
@@ -26,7 +26,7 @@ Executable GoStat
                       parsec >= 2.1 && < 3
 
 Executable GoStatTests
-  GHC-Options:         -W -Wall -O3
+  GHC-Options:         -W -Wall -O3 -rtsopts
   Hs-source-dirs:      src test 
   Main-is:    	       Tests.hs
   Build-depends:       base >= 3 && < 5,

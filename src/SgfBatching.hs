@@ -19,7 +19,7 @@ getFileNames :: FilePath -> IO [FilePath]
 getFileNames topDir = find always (extension ==? ".sgf") topDir
 
 sgfDirectory :: FilePath
-sgfDirectory = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/"
+sgfDirectory = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/"
 
 getSGFs :: IO [FilePath]
 getSGFs = getFileNames sgfDirectory
@@ -49,12 +49,26 @@ sgfToGameInfo fileName sgf = do
   
   return $ GameInfo fileName win (normalizeMoves mvs)
 
+aux :: FilePath -> IO Int
+aux file = do
+  l <- length `fmap` Prelude.readFile file
+  l `seq`  return l
+
+aux2 :: FilePath -> IO (Maybe GameInfo)
+aux2 file = do
+  l <- (fileToSGF >=> uncurry sgfToGameInfo) `fmap` Strict.readFile file
+  return l
 
 loadSGFs :: IO [GameInfo]
 loadSGFs = do
   files <- getSGFs
-  inputs <- mapM Strict.readFile files
+  gameInfos <- mapM aux2 files
+  --gameInfos <- {-map (fileToSGF >=> uncurry sgfToGameInfo) `fmap`-} mapM aux {-Strict.readFile-} files
+  --value <- sum `fmap` mapM aux files
+  --print value
   --let gameInfos = map (fileToSGF >=> uncurry sgfToGameInfo) inputs
   
-  --return $ catMaybes gameInfos
-  return $ map undefined files
+  --return $ map undefined gameInfos
+  --return $ map undefined gameInfos
+  return $ catMaybes gameInfos
+  --return $ [] -- map undefined files
