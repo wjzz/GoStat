@@ -23,6 +23,8 @@ Executable GoStat
   Build-depends:      base >= 3 && < 5,
                       filemanip == 0.3.*,
                       strict == 0.3.*,
+                      HDBC == 2.2.*,
+                      HDBC-postgresql == 2.2.*,
                       parsec >= 2.1 && < 3
 
 Executable GoStatTests
@@ -31,6 +33,8 @@ Executable GoStatTests
   Main-is:    	       Tests.hs
   Build-depends:       base >= 3 && < 5,
                        parsec >= 2.1 && < 3,
+                       -- hdbc == 2.2.6.*,
+                       -- hdbc-postgresql == 2.2.3.*,
                        HUnit == 1.2.*,
                        QuickCheck == 1.2.*,
                        test-framework == 0.3.*,

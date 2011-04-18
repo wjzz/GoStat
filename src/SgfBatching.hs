@@ -62,13 +62,12 @@ aux2 file = do
 loadSGFs :: IO [GameInfo]
 loadSGFs = do
   files <- getSGFs
-  gameInfos <- mapM aux2 files
+  gameInfos <- mapM aux files
   --gameInfos <- {-map (fileToSGF >=> uncurry sgfToGameInfo) `fmap`-} mapM aux {-Strict.readFile-} files
   --value <- sum `fmap` mapM aux files
   --print value
   --let gameInfos = map (fileToSGF >=> uncurry sgfToGameInfo) inputs
   
-  --return $ map undefined gameInfos
-  --return $ map undefined gameInfos
-  return $ catMaybes gameInfos
+  return $ map undefined gameInfos
+  --return $ catMaybes gameInfos
   --return $ [] -- map undefined files
