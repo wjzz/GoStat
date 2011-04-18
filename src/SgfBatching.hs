@@ -54,6 +54,7 @@ loadSGFs :: IO [GameInfo]
 loadSGFs = do
   files <- getSGFs
   inputs <- mapM Strict.readFile files
-  let gameInfos = map (fileToSGF >=> uncurry sgfToGameInfo) inputs
+  --let gameInfos = map (fileToSGF >=> uncurry sgfToGameInfo) inputs
   
-  return $ catMaybes gameInfos
+  --return $ catMaybes gameInfos
+  return $ map undefined files

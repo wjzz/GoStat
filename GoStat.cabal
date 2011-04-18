@@ -17,7 +17,7 @@ library
   hs-source-dirs: src
 
 Executable GoStat
-  GHC-Options: -W -Wall
+  GHC-Options: -W -Wall -O3
   Hs-source-dirs: src 
   Main-is:    	      Main.hs
   Build-depends:      base >= 3 && < 5,
@@ -26,7 +26,7 @@ Executable GoStat
                       parsec >= 2.1 && < 3
 
 Executable GoStatTests
-  GHC-Options:         -W -Wall
+  GHC-Options:         -W -Wall -O3
   Hs-source-dirs:      src test 
   Main-is:    	       Tests.hs
   Build-depends:       base >= 3 && < 5,
