@@ -1,3 +1,4 @@
+
 {-# OPTIONS -Wall #-}
 {-
   @author: Wojciech Jedynak (wjedynak@gmail.com)
@@ -19,7 +20,7 @@ getFileNames :: FilePath -> IO [FilePath]
 getFileNames topDir = find always (extension ==? ".sgf") topDir
 
 sgfDirectory :: FilePath
-sgfDirectory = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/"
+sgfDirectory = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/"
 
 getSGFs :: IO [FilePath]
 getSGFs = getFileNames sgfDirectory
@@ -40,6 +41,14 @@ data GameInfo = GameInfo { sgfFileName  :: FilePath
                          }
                 deriving Show
                 
+-- |Converts a GameInfo data so that it can be written in a db
+gameInfoToDB :: GameInfo -> (FilePath, Char, String)
+gameInfoToDB (GameInfo sgf win mvs) = (sgf, winToChar win, movesToString mvs) where
+  winToChar Black = 'b'
+  winToChar White = 'w'
+  
+  movesToString = concatMap (\(a,b) -> show a ++ show b) 
+
 sgfToGameInfo :: FilePath -> SGF -> Maybe GameInfo
 sgfToGameInfo fileName sgf = do
   win <- getWinner sgf
@@ -48,7 +57,7 @@ sgfToGameInfo fileName sgf = do
   guard (length mvs > 5)
   
   return $ GameInfo fileName win (normalizeMoves mvs)
-
+{-
 aux :: FilePath -> IO Int
 aux file = do
   l <- length `fmap` Prelude.readFile file
@@ -71,3 +80,4 @@ loadSGFs = do
   return $ map undefined gameInfos
   --return $ catMaybes gameInfos
   --return $ [] -- map undefined files
+-}

@@ -21,6 +21,7 @@ import System.IO.Unsafe
 
 import Data.SGF.Types
 import Data.SGF.Parsing
+import DB
 
 -------------
 --  Tests  --
