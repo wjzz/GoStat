@@ -6,8 +6,8 @@ module SgfBatching where
 
 import Data.SGF.Types
 import Data.SGF.Parsing
+import Transformations
 
-import Control.Applicative
 import Control.Monad
 import Data.Maybe
 import System.FilePath.Find hiding (fileName)
@@ -43,8 +43,11 @@ data GameInfo = GameInfo { sgfFileName  :: FilePath
 sgfToGameInfo :: FilePath -> SGF -> Maybe GameInfo
 sgfToGameInfo fileName sgf = do
   win <- getWinner sgf
-  --  guard -- has at least 20 moves
-  return $ GameInfo fileName win (Data.SGF.Types.moves sgf)
+  
+  let mvs = Data.SGF.Types.moves sgf
+  guard (length mvs > 5)
+  
+  return $ GameInfo fileName win (normalizeMoves mvs)
 
 
 loadSGFs :: IO [GameInfo]

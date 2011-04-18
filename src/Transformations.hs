@@ -97,3 +97,20 @@ getTransformation = transformIntoFirst . findTriangle
 -- |* The first move will be in the first triangle
 -- |
 -- |* The first move not on the first diagonal will be under the diagonal
+normalizeMoves :: [Move] -> [Move]
+normalizeMoves [] = error "Got an empty move list"
+normalizeMoves ms@(first:_) 
+  -- if the first moves are on the main diagonal, we want the first other one
+  -- to be BELOW the diagonal, so we can count the symmetrical situations as the same line
+  | not (null diag) && 
+    not (null rest) && 
+    isAboveMainDiagonal firstNonDiag =
+      map mainDiagonalMirror ms'
+      
+  | otherwise = ms' where
+    f1  = getTransformation first
+    ms' = map f1 ms
+  
+    (diag, rest) = span isOnMainDiagonal ms'
+    firstNonDiag = head rest
+  

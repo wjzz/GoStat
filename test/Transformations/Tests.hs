@@ -197,6 +197,30 @@ property_getTransformation_gives_first p = 1 == findTriangle (f m) where
 getTransformation_tests :: [Test.Framework.Test]
 getTransformation_tests = [ testProperty "getTransformation gives first" property_getTransformation_gives_first
                           ]
+----------------------
+--  normalizeMoves  --
+----------------------
+
+property_normalizeMoves_head :: [Move] -> Property
+property_normalizeMoves_head ps = not (null ms) ==> 1 == findTriangle (head (normalizeMoves ms)) where
+  ms = map normalize ps
+
+property_normalizeMoves_length :: [Move] -> Property
+property_normalizeMoves_length ps = not (null ms) ==> length ms == length (normalizeMoves ms) where
+  ms = map normalize ps
+
+property_normalizeMoves_symmetry :: [Move] -> Property
+property_normalizeMoves_symmetry ps = not (null ms) && not (null start) && not (null rest) 
+                                      ==> isBelowMainDiagonal (head rest) where
+  ms = map normalize ps
+  (start, rest) = span isOnMainDiagonal $ normalizeMoves ms
+
+
+normalizeMoves_tests :: [Test.Framework.Test]
+normalizeMoves_tests = [ testProperty "normalizeMoves head triangle"     property_normalizeMoves_head
+                       , testProperty "normalizeMoves length presev"     property_normalizeMoves_length
+                       , testProperty "normalizeMoves symmetry handling" property_normalizeMoves_symmetry
+                       ]
 
 -----------------
 --  All tests  --
@@ -208,4 +232,5 @@ transformations_tests = testGroup "Transformations" $ concat [ isInside_tests
                                                              , rotate90_tests
                                                              , getTransformation_tests
                                                              , mainDiagonalMirror_tests
+                                                             , normalizeMoves_tests
                                                              ]
