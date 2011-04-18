@@ -61,10 +61,22 @@ findTriangle = minimum . findTriangles
 isOnMainDiagonal :: Move -> Bool
 isOnMainDiagonal (x,y) = x == y
 
+-- |Performs a horizontal mirror transformation
+horizontal :: Move -> Move
+horizontal (x,y) = (x, 10 - y)
+
+-- |Performs a 90 degrees rotation (counter clock-wise)
+rotate90 :: Move -> Move
+rotate90 (x,y) = (10-y, x)
+
 -- |Returns a transformation that will make any move in the given triangle
 -- |to appear in the first triangle
 transformIntoFirst :: Triangle -> (Move -> Move)
-transformIntoFirst = undefined
+transformIntoFirst n 
+  | n < 0 || n > 8 = error "triangle has to be between 1 and 8"
+  | n == 1    = id
+  | n == 2    = horizontal
+  | otherwise = transformIntoFirst (n-2) . rotate90
 
 getTransformation :: Move -> (Move -> Move)
 getTransformation = transformIntoFirst . findTriangle
