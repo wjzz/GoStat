@@ -2,3 +2,5 @@
 *.o
 docs/*
 data/*
+dist/*
+bin/*
