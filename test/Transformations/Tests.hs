@@ -230,16 +230,16 @@ property_normalizeMoves_length ps = length ms == length (normalizeMoves ms) wher
   ms = map normalize ps
 
 property_normalizeMoves_symmetry_diag :: [Move] -> Property
-property_normalizeMoves_symmetry_diag ps = not (null ms) && not (null start) && not (null rest) 
+property_normalizeMoves_symmetry_diag ps = {-not (null ms) && not (null start) && -}not (null rest) 
                                            ==> isBelowMainDiagonal (head rest) where
-  ms = map normalize ps
-  (start, rest) = span isOnMainDiagonal $ normalizeMoves ms
+  ms = (5,5):map normalize ps
+  ((5,5):start, rest) = span isOnMainDiagonal $ normalizeMoves ms
 
 property_normalizeMoves_symmetry_horiz :: [Move] -> Property
 property_normalizeMoves_symmetry_horiz ps = not (null ms) && not (null start) && not (null rest) 
                                            ==> isBelowHorizontal (head rest) where
-  ms = (5,5) : map normalize ps
-  (start, rest) = span isOnHorizontal $ normalizeMoves ms
+  ms = (5,5) : (5,4) : map normalize ps
+  ((5,5):start, rest) = span isOnHorizontal $ normalizeMoves ms
 
 
 property_normalizeMoves_center_case :: [Move] -> Property

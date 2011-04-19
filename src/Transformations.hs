@@ -68,13 +68,13 @@ isBelowMainDiagonal :: Move -> Bool
 isBelowMainDiagonal (x,y) = x < y
 
 isOnHorizontal :: Move -> Bool
-isOnHorizontal (x,y) = y == 5
+isOnHorizontal (_,y) = y == 5
 
 isAboveHorizontal :: Move -> Bool
-isAboveHorizontal (x,y) = y < 5
+isAboveHorizontal (_,y) = y < 5
 
 isBelowHorizontal :: Move -> Bool
-isBelowHorizontal (x,y) = y > 5
+isBelowHorizontal (_,y) = y > 5
 
 -- |Performs a horizontal mirror transformation
 horizontal :: Move -> Move
@@ -115,14 +115,21 @@ normalizeMoves ms@(first:_)
   -- if the first moves are on the main diagonal, we want the first other one
   -- to be BELOW the diagonal, so we can count the symmetrical situations as the same line
   | not (null diag) && 
-    not (null rest) && 
+    not (null diagRest) && 
     isAboveMainDiagonal firstNonDiag =
       map mainDiagonalMirror ms'
+      
+  | not (null hor) && 
+    not (null horRest) && 
+    isAboveHorizontal firstNonHor =
+      map horizontal  ms'      
       
   | otherwise = ms' where
     f1  = getTransformation first
     ms' = map f1 ms
   
-    (diag, rest) = span isOnMainDiagonal ms'
-    firstNonDiag = head rest
+    (diag, diagRest) = span isOnMainDiagonal ms'
+    firstNonDiag = head diagRest
   
+    (hor, horRest) = span isOnHorizontal ms'
+    firstNonHor = head horRest
