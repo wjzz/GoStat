@@ -5,10 +5,28 @@ body {
 
 #leftTable {
     float: left;
-    //margin-left: 100px;
+    border: 1px solid black;
+    margin-left: 25px;
 }
 
 #rightTable {
     float: right;
+    border: 1px solid black;
     //margin-right: 100px;
+}
+
+#boardTable table {
+    float: left;
+    background-image:url(/public/img/wood1.gif);
+    border: 0px solid red;
+    background-repeat: repeat;
+    background-position: top left; /* 0% 0% - top left */
+    empty-cells: hide;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    //margin: 0px auto;
+}
+
+#boardTable table tr {
+    text-align: center;
 }
