@@ -11,11 +11,13 @@ import Data.Function
 import Data.List
 
 import DB
+import Server
 import SgfBatching
 
 main :: IO ()
 main = do
   putStrLn "Hello, World!"
+  server
 --  deleteDB
 --  createDB
 --  addFilesToDB

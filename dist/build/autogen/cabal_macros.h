@@ -36,6 +36,18 @@
   (major1) == 0 && (major2) <  3 || \
   (major1) == 0 && (major2) == 3 && (minor) <= 5
 
+/* package happstack-server-6.0.2 */
+#define MIN_VERSION_happstack_server(major1,major2,minor) \
+  (major1) <  6 || \
+  (major1) == 6 && (major2) <  0 || \
+  (major1) == 6 && (major2) == 0 && (minor) <= 2
+
+/* package mtl-2.0.1.0 */
+#define MIN_VERSION_mtl(major1,major2,minor) \
+  (major1) <  2 || \
+  (major1) == 2 && (major2) <  0 || \
+  (major1) == 2 && (major2) == 0 && (minor) <= 1
+
 /* package parsec-2.1.0.1 */
 #define MIN_VERSION_parsec(major1,major2,minor) \
   (major1) <  2 || \
@@ -65,4 +77,10 @@
   (major1) <  0 || \
   (major1) == 0 && (major2) <  2 || \
   (major1) == 0 && (major2) == 2 && (minor) <= 7
+
+/* package xhtml-3000.2.0.1 */
+#define MIN_VERSION_xhtml(major1,major2,minor) \
+  (major1) <  3000 || \
+  (major1) == 3000 && (major2) <  2 || \
+  (major1) == 3000 && (major2) == 2 && (minor) <= 0
 

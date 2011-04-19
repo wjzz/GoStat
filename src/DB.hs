@@ -44,15 +44,15 @@ addFilesToDB = do
   
   stmt <- prepare conn "INSERT INTO go_stat_data (winner, moves, game_id) VALUES (?,?,?)"
   
-  forM_ (zip files [1..]) $ \(file, id) -> do
+  forM_ (zip files [(1::Int)..]) $ \(file, index) -> do
     gameInfo <- (fileToSGF >=> uncurry sgfToGameInfo) `fmap` Strict.readFile file
     case gameInfo of
       Nothing -> return ()
       Just gi -> do
         let (_, win, mvs) = gameInfoToDB gi
         --print (length mvs)
-        if id `mod` 1000 == 0
-           then putStrLn $ "done " ++ show id
+        if index `mod` 1000 == 0
+           then putStrLn $ "done " ++ show index
            else return ()
         execute stmt [toSql win, toSql mvs, toSql file]
         return ()
@@ -61,3 +61,13 @@ addFilesToDB = do
   commit conn
   disconnect conn
   putStrLn "closed connection with DB"
+  
+queryCountDB :: IO Int
+queryCountDB = do
+  conn <- connectPostgreSQL ""
+  answer <- quickQuery' conn "SELECT count(*) FROM go_stat_data" []
+  disconnect conn
+  
+  case answer of
+    [[sqlInt]] -> return $ fromSql sqlInt
+    _          -> return 0
