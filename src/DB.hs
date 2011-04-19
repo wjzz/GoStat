@@ -8,6 +8,7 @@ module DB where
 import SgfBatching
 
 import Control.Monad
+import Data.Maybe
 import Database.HDBC
 import Database.HDBC.PostgreSQL(connectPostgreSQL)
 import System.IO.Strict as Strict
@@ -71,3 +72,23 @@ queryCountDB = do
   case answer of
     [[sqlInt]] -> return $ fromSql sqlInt
     _          -> return 0
+
+
+-- |Returns a statistic in the form (move, total_played, black won, white won)
+queryStatsDB :: IO [(String, Int, Int, Int)]
+queryStatsDB = do
+  conn <- connectPostgreSQL ""
+  total <- quickQuery' conn "SELECT SUBSTR(moves, 1,2) as st, count(*) FROM go_stat_data GROUP BY st" []
+  black <- quickQuery' conn "SELECT SUBSTR(moves, 1,2) as st, count(*) FROM go_stat_data WHERE winner = ? GROUP BY st " [toSql 'b']
+  
+  disconnect conn
+  
+  return $ map (count black) total where
+    count black [moves, totalCount] = (fromSql moves, tc, b, w) where
+      black_count :: Maybe Int
+      black_count = fmap fromSql $ lookup moves $ map (\[a,b] -> (a,b)) black
+      
+      tc = fromSql totalCount
+      b = fromMaybe 0 black_count
+      w = tc - b
+    count _ _ = ("",0,0,0)

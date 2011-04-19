@@ -9,6 +9,8 @@ import DB
 
 import Control.Monad
 import Control.Monad.Trans
+import Data.Function
+import Data.List
 import Happstack.Server hiding (body)
 import Text.Printf
 import Text.XHtml hiding (dir)
@@ -20,6 +22,7 @@ server = do
   
 router :: ServerPart Response
 router = msum [ dir "movebrowser" moveBrowserC
+              , dir "public" $ serveDirectory EnableBrowsing [] "public"
               , mainPageC
               ]
          
@@ -45,15 +48,61 @@ mainPage count = pHeader +++ pBody where
 
 
 moveBrowserC :: ServerPart Response
-moveBrowserC = ok $ toResponse moveBrowser
+moveBrowserC = do
+  moves <- liftIO $ queryStatsDB 
+  ok $ toResponse $ moveBrowser moves
 
-moveBrowser :: Html
-moveBrowser = pHeader +++ pBody where
-  pHeader = header << thetitle << "Welcome to Go 9x9 statistics!"
+moveBrowser :: [(String, Int, Int, Int)] -> Html
+moveBrowser moves = pHeader +++ pBody where
+  pHeader = header << ((thetitle << "Welcome to Go 9x9 statistics!") 
+                       +++ (thelink ! [href "public/style.css"] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
   
   pBody = body $ concatHtml [ pHomePageLink
                             , hr
                             , primHtml "Move browser will be here."
+                            , hr
+                            , pMovesList
                             ]
   
   pHomePageLink = anchor ! [href "/"] << h3 << "Back to main page"
+  
+  pMovesList = concatHtml [ pMoveHeader , leftTable, rightTable ]
+               
+  leftTable  = dI "leftTable"  << (pH1 +++ pMoves movesTotal)
+  rightTable = dI "rightTable" << (pH2 +++ pMoves movesPercentage)
+
+  pMoveHeader = h2 << "Available moves:"
+  pH1         = h3 << "Moves by total count:"
+  pH2         = h3 << "Moves by black win percentage:"
+  
+  movesTotal      = reverse $ sortBy (compare `on` (\(_,t,_,_) -> t)) moves
+  movesPercentage = reverse $ sortBy (compare `on` (\(_,t,b,_) -> (1000*b) `div` t)) moves
+  
+  pMoves mvs = table << (tHeader +++ concatHtml (map makeRow mvs))
+  
+  tHeader = concatHtml [ th << "Move sequence"
+                       , th << "Total played"
+                       , td << "Black wins"
+                       , td << "White wins"
+                       , td << "Black winning %"                         
+                       ]
+            
+  movesSoFar = []
+  makeRow (move, count, black, white) = tr << concatHtml [ td << anchor ! [href url] << move
+                                                         , td << show count
+                                                         , td << show black
+                                                         , td << show white
+                                                         , td << percentage
+                                                         ] where
+    percentage = show ((100 * black) `div` count) ++ "%"
+    url = "/movebrowser?moves=" ++ movesSoFar ++ move
+    
+--------------------------------------
+--  HTML building-oriented helpers  --
+--------------------------------------
+
+dI :: String -> Html -> Html
+dI x = thediv ! [identifier x]
+
+dC :: String -> Html -> Html
+dC x = thediv ! [theclass x]

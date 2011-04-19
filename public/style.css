@@ -1,0 +1,14 @@
+body {
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+#leftTable {
+    float: left;
+    //margin-left: 100px;
+}
+
+#rightTable {
+    float: right;
+    //margin-right: 100px;
+}
