@@ -99,6 +99,7 @@ getTransformation = transformIntoFirst . findTriangle
 -- |* The first move not on the first diagonal will be under the diagonal
 normalizeMoves :: [Move] -> [Move]
 normalizeMoves [] = error "Got an empty move list"
+normalizeMoves ((5,5):rest) = (5,5) : normalizeMoves rest
 normalizeMoves ms@(first:_) 
   -- if the first moves are on the main diagonal, we want the first other one
   -- to be BELOW the diagonal, so we can count the symmetrical situations as the same line

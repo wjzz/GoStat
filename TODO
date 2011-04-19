@@ -7,3 +7,7 @@ Game db:
 Display:
 
 2. Properly display PASSes
+
+Bugi:
+HTTP request failed with: src/Server.hs:117:24-61: Non-exhaustive patterns in lambda
+zapytanie: http://localhost:8000/movebrowser?moves=554445745466475748435342523573847776868587673625788372828156466364655895

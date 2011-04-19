@@ -216,10 +216,16 @@ property_normalizeMoves_symmetry ps = not (null ms) && not (null start) && not (
   (start, rest) = span isOnMainDiagonal $ normalizeMoves ms
 
 
+property_normalizeMoves_center_case :: [Move] -> Property
+property_normalizeMoves_center_case ps = not (null ps) ==> 1 == findTriangle second where
+  ms = (5,5) : map normalize ps
+  (_:second:_) = normalizeMoves ms
+
 normalizeMoves_tests :: [Test.Framework.Test]
 normalizeMoves_tests = [ testProperty "normalizeMoves head triangle"     property_normalizeMoves_head
                        , testProperty "normalizeMoves length presev"     property_normalizeMoves_length
                        , testProperty "normalizeMoves symmetry handling" property_normalizeMoves_symmetry
+                       , testProperty "normalizeMoves start:55 handling" property_normalizeMoves_center_case
                        ]
 
 -----------------
