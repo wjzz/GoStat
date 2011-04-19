@@ -166,7 +166,7 @@ moveBrowser moves movesSoFar = pHeader +++ pBody where
   
   pMoves mvs = table << (tHeader +++ concatHtml (map makeRow mvs))
   
-  blackTurn = length moves `mod` 4 == 0
+  blackTurn = length movesSoFar `mod` 4 == 0
   
   tHeader = concatHtml [ th << "Move"
                        , th << "Total played"
