@@ -210,7 +210,7 @@ property_normalizeMoves_length ps = not (null ms) ==> length ms == length (norma
   ms = map normalize ps
 
 property_normalizeMoves_symmetry :: [Move] -> Property
-property_normalizeMoves_symmetry ps = not (null ms) && not (null start) && not (null rest) 
+property_normalizeMoves_symmetry ps = 2 <= length ms && not (null start) && not (null rest) 
                                       ==> isBelowMainDiagonal (head rest) where
   ms = map normalize ps
   (start, rest) = span isOnMainDiagonal $ normalizeMoves ms

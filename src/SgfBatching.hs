@@ -55,7 +55,7 @@ sgfToGameInfo fileName sgf = do
   
   let mvs = Data.SGF.Types.moves sgf
   guard (length mvs > 5)
-  
+  guard (not (isWithHandicap sgf))
   return $ GameInfo fileName win (normalizeMoves mvs)
 {-
 aux :: FilePath -> IO Int

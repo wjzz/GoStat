@@ -7,6 +7,7 @@ module Data.SGF.Types where
 
 import Control.Applicative
 import Data.List(isPrefixOf)
+import Data.Maybe(isJust)
 import Text.Printf
 
 type Move = (Int, Int)
@@ -43,7 +44,8 @@ data Winner = Black | White
                        
 data Result = Unfinished | Draw | Win Winner PlayerName
               deriving Show
-                       
+
+
 getResult :: SGF -> Result
 getResult sgf@(SGF (MetaData meta) _) = 
   case lookup Result meta of
@@ -69,6 +71,8 @@ getWinner sgf = fst <$> getWinnerInfo sgf
 getWinnerName :: SGF -> Maybe PlayerName
 getWinnerName sgf = snd <$> getWinnerInfo sgf
 
+isWithHandicap :: SGF -> Bool
+isWithHandicap = isJust . lookup Handicap . fromMeta . metaData
 
 getMeta :: String -> SGF -> String
 getMeta str sgf = 
