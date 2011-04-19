@@ -12,6 +12,7 @@ import Data.Maybe
 import Database.HDBC
 import Database.HDBC.PostgreSQL(connectPostgreSQL)
 import System.IO.Strict as Strict
+import Text.Printf
 
 createDB :: IO ()
 createDB = do
@@ -75,15 +76,24 @@ queryCountDB = do
 
 
 -- |Returns a statistic in the form (move, total_played, black won, white won)
-queryStatsDB :: IO [(String, Int, Int, Int)]
-queryStatsDB = do
+queryStatsDB :: String -> IO [(String, Int, Int, Int)]
+queryStatsDB movesSoFar = do
   conn <- connectPostgreSQL ""
-  total <- quickQuery' conn "SELECT SUBSTR(moves, 1,2) as st, count(*) FROM go_stat_data GROUP BY st" []
-  black <- quickQuery' conn "SELECT SUBSTR(moves, 1,2) as st, count(*) FROM go_stat_data WHERE winner = ? GROUP BY st " [toSql 'b']
+    
+  total <- quickQuery' conn total_query []
+  black <- quickQuery' conn black_query [toSql 'b']
   
   disconnect conn
   
   return $ map (count black) total where
+    start_index = 1 + length movesSoFar
+    pattern     = '\'': movesSoFar ++ "%'"
+    
+    query_template = "SELECT SUBSTR(moves, %d, 2) as st, count(*) FROM go_stat_data %s GROUP BY st" 
+    total_query = printf query_template start_index (if null movesSoFar then "" else "WHERE moves LIKE " ++ pattern)
+    black_query = printf query_template start_index ("WHERE WINNER = ?" ++ 
+                                                     (if null movesSoFar then "" else "AND moves LIKE" ++ pattern))
+        
     count black [moves, totalCount] = (fromSql moves, tc, b, w) where
       black_count :: Maybe Int
       black_count = fmap fromSql $ lookup moves $ map (\[a,b] -> (a,b)) black
@@ -92,3 +102,15 @@ queryStatsDB = do
       b = fromMaybe 0 black_count
       w = tc - b
     count _ _ = ("",0,0,0)
+
+    -- total_query = if null movesSoFar then
+    --                 "SELECT SUBSTR(moves, 1, 2) as st, count(*) FROM go_stat_data GROUP BY st"
+    --               else
+    --                 printf "SELECT SUBSTR(moves, %d, 2) as st, count(*) FROM go_stat_data WHERE moves LIKE %s GROUP BY st" 
+    --                         start_index pattern
+                    
+    -- black_query = if null movesSoFar then
+    --                 "SELECT SUBSTR(moves, 1, 2) as st, count(*) FROM go_stat_data WHERE winner = ? GROUP BY st "
+    --               else
+    --                 printf "SELECT SUBSTR(moves, %d, 2) as st, count(*) FROM go_stat_data WHERE winner = ? AND moves LIKE %s GROUP BY st" 
+    --                        start_index pattern

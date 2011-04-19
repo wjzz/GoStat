@@ -49,11 +49,12 @@ mainPage count = pHeader +++ pBody where
 
 moveBrowserC :: ServerPart Response
 moveBrowserC = do
-  moves <- liftIO $ queryStatsDB 
-  ok $ toResponse $ moveBrowser moves
+  movesSoFar <- look "moves" `mplus` (return [])
+  moves <- liftIO $ queryStatsDB movesSoFar  
+  ok $ toResponse $ moveBrowser moves movesSoFar
 
-moveBrowser :: [(String, Int, Int, Int)] -> Html
-moveBrowser moves = pHeader +++ pBody where
+moveBrowser :: [(String, Int, Int, Int)] -> String -> Html
+moveBrowser moves movesSoFar = pHeader +++ pBody where
   pHeader = header << ((thetitle << "Welcome to Go 9x9 statistics!") 
                        +++ (thelink ! [href "public/style.css"] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
   
@@ -66,12 +67,16 @@ moveBrowser moves = pHeader +++ pBody where
   
   pHomePageLink = anchor ! [href "/"] << h3 << "Back to main page"
   
-  pMovesList = concatHtml [ pMoveHeader , leftTable, rightTable ]
+  pMovesList = concatHtml [ pMoveHeader , pMovesSoFar, leftTable, rightTable ]
                
   leftTable  = dI "leftTable"  << (pH1 +++ pMoves movesTotal)
   rightTable = dI "rightTable" << (pH2 +++ pMoves movesPercentage)
+  
+  insertSeps (a:b:rest) = a:b:'-' : insertSeps rest
+  insertSeps _ = []
 
   pMoveHeader = h2 << "Available moves:"
+  pMovesSoFar = h4 << primHtml ("Moves played so far: " ++ insertSeps movesSoFar)
   pH1         = h3 << "Moves by total count:"
   pH2         = h3 << "Moves by black win percentage:"
   
@@ -86,8 +91,7 @@ moveBrowser moves = pHeader +++ pBody where
                        , td << "White wins"
                        , td << "Black winning %"                         
                        ]
-            
-  movesSoFar = []
+  
   makeRow (move, count, black, white) = tr << concatHtml [ td << anchor ! [href url] << move
                                                          , td << show count
                                                          , td << show black
