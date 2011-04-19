@@ -133,7 +133,7 @@ moveBrowser moves movesSoFar = pHeader +++ pBody where
   
   pBody = body $ concatHtml [ pHomePageLink
                             , hr
-                            , primHtml "Move browser will be here."
+                            , anchor ! [href "/movebrowser"] << h2 << "Reset moves"
                             , hr
                             , pMovesList
                             ]
