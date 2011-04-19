@@ -1,9 +1,3 @@
-Game db:
-
-1. Delete handicap games
-3. Update the transformation to take in consideration the case, when 
-   the first move is in the center. If it's the case we should do the transformation on the other moves
-
 Display:
 
 2. Properly display PASSes
