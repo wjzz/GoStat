@@ -67,6 +67,15 @@ isAboveMainDiagonal (x,y) = x > y
 isBelowMainDiagonal :: Move -> Bool
 isBelowMainDiagonal (x,y) = x < y
 
+isOnHorizontal :: Move -> Bool
+isOnHorizontal (x,y) = y == 5
+
+isAboveHorizontal :: Move -> Bool
+isAboveHorizontal (x,y) = y < 5
+
+isBelowHorizontal :: Move -> Bool
+isBelowHorizontal (x,y) = y > 5
+
 -- |Performs a horizontal mirror transformation
 horizontal :: Move -> Move
 horizontal (x,y) = (x, 10 - y)
@@ -98,7 +107,9 @@ getTransformation = transformIntoFirst . findTriangle
 -- |
 -- |* The first move not on the first diagonal will be under the diagonal
 normalizeMoves :: [Move] -> [Move]
-normalizeMoves [] = error "Got an empty move list"
+--normalizeMoves [] = error "Got an empty move list"
+-- it proved to be much better this way
+normalizeMoves [] = [] 
 normalizeMoves ((5,5):rest) = (5,5) : normalizeMoves rest
 normalizeMoves ms@(first:_) 
   -- if the first moves are on the main diagonal, we want the first other one

@@ -98,6 +98,26 @@ printRow y = do
   mapM_ printCell $ zip (reverse [1..9]) (repeat y)
   putStrLn "" where
     printCell p = putStr $ show (findTriangle p) ++ " "
+    
+-----------------------------------
+--  isOn/Above/Below predicates  --
+-----------------------------------
+
+property_isOnHorizontal_trichtomy :: Move -> Bool
+property_isOnHorizontal_trichtomy p = 1 == length (filter ($ m) preds) where
+  m = normalize p
+  preds = [isOnHorizontal, isAboveHorizontal, isBelowHorizontal]
+  
+property_isOnMainDiagonal_trichtomy :: Move -> Bool
+property_isOnMainDiagonal_trichtomy p = 1 == length (filter ($ m) preds) where
+  m = normalize p
+  preds = [isOnMainDiagonal, isAboveMainDiagonal, isBelowMainDiagonal]
+  
+
+isOnAboveBelow_tests :: [Test.Framework.Test]  
+isOnAboveBelow_tests = [ testProperty "horizontal trichtomy"   property_isOnHorizontal_trichtomy
+                       , testProperty "mainDiagonal trichtomy" property_isOnMainDiagonal_trichtomy
+                       ]
 
 ---------------------------------
 --  horizontal transformation  --
@@ -205,15 +225,21 @@ property_normalizeMoves_head :: [Move] -> Property
 property_normalizeMoves_head ps = not (null ms) ==> 1 == findTriangle (head (normalizeMoves ms)) where
   ms = map normalize ps
 
-property_normalizeMoves_length :: [Move] -> Property
-property_normalizeMoves_length ps = not (null ms) ==> length ms == length (normalizeMoves ms) where
+property_normalizeMoves_length :: [Move] -> Bool
+property_normalizeMoves_length ps = length ms == length (normalizeMoves ms) where
   ms = map normalize ps
 
-property_normalizeMoves_symmetry :: [Move] -> Property
-property_normalizeMoves_symmetry ps = 2 <= length ms && not (null start) && not (null rest) 
-                                      ==> isBelowMainDiagonal (head rest) where
+property_normalizeMoves_symmetry_diag :: [Move] -> Property
+property_normalizeMoves_symmetry_diag ps = not (null ms) && not (null start) && not (null rest) 
+                                           ==> isBelowMainDiagonal (head rest) where
   ms = map normalize ps
   (start, rest) = span isOnMainDiagonal $ normalizeMoves ms
+
+property_normalizeMoves_symmetry_horiz :: [Move] -> Property
+property_normalizeMoves_symmetry_horiz ps = not (null ms) && not (null start) && not (null rest) 
+                                           ==> isBelowHorizontal (head rest) where
+  ms = (5,5) : map normalize ps
+  (start, rest) = span isOnHorizontal $ normalizeMoves ms
 
 
 property_normalizeMoves_center_case :: [Move] -> Property
@@ -224,7 +250,8 @@ property_normalizeMoves_center_case ps = not (null ps) ==> 1 == findTriangle sec
 normalizeMoves_tests :: [Test.Framework.Test]
 normalizeMoves_tests = [ testProperty "normalizeMoves head triangle"     property_normalizeMoves_head
                        , testProperty "normalizeMoves length presev"     property_normalizeMoves_length
-                       , testProperty "normalizeMoves symmetry handling" property_normalizeMoves_symmetry
+                       , testProperty "normalizeMoves diagonal symmetry handling" property_normalizeMoves_symmetry_diag
+                       , testProperty "normalizeMoves horizont symmetry handling" property_normalizeMoves_symmetry_horiz
                        , testProperty "normalizeMoves start:55 handling" property_normalizeMoves_center_case
                        ]
 
@@ -234,6 +261,7 @@ normalizeMoves_tests = [ testProperty "normalizeMoves head triangle"     propert
 
 transformations_tests :: Test.Framework.Test
 transformations_tests = testGroup "Transformations" $ concat [ isInside_tests
+                                                             , isOnAboveBelow_tests
                                                              , horizontal_tests
                                                              , rotate90_tests
                                                              , getTransformation_tests
