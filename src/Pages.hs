@@ -110,7 +110,7 @@ moveBrowser moves movesSoFar config = pHeader +++ pBody where
   
   pBody = body $ concatHtml [ pHomePageLink
                             , hr
-                            , anchor ! [href (moveBrowserMainUrl config)] << h2 << "Reset moves"
+                            , anchor ! [href (moveBrowserMakeUrl config [])] << h2 << "Reset moves"
                             , hr
                             , pMovesList
                             ]
