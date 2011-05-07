@@ -9,6 +9,7 @@ import System.Environment(getArgs)
 
 import DB
 import Server
+import Offline
 
 main :: IO ()
 main = do
@@ -22,8 +23,9 @@ main = do
       addFilesToDB
       putStrLn "DB rebuilding done!"
       server  
-    ("archive":level:_) -> do
-      let n = read level :: Int
-      putStrLn $ "Building offline version upto level " ++ level
+    ("archive":levelStr:_) -> do
+      let level= read levelStr :: Int
+      putStrLn $ "Building offline version upto level " ++ levelStr
+      buildOffline level
       putStrLn $ "Offline files created."
     _ -> server

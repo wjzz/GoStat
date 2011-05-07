@@ -28,15 +28,6 @@ deleteDB = do
   commit conn
   disconnect conn
 
--- addDataToDB :: IO ()
--- addDataToDB = do
---   conn <- connectPostgreSQL ""
---   -- stmt <- prepare conn "INSERT INTO go_stat_data VALUES (?)"
---   -- executeMany stmt $ map (\x -> [toSql x]) [1..(10::Integer)]
---   -- run conn "INSERT INTO go_stat_data (winner, moves) VALUES (?, ?)" [toSql 'b', toSql "1234342"]
---   commit conn
---   disconnect conn
-
 addFilesToDB :: IO ()
 addFilesToDB = do
   conn <- connectPostgreSQL ""
@@ -102,15 +93,3 @@ queryStatsDB movesSoFar = do
       b = fromMaybe 0 black_count
       w = tc - b
     count _ _ = ("",0,0,0)
-
-    -- total_query = if null movesSoFar then
-    --                 "SELECT SUBSTR(moves, 1, 2) as st, count(*) FROM go_stat_data GROUP BY st"
-    --               else
-    --                 printf "SELECT SUBSTR(moves, %d, 2) as st, count(*) FROM go_stat_data WHERE moves LIKE %s GROUP BY st" 
-    --                         start_index pattern
-                    
-    -- black_query = if null movesSoFar then
-    --                 "SELECT SUBSTR(moves, 1, 2) as st, count(*) FROM go_stat_data WHERE winner = ? GROUP BY st "
-    --               else
-    --                 printf "SELECT SUBSTR(moves, %d, 2) as st, count(*) FROM go_stat_data WHERE winner = ? AND moves LIKE %s GROUP BY st" 
-    --                        start_index pattern
