@@ -33,7 +33,7 @@ router = msum [ dir "movebrowser" moveBrowserC
 mainPageC :: ServerPart Response
 mainPageC = do
   count <- liftIO $ queryCountDB  
-  ok $ toResponse $ mainPage count
+  ok $ toResponse $ mainPage onLineConfig count
 
 ----------------------------
 --  The moveBrowser page  --
@@ -43,4 +43,18 @@ moveBrowserC :: ServerPart Response
 moveBrowserC = do
   movesSoFar <- look "moves" `mplus` (return [])
   moves <- liftIO $ queryStatsDB movesSoFar  
-  ok $ toResponse $ moveBrowser moves movesSoFar
+  ok $ toResponse $ moveBrowser moves movesSoFar onLineConfig
+
+-----------------------------------------------
+--  The configuration of the online version  --
+-----------------------------------------------
+
+onLineConfig :: Configuration
+onLineConfig = Configuration { mainPageUrl        = "/"
+                              , moveBrowserMainUrl = "/movebrowser"
+                              , moveBrowserMakeUrl = urlMaker
+                              , cssUrl             = "/public/style.css"
+                              }
+
+urlMaker :: String -> String
+urlMaker movesList = "/movebrowser?moves=" ++ movesList

@@ -10,13 +10,21 @@ import Data.List
 import Text.Printf
 import Text.XHtml hiding (dir, color, black, white)
 
+----------------------------------------------------
+--  A type for storing the basic data about urls  --
+----------------------------------------------------
+
+data Configuration = Configuration { mainPageUrl :: String
+                                   , moveBrowserMainUrl :: String
+                                   , moveBrowserMakeUrl :: String -> String
+                                   , cssUrl :: String }
 
 ---------------------
 --  The main page  --
 ---------------------
 
-mainPage :: Int -> Html
-mainPage count = pHeader +++ pBody where
+mainPage :: Configuration -> Int -> Html
+mainPage config count = pHeader +++ pBody where
   pHeader = header << thetitle << "Welcome to Go 9x9 statistics!"
   
   pBody = body $ concatHtml [ pGameCount 
@@ -26,7 +34,7 @@ mainPage count = pHeader +++ pBody where
   
   pGameCount = primHtml $ printf "We currently have <b>%d</b> games in the database." count
   
-  pLinkToMoveBrowser = anchor ! [href "/movebrowser"] << h3 << "Go to move browser"
+  pLinkToMoveBrowser = anchor ! [href (mainPageUrl config)] << h3 << "Go to move browser"
 
 
 ----------------------------------------
@@ -94,8 +102,8 @@ board displayCand moves movesSoFar = dI "boardTable" $  tbl where
 --  The move browser page  --
 -----------------------------
 
-moveBrowser :: [(String, Int, Int, Int)] -> String -> Html
-moveBrowser moves movesSoFar = pHeader +++ pBody where
+moveBrowser :: [(String, Int, Int, Int)] -> String -> Configuration -> Html
+moveBrowser moves movesSoFar configuration = pHeader +++ pBody where
   pHeader = header << ((thetitle << "Welcome to Go 9x9 statistics!") 
                        +++ (thelink ! [href "public/style.css"] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
   
