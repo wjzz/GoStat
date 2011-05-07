@@ -3,6 +3,8 @@
 -}
 module Offline where
 
+import Control.Concurrent
+
 import Pages
 import DB
 import Text.XHtml (renderHtml)

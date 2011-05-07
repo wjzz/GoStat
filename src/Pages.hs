@@ -97,7 +97,8 @@ board config displayCand moves movesSoFar = dI "boardTable" $  tbl where
   row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j) ++ ".")) where
     field i = td << anchor ! [href url] << getIntersect config displayCand candMoves (i,j) movesSoFar where
       url = (moveBrowserMakeUrl config) $ movesSoFar ++ show i ++ show j
-      candMoves = map (\[a,b] -> (digitToInt a, digitToInt b)) moves
+      candMoves = map (\[a,b] -> (digitToInt a, digitToInt b)) moves'
+      moves' = filter ((==2) . length) moves
 
 -----------------------------
 --  The move browser page  --
