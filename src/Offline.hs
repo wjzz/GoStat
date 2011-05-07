@@ -30,4 +30,5 @@ offLineConfig = Configuration { mainPageUrl        = "/index.htm"
                               , moveBrowserMainUrl = "/moves/move.htm"
                               , moveBrowserMakeUrl = id
                               , cssUrl             = "/style.css"
+                              , imagesMakeUrl      = id
                               }

@@ -51,10 +51,14 @@ moveBrowserC = do
 
 onLineConfig :: Configuration
 onLineConfig = Configuration { mainPageUrl        = "/"
-                              , moveBrowserMainUrl = "/movebrowser"
-                              , moveBrowserMakeUrl = urlMaker
-                              , cssUrl             = "/public/style.css"
+                             , moveBrowserMainUrl = "/movebrowser"
+                             , moveBrowserMakeUrl = urlMaker
+                             , imagesMakeUrl      = imageUrlMaker
+                             , cssUrl             = "/public/style.css"
                               }
 
 urlMaker :: String -> String
 urlMaker movesList = "/movebrowser?moves=" ++ movesList
+
+imageUrlMaker :: String -> String
+imageUrlMaker s = "/public/img/" ++ s 

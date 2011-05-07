@@ -17,6 +17,7 @@ import Text.XHtml hiding (dir, color, black, white)
 data Configuration = Configuration { mainPageUrl :: String
                                    , moveBrowserMainUrl :: String
                                    , moveBrowserMakeUrl :: String -> String
+                                   , imagesMakeUrl :: String -> String
                                    , cssUrl :: String }
 
 ---------------------
@@ -34,7 +35,7 @@ mainPage config count = pHeader +++ pBody where
   
   pGameCount = primHtml $ printf "We currently have <b>%d</b> games in the database." count
   
-  pLinkToMoveBrowser = anchor ! [href (mainPageUrl config)] << h3 << "Go to move browser"
+  pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl config)] << h3 << "Go to move browser"
 
 
 ----------------------------------------
@@ -83,19 +84,19 @@ getImage point str =
     Nothing    -> imageFromPoint point
     Just color -> imageFromColor color
 
-getIntersect :: Bool -> [Point] -> Point -> String -> Html
-getIntersect False _     point str = image ! [src ("/public/img/" ++ getImage point str)]
-getIntersect True  candidates point str 
+getIntersect :: Configuration -> Bool -> [Point] -> Point -> String -> Html
+getIntersect config False _     point str = image ! [src (imagesMakeUrl config $ (getImage point str))]
+getIntersect config True  candidates point str 
   | point `elem` candidates = primHtml "x"
-  | otherwise           = getIntersect False candidates point str
+  | otherwise           = getIntersect config False candidates point str
 
-board :: Bool -> [String] -> String -> Html
-board displayCand moves movesSoFar = dI "boardTable" $  tbl where
+board :: Configuration -> Bool -> [String] -> String -> Html
+board config displayCand moves movesSoFar = dI "boardTable" $  tbl where
   tbl = table ! [border 0] ! [cellspacing 0] ! [cellpadding 0] << (bHeader +++ concatHtml (map row [1..9]))
   bHeader = tr << map (\n -> td << primHtml [n]) ['a'..'i']
   row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j) ++ ".")) where
-    field i = td << anchor ! [href url] << getIntersect displayCand candMoves (i,j) movesSoFar where
-      url = "/movebrowser?moves=" ++ movesSoFar ++ show i ++ show j
+    field i = td << anchor ! [href url] << getIntersect config displayCand candMoves (i,j) movesSoFar where
+      url = (moveBrowserMakeUrl config) $ movesSoFar ++ show i ++ show j
       candMoves = map (\[a,b] -> (digitToInt a, digitToInt b)) moves
 
 -----------------------------
@@ -103,31 +104,28 @@ board displayCand moves movesSoFar = dI "boardTable" $  tbl where
 -----------------------------
 
 moveBrowser :: [(String, Int, Int, Int)] -> String -> Configuration -> Html
-moveBrowser moves movesSoFar configuration = pHeader +++ pBody where
+moveBrowser moves movesSoFar config = pHeader +++ pBody where
   pHeader = header << ((thetitle << "Welcome to Go 9x9 statistics!") 
-                       +++ (thelink ! [href "public/style.css"] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
+                       +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
   
   pBody = body $ concatHtml [ pHomePageLink
                             , hr
-                            , anchor ! [href "/movebrowser"] << h2 << "Reset moves"
+                            , anchor ! [href (moveBrowserMainUrl config)] << h2 << "Reset moves"
                             , hr
                             , pMovesList
                             ]
   
-  pHomePageLink = anchor ! [href "/"] << h3 << "Back to main page"
+  pHomePageLink = anchor ! [href (mainPageUrl config)] << h3 << "Back to main page"
   
   candidates = map (\(a,_,_,_) -> a) moves
   
   pMovesList = concatHtml [ pMoveHeader
-                          , board True candidates movesSoFar
+                          , board config True candidates movesSoFar
                           , leftTable
                           , rightTable ]
                
   leftTable  = dI "leftTable"  << (pH1 +++ pMoves movesTotal)
   rightTable = dI "rightTable" << (pH2 +++ pMoves movesPercentage)
-  
-  -- insertSeps (a:b:rest) = a:b:'-' : insertSeps rest
-  -- insertSeps _ = []
 
   pMoveHeader = h2 << "Available moves:"
   pH1         = h3 << "Moves by total count:"
@@ -159,7 +157,7 @@ moveBrowser moves movesSoFar configuration = pHeader +++ pBody where
                                                          ] where
     percentage = show ((100 * current) `div` count) ++ "%"
     current = if blackTurn then black else white
-    url = "/movebrowser?moves=" ++ movesSoFar ++ move
+    url = (moveBrowserMakeUrl config) (movesSoFar ++ move)
 
     
 --------------------------------------
