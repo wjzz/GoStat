@@ -38,7 +38,7 @@ buildMoveBrowser n currentLevel movesSoFar = do
   let options = map (\(m,_,_,_) -> m) moves
   mapM_ (\move -> aux $ buildMoveBrowser (n-1) (currentLevel+1) (movesSoFar ++ move)) options where
     aux m
-      | currentLevel < 3 = forkChild m >> return ()
+      | currentLevel < 1 = forkChild m >> return ()
       | otherwise        = m
 
 offLineConfig :: Configuration
