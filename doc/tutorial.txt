@@ -1,0 +1,2 @@
+Podrecznik: "Programowanie w Haskellu: aspekty praktyczne"
+

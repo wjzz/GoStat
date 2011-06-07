@@ -1,5 +1,5 @@
 Name:                GoStat
-Version:             0.1
+Version:             0.6
 Synopsis:            A Haskell program for analysing Go/Baduk/Weiqi games and calculating statistics.
 License:             BSD3
 License-file:        LICENSE
@@ -44,13 +44,3 @@ Executable GoStatTests
                        test-framework-hunit == 0.2.*,
                        test-framework-quickcheck == 0.2.*
 
-
---                       happstack == 6.0.*,
---                       happstack-server == 6.0.*
-  
-  -- Modules not exported by this package.
-  -- Other-modules:       
-  
-  -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
-  -- Build-tools:         
-  
