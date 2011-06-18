@@ -4,6 +4,7 @@
 -}
 module Pages where
 
+import Data.SGF.Types
 import Data.Char
 import Data.Function
 import Data.List
@@ -33,7 +34,8 @@ mainPage :: Configuration -> Html
 mainPage config = pHeader +++ pBody where
   lang = language config
   
-  pHeader = header << thetitle << L.title lang
+  pHeader = header << ((thetitle << L.title lang) 
+                       +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
 
   -- TODO should this use moveBrowserMainUrl langStr ?
   makeFlag langStr = anchor ! [href (moveBrowserMakeUrl config langStr []) ] 
@@ -101,8 +103,8 @@ getIntersect config True  candidates point str
 board :: Configuration -> Bool -> [String] -> String -> Html
 board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
   tbl = table ! [border 0] ! [cellspacing 0] ! [cellpadding 0] << (bHeader +++ concatHtml (map row [1..9]))
-  bHeader = tr << map (\n -> td << primHtml [n]) ['a'..'i']
-  row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j) ++ ".")) where
+  bHeader = tr << map (\n -> td << primHtml [n]) ['A'..'I']
+  row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j))) where
     field i = td << anchor ! [href url] << getIntersect config displayCand candMoves (i,j) movesSoFar where
       url       = moveBrowserMakeUrl config langName $ movesSoFar ++ show i ++ show j
       langName  = L.langName (language config)
@@ -185,7 +187,7 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
                        , td << (if blacksTurn then L.blackWinningPerc lang else L.whiteWinningPerc lang)
                        ]
   
-  makeRow (move, count, black, white) = tr << concatHtml [ td << anchor ! [href url] << move
+  makeRow (move, count, black, white) = tr << concatHtml [ td << anchor ! [href url] << (moveStrToCoordinates move)
                                                          , td << show count
                                                          , td << show black
                                                          , td << show white

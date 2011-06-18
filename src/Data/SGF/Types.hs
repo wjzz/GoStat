@@ -7,6 +7,7 @@ module Data.SGF.Types where
 
 import Control.Applicative
 import Data.List(isPrefixOf)
+import Data.Char
 import Data.Maybe(isJust)
 import Text.Printf
 
@@ -103,3 +104,16 @@ sgfSummary sgf = printf "%s [%s] vs. %s [%s]. " (black sgf) (blackRank sgf) (whi
                         Just "masec" -> "Won"
                         Just _ -> "Lost"
                         Nothing -> "No result.")
+
+
+-- 11 -> i9
+-- 91 -> a9
+moveToCoordinates :: Move -> String
+moveToCoordinates (x,y) = first : second where
+  first  = ['A'..'I'] !! (9 - x)
+  second = show (10 - y)
+  
+moveStrToCoordinates :: String -> String
+moveStrToCoordinates "00"     = "PASS"
+moveStrToCoordinates [d1, d2] = curry moveToCoordinates (digitToInt d1) (digitToInt d2)
+moveStrToCoordinates _ = "ERROR"
