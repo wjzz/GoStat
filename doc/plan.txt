@@ -11,8 +11,10 @@
 2.0.2. Baza danych
 2.0.3. Automatycznie generowana dokumentacja (API)
 2.1. Kompilacja i testowanie projektu - konkretne polecenia
-2.2. Lista użytych narzędzi i bibliotek
-2.3. Omówienie celu i przykładów użycia ww.
+2.2. Omowienie modulow
+2.2.1. Data.SGF
+2.2.2. Transformations (opis funkcji i niezmiennikow)
+2.3. Lista użytych narzędzi i bibliotek wraz z omowieniem i przykladami
 2.3.1. Cabal
 2.3.2. Happstack
 2.3.3. HUnit, QuickCheck, test-framework
@@ -41,3 +43,38 @@
 4.4. cabal-dev
 4.5. Profilowanie
 4.6. Dokumentacja
+
+Wykaz powtarzalnych testow
+- dodac wiecej rzeczy do make test
+
+ZPL:
+
+7. Dokumentacja składa się z trzech zasadniczych czę ci:
+
+   a) wprowadzenia (wyja nienie motywów powstania oprogramowania,
+   nakre lenie szerszego tła, streszczenie reszty pracy, wskazówki
+   dotyczšce użytkowania dokumentacji itp.);
+
+   b) opisu technicznego oprogramowania (dla inżynierów oprogramowania);
+
+   c) instrukcji obsługi oprogramowania (podręcznik użytkownika).
+8. Dokumentacja zawiera tyle dodatków, ile ich będzie koniecznych.
+ W szczególno ci dodatkiem obowišzkowym jest słownik terminów
+ dotyczšcych oprogramowanego zagadnienia. Drugim obowišzkowym
+ dodatkiem jest _standardowo zredagowany_ kod  ródłowy oprogramowania
+ (oddawany tylko na no niku komputerowym, chyba że jest niewielki).
+ Poza tym porzšdna dokumentacja zawiera skorowidz i wszelkie
+ udogodnienia ułatwiajšce w niej orientację.
+
+ 9. Dokumentacja jest napisana _w języku polskim_. W wypadku opracowania
+ dokumentacji (w cało ci) w języku angielskim (lub innym) dokumentacja
+ zawiera wyczerpujšce streszczenie w języku polskim.
+
+ 10. Dokumentacja jest _bezbłędna, estetyczna, poprawnie zredagowana
+ merytorycznie i technicznie, z przestrzeganiem reguł składu_
+ (por. dobre podręczniki akademickie, dokumenty RFC w Sieci itp.).
+
+ 11. Wymagania dotyczšce jako ci, podane w p. 10, odnoszš się --
+ w odpowiedni sposób -- do kodu programu i jego działania; w szczególno ci
+ do interfejsu użytkownika programu, w którym błędy językowe,
+ makaronizmy itp. mogš być podstawš nieprzyjęcia pracy.
