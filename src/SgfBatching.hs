@@ -10,10 +10,9 @@ import Data.SGF.Parsing
 import Transformations
 
 import Control.Monad
-import Data.Maybe
 import System.FilePath.Find hiding (fileName)
 
-import System.IO.Strict as Strict
+--import System.IO.Strict as Strict
 
 -- | Returns a lazy list of all files in a given directory (and in it's subdirectories)
 getFileNames :: FilePath -> IO [FilePath]

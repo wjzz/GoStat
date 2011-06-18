@@ -1,24 +1,31 @@
-body {
-    margin-left: 100px;
-    margin-right: 100px;
-}
-
-#leftTable {
+#boardInfo {
     float: left;
-    border: 1px solid black;
-    margin-left: 25px;
+    //width: 5%;
 }
 
-#rightTable {
-    float: right;
-    border: 1px solid black;
-    //margin-right: 100px;
+#tables {
+    //float: right;
+}
+
+body {
+    //margin-left : 5%; //100px;
+    //margin-right: 5%; // 100px;
+}
+
+#infoBox {
+    //float: left;
+}
+
+#boardTable {
+    //float: left;
+  //    margin-left: 5px;
+    margin-right: 5px;
 }
 
 #boardTable table {
-    float: left;
+    //float: left;
     background-image:url(/public/img/wood1.gif);
-    border: 0px solid red;
+    border: 1px solid black;
     background-repeat: repeat;
     background-position: top left; /* 0% 0% - top left */
     empty-cells: hide;
@@ -29,4 +36,24 @@ body {
 
 #boardTable table tr {
     text-align: center;
+}
+
+
+#leftTable {
+    text-align: center;
+    float: left;
+    border: 1px solid black;
+    width: 36%;
+    padding-left: 2px;
+    //margin-left: 25px;
+}
+
+#rightTable {
+    text-align: center;
+    float: left;
+    border: 1px solid black;
+    width: 36%;
+    margin-left: 5px;
+    padding-left: 2px;
+    //margin-right: 100px;
 }

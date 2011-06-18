@@ -7,6 +7,7 @@ import Control.Concurrent
 import Control.Exception
 import System.IO.Unsafe
 
+import Lang
 import Pages
 import DB
 import Text.XHtml (renderHtml)
@@ -34,7 +35,8 @@ buildMoveBrowser 0 _ _ = return ()
 buildMoveBrowser n currentLevel movesSoFar = do
   moves <- queryStatsDB movesSoFar
   let html = moveBrowser moves movesSoFar offLineConfig
-  writeFile (path ++ "moves/" ++ (mbUrl movesSoFar)) (renderHtml html) 
+  let langN = "en"
+  writeFile (path ++ "moves/" ++ (mbUrl langN movesSoFar)) (renderHtml html) 
   let options = map (\(m,_,_,_) -> m) moves
   mapM_ (\move -> aux $ buildMoveBrowser (n-1) (currentLevel+1) (movesSoFar ++ move)) options where
     aux m
@@ -47,10 +49,11 @@ offLineConfig = Configuration { mainPageUrl        = "../index.htm"
                               , moveBrowserMakeUrl = mbUrl
                               , cssUrl             = "../style.css"
                               , imagesMakeUrl      = imageUrl
+                              , language           = eng
                               }
 
-mbUrl :: String -> String
-mbUrl movesSoFar = "move" ++ movesSoFar ++ ".htm"
+mbUrl :: Language -> String -> String
+mbUrl langN movesSoFar = error "This needs to updated!" -- "move" ++ movesSoFar ++ ".htm"
 
 imageUrl :: String -> String
 imageUrl image = "../img/" ++ image

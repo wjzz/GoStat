@@ -7,8 +7,11 @@ module Pages where
 import Data.Char
 import Data.Function
 import Data.List
-import Text.Printf
-import Text.XHtml hiding (dir, color, black, white)
+--import Text.Printf
+import Text.XHtml hiding (dir, color, black, white, lang)
+
+import Lang (Language, Message)
+import qualified Lang as L
 
 ----------------------------------------------------
 --  A type for storing the basic data about urls  --
@@ -16,9 +19,10 @@ import Text.XHtml hiding (dir, color, black, white)
 
 data Configuration = Configuration { mainPageUrl        :: String
                                    , moveBrowserMainUrl :: String
-                                   , moveBrowserMakeUrl :: String -> String
+                                   , moveBrowserMakeUrl :: Language -> String -> String
                                    , imagesMakeUrl      :: String -> String
                                    , cssUrl             :: String 
+                                   , language           :: Message
                                    }
 
 ---------------------
@@ -27,16 +31,25 @@ data Configuration = Configuration { mainPageUrl        :: String
 
 mainPage :: Configuration -> Int -> Html
 mainPage config count = pHeader +++ pBody where
-  pHeader = header << thetitle << "Welcome to Go 9x9 statistics!"
+  lang = language config
+  
+  pHeader = header << thetitle << L.title lang
+
+  -- TODO should this use moveBrowserMainUrl langStr ?
+  makeFlag langStr = anchor ! [href (moveBrowserMakeUrl config langStr []) ] 
+                     << image ! [width "180" , height "120" , src (imagesMakeUrl config (langStr ++ "_flag.gif"))]
   
   pBody = body $ concatHtml [ pGameCount 
                             , hr
+                            , makeFlag "pl"
+                            , br 
+                            , makeFlag "eng"
                             , pLinkToMoveBrowser
                             ]
   
-  pGameCount = primHtml $ printf "We currently have <b>%d</b> games in the database." count
+  pGameCount = primHtml $ L.gamesInDb lang count
   
-  pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl config)] << h3 << "Go to move browser"
+  pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl config)] << h3 << L.goToMovesBrowser lang
 
 
 ----------------------------------------
@@ -92,14 +105,15 @@ getIntersect config True  candidates point str
   | otherwise           = getIntersect config False candidates point str
 
 board :: Configuration -> Bool -> [String] -> String -> Html
-board config displayCand moves movesSoFar = dI "boardTable" $  tbl where
+board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
   tbl = table ! [border 0] ! [cellspacing 0] ! [cellpadding 0] << (bHeader +++ concatHtml (map row [1..9]))
   bHeader = tr << map (\n -> td << primHtml [n]) ['a'..'i']
   row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j) ++ ".")) where
     field i = td << anchor ! [href url] << getIntersect config displayCand candMoves (i,j) movesSoFar where
-      url = (moveBrowserMakeUrl config) $ movesSoFar ++ show i ++ show j
+      url       = moveBrowserMakeUrl config langName $ movesSoFar ++ show i ++ show j
+      langName  = L.langName (language config)
       candMoves = map (\[a,b] -> (digitToInt a, digitToInt b)) moves'
-      moves' = filter ((==2) . length) moves
+      moves'    = filter ((==2) . length) moves
 
 -----------------------------
 --  The move browser page  --
@@ -107,56 +121,79 @@ board config displayCand moves movesSoFar = dI "boardTable" $  tbl where
 
 moveBrowser :: [(String, Int, Int, Int)] -> String -> Configuration -> Html
 moveBrowser moves movesSoFar config = pHeader +++ pBody where
-  pHeader = header << ((thetitle << "Welcome to Go 9x9 statistics!") 
+  lang = language config
+  
+  pHeader = header << ((thetitle << L.title lang) 
                        +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
   
-  pBody = body $ concatHtml [ pHomePageLink
-                            , hr
-                            , movesSoFarField 
-                            , playerToMove
-                            , anchor ! [href (moveBrowserMakeUrl config [])] << h2 << "Reset moves"
-                            , hr
-                            , pMovesList
+  pBody = body $ concatHtml --[ 
+                            --, hr
+                            [ dI "boardInfo" $ boardDiv +++ infoDiv
+                            , dI "tables"    $ leftTable +++ rightTable 
                             ]
+                            -- , leftTable
+                            -- , rightTable
+                            --   conca
+                            -- , thediv (boardDiv +++ infoDiv)
+                            -- --, hr
+                            -- , pMovesList
+                            --]
+          
+  -- main parts of pBody
   
-  pHomePageLink = anchor ! [href (mainPageUrl config)] << h3 << "Back to main page"
+  pHomePageLink = anchor ! [href (mainPageUrl config)] << h4 << L.backToMain lang
+          
+  infoDiv = dI "infoBox" $ concatHtml [ movesSoFarField 
+                                      , playerToMove
+                                      , resetMovesField
+                                      , pHomePageLink
+                                      ]
+            
+  boardDiv   = board config True candidates movesSoFar
+  
+  pMovesList = thediv $ concatHtml [ pMoveHeader
+                                     --, board config True candidates movesSoFar
+                                   , leftTable
+                                   , rightTable ]
+               
+  -- smaller parts
+
+  langName = L.langName (language config)
+  resetMovesField = anchor ! [href (moveBrowserMakeUrl config langName [])] << h2 << L.resetMoves lang
   
   noMoves         = length movesSoFar `div` 2
-  movesSoFarField = h3 << ("Number of moves so far: " ++ show noMoves)  
+  movesSoFarField = h4 << (L.numberOfMoves lang ++ show noMoves)  
   
-  playerToMoveStr = if blackTurn then "Black" else "White"
-  playerToMove    = h3 << ("Player to move: " ++ playerToMoveStr)  
+  playerToMoveStr = if blacksTurn then L.black lang else L.white lang
+  playerToMove    = h4 << (L.playerToMove lang ++ playerToMoveStr)  
   
   candidates = map (\(a,_,_,_) -> a) moves
   
-  pMovesList = concatHtml [ pMoveHeader
-                          , board config True candidates movesSoFar
-                          , leftTable
-                          , rightTable ]
+
                
   leftTable  = dI "leftTable"  << (pH1 +++ pMoves movesTotal)
   rightTable = dI "rightTable" << (pH2 +++ pMoves movesPercentage)
 
-  pMoveHeader = h2 << "Available moves:"
-  pH1         = h3 << "Moves by total count:"
-  pH2         = h3 << "Moves by win percentage:"
+  pMoveHeader = h2 << L.availableMoves       lang
+  pH1         = h4 << L.movesByTotalCount    lang
+  pH2         = h4 << L.movesByWinPercentage lang
   
   movesTotal      = reverse $ sortBy (compare `on` (\(_,t,_,_) -> t)) moves
   movesPercentage = reverse $ sortBy (compare `on` selector) moves
   
   selector (_,t,b,w) = 
-    let c = if blackTurn then b else w
+    let c = if blacksTurn then b else w
     in (1000*c) `div` t
   
   pMoves mvs = table << (tHeader +++ concatHtml (map makeRow mvs))
   
-  blackTurn = length movesSoFar `mod` 4 == 0
+  blacksTurn = length movesSoFar `mod` 4 == 0
   
-  tHeader = concatHtml [ th << "Move"
-                       , th << "Total played"
-                       , td << "Black wins"
-                       , td << "White wins"
-                       , td << (playerToMoveStr ++ " winning %")
+  tHeader = concatHtml [ th << L.move lang
+                       , th << L.totalPlayed lang
+                       , td << L.blackWins lang
+                       , td << L.whiteWins lang
+                       , td << (if blacksTurn then L.blackWinningPerc lang else L.whiteWinningPerc lang)
                        ]
   
   makeRow (move, count, black, white) = tr << concatHtml [ td << anchor ! [href url] << move
@@ -166,8 +203,8 @@ moveBrowser moves movesSoFar config = pHeader +++ pBody where
                                                          , td << percentage
                                                          ] where
     percentage = show ((100 * current) `div` count) ++ "%"
-    current    = if blackTurn then black else white
-    url        = (moveBrowserMakeUrl config) (movesSoFar ++ move)
+    current    = if blacksTurn then black else white
+    url        = moveBrowserMakeUrl config langName $ movesSoFar ++ move
 
     
 --------------------------------------

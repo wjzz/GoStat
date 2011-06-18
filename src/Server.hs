@@ -6,6 +6,7 @@ module Server where
 
 import DB
 import Pages
+import Lang
 
 import Control.Monad
 import Control.Monad.Trans
@@ -42,8 +43,15 @@ mainPageC = do
 moveBrowserC :: ServerPart Response
 moveBrowserC = do
   movesSoFar <- look "moves" `mplus` (return [])
+  langStr    <- look "lang"  `mplus` (return "pl")
+  
+  let lang = 
+        case langStr of
+          "pl" -> pl
+          _    -> eng
+          
   moves <- liftIO $ queryStatsDB movesSoFar  
-  ok $ toResponse $ moveBrowser moves movesSoFar onLineConfig
+  ok $ toResponse $ moveBrowser moves movesSoFar (onLineConfig { language = lang })
 
 -----------------------------------------------
 --  The configuration of the online version  --
@@ -55,10 +63,11 @@ onLineConfig = Configuration { mainPageUrl        = "/"
                              , moveBrowserMakeUrl = urlMaker
                              , imagesMakeUrl      = imageUrlMaker
                              , cssUrl             = "/public/style.css"
+                             , language           = eng
                              }
 
-urlMaker :: String -> String
-urlMaker movesList = "/movebrowser?moves=" ++ movesList
+urlMaker :: Language -> String -> String
+urlMaker langN movesList = "/movebrowser?lang=" ++ langN ++ "&moves=" ++ movesList
 
 imageUrlMaker :: String -> String
 imageUrlMaker s = "/public/img/" ++ s 
