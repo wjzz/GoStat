@@ -14,11 +14,12 @@ import Text.XHtml hiding (dir, color, black, white)
 --  A type for storing the basic data about urls  --
 ----------------------------------------------------
 
-data Configuration = Configuration { mainPageUrl :: String
+data Configuration = Configuration { mainPageUrl        :: String
                                    , moveBrowserMainUrl :: String
                                    , moveBrowserMakeUrl :: String -> String
-                                   , imagesMakeUrl :: String -> String
-                                   , cssUrl :: String }
+                                   , imagesMakeUrl      :: String -> String
+                                   , cssUrl             :: String 
+                                   }
 
 ---------------------
 --  The main page  --
@@ -111,12 +112,20 @@ moveBrowser moves movesSoFar config = pHeader +++ pBody where
   
   pBody = body $ concatHtml [ pHomePageLink
                             , hr
+                            , movesSoFarField 
+                            , playerToMove
                             , anchor ! [href (moveBrowserMakeUrl config [])] << h2 << "Reset moves"
                             , hr
                             , pMovesList
                             ]
   
   pHomePageLink = anchor ! [href (mainPageUrl config)] << h3 << "Back to main page"
+  
+  noMoves         = length movesSoFar `div` 2
+  movesSoFarField = h3 << ("Number of moves so far: " ++ show noMoves)  
+  
+  playerToMoveStr = if blackTurn then "Black" else "White"
+  playerToMove    = h3 << ("Player to move: " ++ playerToMoveStr)  
   
   candidates = map (\(a,_,_,_) -> a) moves
   
@@ -147,7 +156,7 @@ moveBrowser moves movesSoFar config = pHeader +++ pBody where
                        , th << "Total played"
                        , td << "Black wins"
                        , td << "White wins"
-                       , td << ((if blackTurn then "Black" else "White") ++ " winning %")
+                       , td << (playerToMoveStr ++ " winning %")
                        ]
   
   makeRow (move, count, black, white) = tr << concatHtml [ td << anchor ! [href url] << move
@@ -157,8 +166,8 @@ moveBrowser moves movesSoFar config = pHeader +++ pBody where
                                                          , td << percentage
                                                          ] where
     percentage = show ((100 * current) `div` count) ++ "%"
-    current = if blackTurn then black else white
-    url = (moveBrowserMakeUrl config) (movesSoFar ++ move)
+    current    = if blackTurn then black else white
+    url        = (moveBrowserMakeUrl config) (movesSoFar ++ move)
 
     
 --------------------------------------

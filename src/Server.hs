@@ -55,7 +55,7 @@ onLineConfig = Configuration { mainPageUrl        = "/"
                              , moveBrowserMakeUrl = urlMaker
                              , imagesMakeUrl      = imageUrlMaker
                              , cssUrl             = "/public/style.css"
-                              }
+                             }
 
 urlMaker :: String -> String
 urlMaker movesList = "/movebrowser?moves=" ++ movesList
