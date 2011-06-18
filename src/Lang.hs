@@ -69,3 +69,6 @@ pl =  Message { langName             = "pl"
               , whiteWinningPerc     = "Procent wygr. białego"
               , blackWinningPerc     = "Procent wygr. czarnego"
               }
+
+allLanguages :: [Language]
+allLanguages = ["pl", "eng"]

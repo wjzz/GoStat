@@ -10,7 +10,7 @@ import Data.List
 --import Text.Printf
 import Text.XHtml hiding (dir, color, black, white, lang)
 
-import Lang (Language, Message)
+import Lang (Language, Message, allLanguages)
 import qualified Lang as L
 
 ----------------------------------------------------
@@ -29,8 +29,8 @@ data Configuration = Configuration { mainPageUrl        :: String
 --  The main page  --
 ---------------------
 
-mainPage :: Configuration -> Int -> Html
-mainPage config count = pHeader +++ pBody where
+mainPage :: Configuration -> Html
+mainPage config = pHeader +++ pBody where
   lang = language config
   
   pHeader = header << thetitle << L.title lang
@@ -39,15 +39,9 @@ mainPage config count = pHeader +++ pBody where
   makeFlag langStr = anchor ! [href (moveBrowserMakeUrl config langStr []) ] 
                      << image ! [width "180" , height "120" , src (imagesMakeUrl config (langStr ++ "_flag.gif"))]
   
-  pBody = body $ concatHtml [ pGameCount 
-                            , hr
-                            , makeFlag "pl"
-                            , br 
-                            , makeFlag "eng"
-                            , pLinkToMoveBrowser
-                            ]
+  pBody = body $ welcome +++ (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
   
-  pGameCount = primHtml $ L.gamesInDb lang count
+  welcome = h1 << "Witaj w programie do go!"
   
   pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl config)] << h3 << L.goToMovesBrowser lang
 
@@ -119,25 +113,20 @@ board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
 --  The move browser page  --
 -----------------------------
 
-moveBrowser :: [(String, Int, Int, Int)] -> String -> Configuration -> Html
-moveBrowser moves movesSoFar config = pHeader +++ pBody where
+moveBrowser :: Int -> [(String, Int, Int, Int)] -> String -> Configuration -> Html
+moveBrowser count moves movesSoFar config = pHeader +++ pBody where
+  pGameCount = primHtml $ L.gamesInDb lang count
+  
   lang = language config
   
   pHeader = header << ((thetitle << L.title lang) 
                        +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
   
-  pBody = body $ concatHtml --[ 
-                            --, hr
-                            [ dI "boardInfo" $ boardDiv +++ infoDiv
+  pBody = body $ concatHtml [ pGameCount
+                            , hr
+                            , dI "boardInfo" $ boardDiv +++ infoDiv
                             , dI "tables"    $ leftTable +++ rightTable 
                             ]
-                            -- , leftTable
-                            -- , rightTable
-                            --   conca
-                            -- , thediv (boardDiv +++ infoDiv)
-                            -- --, hr
-                            -- , pMovesList
-                            --]
           
   -- main parts of pBody
   

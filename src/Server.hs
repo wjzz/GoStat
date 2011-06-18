@@ -33,8 +33,7 @@ router = msum [ dir "movebrowser" moveBrowserC
 
 mainPageC :: ServerPart Response
 mainPageC = do
-  count <- liftIO $ queryCountDB  
-  ok $ toResponse $ mainPage onLineConfig count
+  ok $ toResponse $ mainPage onLineConfig
 
 ----------------------------
 --  The moveBrowser page  --
@@ -42,6 +41,7 @@ mainPageC = do
 
 moveBrowserC :: ServerPart Response
 moveBrowserC = do
+  count      <- liftIO $ queryCountDB  
   movesSoFar <- look "moves" `mplus` (return [])
   langStr    <- look "lang"  `mplus` (return "pl")
   
@@ -51,7 +51,7 @@ moveBrowserC = do
           _    -> eng
           
   moves <- liftIO $ queryStatsDB movesSoFar  
-  ok $ toResponse $ moveBrowser moves movesSoFar (onLineConfig { language = lang })
+  ok $ toResponse $ moveBrowser count moves movesSoFar (onLineConfig { language = lang })
 
 -----------------------------------------------
 --  The configuration of the online version  --

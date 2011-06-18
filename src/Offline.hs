@@ -26,15 +26,15 @@ buildOffline level = do
 
 saveMainPage :: IO ()
 saveMainPage = do
-  count <- queryCountDB
-  let html = mainPage offLineConfig count
+  let html = mainPage offLineConfig
   writeFile (path ++ "index.htm") (renderHtml html)
   
 buildMoveBrowser :: Level -> Level -> String -> IO ()
 buildMoveBrowser 0 _ _ = return ()
 buildMoveBrowser n currentLevel movesSoFar = do
   moves <- queryStatsDB movesSoFar
-  let html = moveBrowser moves movesSoFar offLineConfig
+  count <- queryCountDB
+  let html = moveBrowser count moves movesSoFar offLineConfig
   let langN = "en"
   writeFile (path ++ "moves/" ++ (mbUrl langN movesSoFar)) (renderHtml html) 
   let options = map (\(m,_,_,_) -> m) moves
