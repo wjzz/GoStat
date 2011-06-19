@@ -1,6 +1,9 @@
-function hello(){
-    alert("Hello, world!");
+function lstMouseOver(img, move){
+    //$("#brd"+move).css("color", "red");
+    $("#brd"+move).html("<img src=\"" + img + "\" />");
 }
-function lstMouseOver(){
-    alert("hello!");
+function lstMouseOut(move){
+    //$("#brd"+move).css("color", "blue");    
+    $("#brd"+move).html("x");
+
 }

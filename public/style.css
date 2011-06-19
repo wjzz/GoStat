@@ -28,6 +28,7 @@ body {
 
 #boardTable a {
     text-decoration:none;
+    color: blue;
 }
 
 #boardTable img {

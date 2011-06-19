@@ -92,6 +92,10 @@ imageFromColor B = "b.gif"
 imageFromColor W = "w.gif"
 
 
+moveFromColor :: Color -> String
+moveFromColor B = "bm.gif"
+moveFromColor W = "wm.gif"
+
 parseMoves :: String -> [(Point, Color)]
 parseMoves = parseMoves' B
 
@@ -213,10 +217,10 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
     url        = moveBrowserMakeUrl config langName $ movesSoFar ++ move
     moveField  = anchor ! [href url] << thespan ! attrs << (moveStrToCoordinates move)
     attrs      = [ identifier idd
-                 , strAttr "onMouseover" "hello()" --(printf "lstMouseOver(%s)" move)
-                 , strAttr "onMouseout"  "" --"hello()" --(printf "lstMouseOut(%s)"  move)
+                 , strAttr "onMouseover" (printf "lstMouseOver(\"%s\",\"%s\")" imgUrl move)
+                 , strAttr "onMouseout"  (printf "lstMouseOut(\"%s\")"  move)
                  ]
-                   
+    imgUrl     = imagesMakeUrl config $ if blacksTurn then moveFromColor B else moveFromColor W
     idd        = "lst" ++ move
 
     
