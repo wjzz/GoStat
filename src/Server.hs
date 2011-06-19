@@ -63,6 +63,7 @@ onLineConfig = Configuration { mainPageUrl        = "/"
                              , moveBrowserMakeUrl = urlMaker
                              , imagesMakeUrl      = imageUrlMaker
                              , cssUrl             = "/public/style.css"
+                             , jsUrls             = ["/public/jquery.js", "/public/highlight.js"]
                              , language           = eng
                              }
 

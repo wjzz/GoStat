@@ -8,7 +8,7 @@ import Data.SGF.Types
 import Data.Char
 import Data.Function
 import Data.List
---import Text.Printf
+import Text.Printf
 import Text.XHtml hiding (dir, color, black, white, lang)
 
 import Lang (Language, Message, allLanguages)
@@ -22,9 +22,22 @@ data Configuration = Configuration { mainPageUrl        :: String
                                    , moveBrowserMainUrl :: String
                                    , moveBrowserMakeUrl :: Language -> String -> String
                                    , imagesMakeUrl      :: String -> String
-                                   , cssUrl             :: String 
+                                   , cssUrl             :: String
+                                   , jsUrls             :: [String]
                                    , language           :: Message
                                    }
+
+-----------------------
+--  A common header  --
+-----------------------
+
+globalHeader :: Configuration -> Html
+globalHeader config = header << ((thetitle << L.title lang) 
+                                 +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
+                                 +++ concatHtml (map buildScript $ jsUrls config)) 
+  where
+    buildScript url = script ! [thetype "text/javascript",src url] << noHtml --
+    lang            = language config
 
 ---------------------
 --  The main page  --
@@ -33,9 +46,7 @@ data Configuration = Configuration { mainPageUrl        :: String
 mainPage :: Configuration -> Html
 mainPage config = pHeader +++ pBody where
   lang = language config
-  
-  pHeader = header << ((thetitle << L.title lang) 
-                       +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
+  pHeader = globalHeader config
 
   -- TODO should this use moveBrowserMainUrl langStr ?
   makeFlag langStr = anchor ! [href (moveBrowserMakeUrl config langStr []) ] 
@@ -94,18 +105,24 @@ getImage point str =
     Nothing    -> imageFromPoint point
     Just color -> imageFromColor color
 
-getIntersect :: Configuration -> Bool -> [Point] -> Point -> String -> Html
-getIntersect config False _     point str = image ! [src (imagesMakeUrl config $ (getImage point str))]
-getIntersect config True  candidates point str 
-  | point `elem` candidates = primHtml "x"
-  | otherwise           = getIntersect config False candidates point str
+getIntersect :: String -> Configuration -> Bool -> [Point] -> Point -> String -> Html
+getIntersect _   config False _     point str = image ! [src (imagesMakeUrl config $ (getImage point str))]
+getIntersect url config True  candidates point@(i,j) str 
+  | point `elem` candidates = 
+    let 
+      idd = "brd" ++ show i ++ show j 
+    in  
+     anchor ! [href url] << thespan ! [identifier idd] << primHtml "x"                              
+  | otherwise = getIntersect url config False candidates point str
 
 board :: Configuration -> Bool -> [String] -> String -> Html
 board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
   tbl = table ! [border 0] ! [cellspacing 0] ! [cellpadding 0] << (bHeader +++ concatHtml (map row [1..9]))
+  
   bHeader = tr << map (\n -> td << primHtml [n]) ['A'..'I']
+  
   row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j))) where
-    field i = td << anchor ! [href url] << getIntersect config displayCand candMoves (i,j) movesSoFar where
+    field i = td << getIntersect url config displayCand candMoves (i,j) movesSoFar where
       url       = moveBrowserMakeUrl config langName $ movesSoFar ++ show i ++ show j
       langName  = L.langName (language config)
       candMoves = map (\[a,b] -> (digitToInt a, digitToInt b)) moves'
@@ -117,12 +134,10 @@ board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
 
 moveBrowser :: Int -> [(String, Int, Int, Int)] -> String -> Configuration -> Html
 moveBrowser count moves movesSoFar config = pHeader +++ pBody where
+  
   pGameCount = primHtml $ L.gamesInDb lang count
-  
-  lang = language config
-  
-  pHeader = header << ((thetitle << L.title lang) 
-                       +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml))
+  lang       = language config
+  pHeader    = globalHeader config
   
   pBody = body $ concatHtml [ pGameCount
                             , hr
@@ -187,7 +202,7 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
                        , td << (if blacksTurn then L.blackWinningPerc lang else L.whiteWinningPerc lang)
                        ]
   
-  makeRow (move, count, black, white) = tr << concatHtml [ td << anchor ! [href url] << (moveStrToCoordinates move)
+  makeRow (move, count, black, white) = tr << concatHtml [ td << moveField
                                                          , td << show count
                                                          , td << show black
                                                          , td << show white
@@ -196,6 +211,13 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
     percentage = show ((100 * current) `div` count) ++ "%"
     current    = if blacksTurn then black else white
     url        = moveBrowserMakeUrl config langName $ movesSoFar ++ move
+    moveField  = anchor ! [href url] << thespan ! attrs << (moveStrToCoordinates move)
+    attrs      = [ identifier idd
+                 , strAttr "onMouseover" "hello()" --(printf "lstMouseOver(%s)" move)
+                 , strAttr "onMouseout"  "" --"hello()" --(printf "lstMouseOut(%s)"  move)
+                 ]
+                   
+    idd        = "lst" ++ move
 
     
 --------------------------------------

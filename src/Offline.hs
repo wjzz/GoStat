@@ -48,6 +48,7 @@ offLineConfig = Configuration { mainPageUrl        = "../index.htm"
                               , moveBrowserMainUrl = "moves/move.htm"
                               , moveBrowserMakeUrl = mbUrl
                               , cssUrl             = "../style.css"
+                              , jsUrls             = ["../jquery.js", "../highlight.hs"]
                               , imagesMakeUrl      = imageUrl
                               , language           = eng
                               }
