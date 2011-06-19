@@ -109,15 +109,19 @@ getImage point str =
     Nothing    -> imageFromPoint point
     Just color -> imageFromColor color
 
-getIntersect :: String -> Configuration -> Bool -> [Point] -> Point -> String -> Html
-getIntersect _   config False _     point str = image ! [src (imagesMakeUrl config $ (getImage point str))]
-getIntersect url config True  candidates point@(i,j) str 
+getIntersect :: String -> String -> Configuration -> Bool -> [Point] -> Point -> String -> Html
+getIntersect _ _        config False _     point str = image ! [src (imagesMakeUrl config $ (getImage point str))]
+getIntersect imgUrl url config True  candidates point@(i,j) str 
   | point `elem` candidates = 
     let 
-      idd = "brd" ++ show i ++ show j 
+      move = show i ++ show j
+      attrs = [ identifier $ "brd" ++ move
+              , strAttr "onMouseover" (printf "brdMouseOver(\"%s\", \"%s\")" imgUrl move)
+              , strAttr "onMouseout"  (printf "brdMouseOut(%s)"  move)
+              ]
     in  
-     anchor ! [href url] << thespan ! [identifier idd] << primHtml "x"                              
-  | otherwise = getIntersect url config False candidates point str
+     anchor ! [href url] << thespan ! attrs << primHtml "x"                              
+  | otherwise = getIntersect imgUrl url config False candidates point str
 
 board :: Configuration -> Bool -> [String] -> String -> Html
 board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
@@ -126,7 +130,8 @@ board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
   bHeader = tr << map (\n -> td << primHtml [n]) ['A'..'I']
   
   row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j))) where
-    field i = td << getIntersect url config displayCand candMoves (i,j) movesSoFar where
+    field i = td << getIntersect imgUrl url config displayCand candMoves (i,j) movesSoFar where
+      imgUrl    = imagesMakeUrl config (if length movesSoFar `mod` 4 == 0 then moveFromColor B else moveFromColor W)
       url       = moveBrowserMakeUrl config langName $ movesSoFar ++ show i ++ show j
       langName  = L.langName (language config)
       candMoves = map (\[a,b] -> (digitToInt a, digitToInt b)) moves'
@@ -201,17 +206,17 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
   
   tHeader = concatHtml [ th << L.move lang
                        , th << L.totalPlayed lang
-                       , td << L.blackWins lang
-                       , td << L.whiteWins lang
-                       , td << (if blacksTurn then L.blackWinningPerc lang else L.whiteWinningPerc lang)
+                       , th << L.blackWins lang
+                       , th << L.whiteWins lang
+                       , th << (if blacksTurn then L.blackWinningPerc lang else L.whiteWinningPerc lang)
                        ]
   
-  makeRow (move, count, black, white) = tr << concatHtml [ td << moveField
-                                                         , td << show count
-                                                         , td << show black
-                                                         , td << show white
-                                                         , td << percentage
-                                                         ] where
+  makeRow (move, count, black, white) = tr ! [ identifier trid] << concatHtml [ td << moveField
+                                                                              , td << show count
+                                                                              , td << show black
+                                                                              , td << show white
+                                                                              , td << percentage
+                                                                              ] where
     percentage = show ((100 * current) `div` count) ++ "%"
     current    = if blacksTurn then black else white
     url        = moveBrowserMakeUrl config langName $ movesSoFar ++ move
@@ -222,6 +227,7 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
                  ]
     imgUrl     = imagesMakeUrl config $ if blacksTurn then moveFromColor B else moveFromColor W
     idd        = "lst" ++ move
+    trid       = "tr"  ++ move
 
     
 --------------------------------------

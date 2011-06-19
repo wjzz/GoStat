@@ -58,7 +58,7 @@ body {
     float: left;
     border: 1px solid black;
     width: 36%;
-    padding-left: 2px;
+    padding-left: 0px;
     //margin-left: 25px;
 }
 
@@ -68,6 +68,14 @@ body {
     border: 1px solid black;
     width: 36%;
     margin-left: 5px;
-    padding-left: 2px;
+    //padding-left: 2px;
     //margin-right: 100px;
+}
+
+#leftTable table, #rightTable table {
+    border-collapse: collapse;
+    border-spacing: 0px;
+}
+#rightTable table td, #leftTable table td {
+    border: 1px solid black;
 }

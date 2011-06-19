@@ -1,17 +1,23 @@
 Display:
 
-0. Sprawdzic wyswietlanie planszy w przegladarkach innych niz chromium (problem z granicami)
+[DONE] 0. Sprawdzic wyswietlanie planszy w przegladarkach innych niz chromium (problem z granicami)
+[DONE]2. Properly display PASSes
 
 1. Detect captured stones?
 
-2. Properly display PASSes
-
-Bugi:
-HTTP request failed with: src/Server.hs:117:24-61: Non-exhaustive patterns in lambda
-zapytanie: http://localhost:8000/movebrowser?moves=554445745466475748435342523573847776868587673625788372828156466364655895
+2. Add move back button
 
 3. Create a GUI to enable convenient management of games db
 
 4. Abstract away the DB and allow for using Sqlite3.
 
 5. Improve Haddock comments
+
+6. fix the error stuff
+
+Bugi:
+HTTP request failed with: src/Server.hs:117:24-61: Non-exhaustive patterns in lambda
+zapytanie: http://localhost:8000/movebrowser?moves=554445745466475748435342523573847776868587673625788372828156466364655895
+
+Pokazuje error:
+http://localhost:8000/movebrowser?lang=pl&moves=5534354544465637433347363222587352762524847485758382142392728677888797789889629671819593
