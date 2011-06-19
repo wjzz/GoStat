@@ -14,6 +14,7 @@ data Message = Message { langName :: Language
                        , backToMain :: String
                        , numberOfMoves :: String
                        , playerToMove :: String
+                       , takeBackMove :: String
                        , resetMoves :: String
                        , availableMoves :: String
                        , movesByTotalCount :: String
@@ -36,6 +37,7 @@ eng = Message { langName             = "eng"
               , backToMain           = "Back to main page" 
               , numberOfMoves        = "Number of moves so far: "
               , playerToMove         = "Player to move: "
+              , takeBackMove         = "Take back last move"
               , resetMoves           = "Reset moves" 
               , availableMoves       = "Available moves:"
               , movesByTotalCount    = "Moves by total count:" 
@@ -58,6 +60,7 @@ pl =  Message { langName             = "pl"
               , backToMain           = "Powrót do strony głównej" 
               , numberOfMoves        = "Ruchów do tej pory: "
               , playerToMove         = "Ruch ma gracz: "
+              , takeBackMove         = "Cofnij ostatni ruch"
               , resetMoves           = "Od nowa" 
               , availableMoves       = "Dostępne ruchy:"
               , movesByTotalCount    = "Sortowanie wg częstości:" 

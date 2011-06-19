@@ -150,7 +150,7 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
   
   pBody = body $ concatHtml [ pGameCount
                             , hr
-                            , dI "boardInfo" $ boardDiv +++ infoDiv
+                            , dI "boardInfo" $ boardDiv  +++ infoDiv
                             , dI "tables"    $ leftTable +++ rightTable 
                             ]
           
@@ -160,6 +160,7 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
           
   infoDiv = dI "infoBox" $ concatHtml [ movesSoFarField 
                                       , playerToMove
+                                      , takeBackLink
                                       , resetMovesField
                                       , pHomePageLink
                                       ]
@@ -174,7 +175,14 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
   -- smaller parts
 
   langName = L.langName (language config)
-  resetMovesField = anchor ! [href (moveBrowserMakeUrl config langName [])] << h2 << L.resetMoves lang
+  takeBackLink 
+    | null movesSoFar = noHtml 
+    | otherwise       = anchor ! [href (moveBrowserMakeUrl config langName (init (init movesSoFar)))] 
+                        << h3 << L.takeBackMove lang
+  
+  resetMovesField 
+    | null movesSoFar = noHtml
+    | otherwise       = anchor ! [href (moveBrowserMakeUrl config langName [])] << h3 << L.resetMoves lang
   
   noMoves         = length movesSoFar `div` 2
   movesSoFarField = h4 << (L.numberOfMoves lang ++ show noMoves)  

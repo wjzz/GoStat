@@ -20,9 +20,13 @@ body {
     //float: left;
 }
 
+#infoBox a {
+    color: black;
+}
+
 #boardTable {
     //float: left;
-  //    margin-left: 5px;
+    //margin-left: 5px;
     margin-right: 5px;
 }
 

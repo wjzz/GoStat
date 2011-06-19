@@ -1,7 +1,7 @@
 Display:
 
 [DONE] 0. Sprawdzic wyswietlanie planszy w przegladarkach innych niz chromium (problem z granicami)
-[DONE]2. Properly display PASSes
+[DONE] 2. Properly display PASSes
 
 1. Detect captured stones?
 
@@ -14,6 +14,10 @@ Display:
 5. Improve Haddock comments
 
 6. fix the error stuff
+
+7. display the final result when the end of the game is reached
+
+8. have a way of filtering moves that were very rare
 
 Bugi:
 HTTP request failed with: src/Server.hs:117:24-61: Non-exhaustive patterns in lambda
