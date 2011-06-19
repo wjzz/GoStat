@@ -11,7 +11,7 @@ import Data.List
 import Text.Printf
 import Text.XHtml hiding (dir, color, black, white, lang)
 
-import Lang (Language, Message, allLanguages)
+import Lang (Language, Messages, allLanguages)
 import qualified Lang as L
 
 ----------------------------------------------------
@@ -24,7 +24,7 @@ data Configuration = Configuration { mainPageUrl        :: String
                                    , imagesMakeUrl      :: String -> String
                                    , cssUrl             :: String
                                    , jsUrls             :: [String]
-                                   , language           :: Message
+                                   , language           :: Messages
                                    }
 
 -----------------------
@@ -58,84 +58,12 @@ mainPage config = pHeader +++ pBody where
   
   pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl config)] << h3 << L.goToMovesBrowser lang
 
+------------------------------
+--  The games browser page  --
+------------------------------
 
-----------------------------------------
---  Functions for drawing a go board  --
-----------------------------------------
-  
-type Point = (Int, Int)
-
-{-  91 11
-    99 19 -}
-
--- |Returns the name of the image that should be used in the given point (assuming it's an empty intersection)
-imageFromPoint :: Point -> String
-imageFromPoint (1,1) = "ur.gif"
-imageFromPoint (9,1) = "ul.gif"
-imageFromPoint (9,9) = "dl.gif"
-imageFromPoint (1,9) = "dr.gif"
-imageFromPoint (_,1) = "u.gif"
-imageFromPoint (_,9) = "d.gif"
-imageFromPoint (1,_) = "er.gif"
-imageFromPoint (9,_) = "el.gif"
-imageFromPoint _     = "e.gif"
-
-
-data Color = B | W
-
-otherColor :: Color -> Color
-otherColor B = W
-otherColor W = B
-
-imageFromColor :: Color -> String
-imageFromColor B = "b.gif"
-imageFromColor W = "w.gif"
-
-
-moveFromColor :: Color -> String
-moveFromColor B = "bm.gif"
-moveFromColor W = "wm.gif"
-
-parseMoves :: String -> [(Point, Color)]
-parseMoves = parseMoves' B
-
-parseMoves' :: Color -> String -> [(Point, Color)]
-parseMoves' color (x:y:rest) = ((digitToInt x, digitToInt y), color) : parseMoves' (otherColor color) rest
-parseMoves' _ _              = []
-
-getImage :: Point -> String -> String
-getImage point str = 
-  case lookup point (parseMoves str) of
-    Nothing    -> imageFromPoint point
-    Just color -> imageFromColor color
-
-getIntersect :: String -> String -> Configuration -> Bool -> [Point] -> Point -> String -> Html
-getIntersect _ _        config False _     point str = image ! [src (imagesMakeUrl config $ (getImage point str))]
-getIntersect imgUrl url config True  candidates point@(i,j) str 
-  | point `elem` candidates = 
-    let 
-      move = show i ++ show j
-      attrs = [ identifier $ "brd" ++ move
-              , strAttr "onMouseover" (printf "brdMouseOver(\"%s\", \"%s\")" imgUrl move)
-              , strAttr "onMouseout"  (printf "brdMouseOut(%s)"  move)
-              ]
-    in  
-     anchor ! [href url] << thespan ! attrs << primHtml "x"                              
-  | otherwise = getIntersect imgUrl url config False candidates point str
-
-board :: Configuration -> Bool -> [String] -> String -> Html
-board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
-  tbl = table ! [border 0] ! [cellspacing 0] ! [cellpadding 0] << (bHeader +++ concatHtml (map row [1..9]))
-  
-  bHeader = tr << map (\n -> td << primHtml [n]) ['A'..'I']
-  
-  row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j))) where
-    field i = td << getIntersect imgUrl url config displayCand candMoves (i,j) movesSoFar where
-      imgUrl    = imagesMakeUrl config (if length movesSoFar `mod` 4 == 0 then moveFromColor B else moveFromColor W)
-      url       = moveBrowserMakeUrl config langName $ movesSoFar ++ show i ++ show j
-      langName  = L.langName (language config)
-      candMoves = map (\[a,b] -> (digitToInt a, digitToInt b)) moves'
-      moves'    = filter ((==2) . length) moves
+gamesPage :: Configuration -> Html
+gamesPage config = h1 << "Welcome to game browser!"
 
 -----------------------------
 --  The move browser page  --
@@ -228,7 +156,9 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
     percentage = show ((100 * current) `div` count) ++ "%"
     current    = if blacksTurn then black else white
     url        = moveBrowserMakeUrl config langName $ movesSoFar ++ move
-    moveField  = anchor ! [href url] << thespan ! attrs << (moveStrToCoordinates move)
+    moveField  
+      | null move = primHtml $ L.gameOver lang
+      | otherwise = anchor ! [href url] << thespan ! attrs << (moveStrToCoordinates move)
     attrs      = [ identifier idd
                  , strAttr "onMouseover" (printf "lstMouseOver(\"%s\",\"%s\")" imgUrl move)
                  , strAttr "onMouseout"  (printf "lstMouseOut(\"%s\")"  move)
@@ -236,6 +166,84 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
     imgUrl     = imagesMakeUrl config $ if blacksTurn then moveFromColor B else moveFromColor W
     idd        = "lst" ++ move
     trid       = "tr"  ++ move
+
+----------------------------------------
+--  Functions for drawing a go board  --
+----------------------------------------
+  
+type Point = (Int, Int)
+
+{-  91 11
+    99 19 -}
+
+-- |Returns the name of the image that should be used in the given point (assuming it's an empty intersection)
+imageFromPoint :: Point -> String
+imageFromPoint (1,1) = "ur.gif"
+imageFromPoint (9,1) = "ul.gif"
+imageFromPoint (9,9) = "dl.gif"
+imageFromPoint (1,9) = "dr.gif"
+imageFromPoint (_,1) = "u.gif"
+imageFromPoint (_,9) = "d.gif"
+imageFromPoint (1,_) = "er.gif"
+imageFromPoint (9,_) = "el.gif"
+imageFromPoint _     = "e.gif"
+
+
+data Color = B | W
+
+otherColor :: Color -> Color
+otherColor B = W
+otherColor W = B
+
+imageFromColor :: Color -> String
+imageFromColor B = "b.gif"
+imageFromColor W = "w.gif"
+
+
+moveFromColor :: Color -> String
+moveFromColor B = "bm.gif"
+moveFromColor W = "wm.gif"
+
+parseMoves :: String -> [(Point, Color)]
+parseMoves = parseMoves' B
+
+parseMoves' :: Color -> String -> [(Point, Color)]
+parseMoves' color (x:y:rest) = ((digitToInt x, digitToInt y), color) : parseMoves' (otherColor color) rest
+parseMoves' _ _              = []
+
+getImage :: Point -> String -> String
+getImage point str = 
+  case lookup point (parseMoves str) of
+    Nothing    -> imageFromPoint point
+    Just color -> imageFromColor color
+
+getIntersect :: String -> String -> Configuration -> Bool -> [Point] -> Point -> String -> Html
+getIntersect _ _        config False _     point str = image ! [src (imagesMakeUrl config $ (getImage point str))]
+getIntersect imgUrl url config True  candidates point@(i,j) str 
+  | point `elem` candidates = 
+    let 
+      move = show i ++ show j
+      attrs = [ identifier $ "brd" ++ move
+              , strAttr "onMouseover" (printf "brdMouseOver(\"%s\", \"%s\")" imgUrl move)
+              , strAttr "onMouseout"  (printf "brdMouseOut(%s)"  move)
+              ]
+    in  
+     anchor ! [href url] << thespan ! attrs << primHtml "x"                              
+  | otherwise = getIntersect imgUrl url config False candidates point str
+
+board :: Configuration -> Bool -> [String] -> String -> Html
+board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
+  tbl = table ! [border 0] ! [cellspacing 0] ! [cellpadding 0] << (bHeader +++ concatHtml (map row [1..9]))
+  
+  bHeader = tr << map (\n -> td << primHtml [n]) ['A'..'I']
+  
+  row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j))) where
+    field i = td << getIntersect imgUrl url config displayCand candMoves (i,j) movesSoFar where
+      imgUrl    = imagesMakeUrl config (if length movesSoFar `mod` 4 == 0 then moveFromColor B else moveFromColor W)
+      url       = moveBrowserMakeUrl config langName $ movesSoFar ++ show i ++ show j
+      langName  = L.langName (language config)
+      candMoves = map (\[a,b] -> (digitToInt a, digitToInt b)) moves'
+      moves'    = filter ((==2) . length) moves
 
     
 --------------------------------------

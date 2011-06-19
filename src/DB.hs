@@ -93,3 +93,16 @@ queryStatsDB movesSoFar = do
       b = fromMaybe 0 black_count
       w = tc - b
     count _ _ = ("",0,0,0)
+
+-- |Returns a list of all paths of games with the given position, but not more that the given limit
+queryGamesListDB :: String -> Int -> IO [String]
+queryGamesListDB movesSoFar limit = do
+  conn <- connectPostgreSQL ""
+
+  result <- (quickQuery' conn query [toSql limit]) 
+  
+  disconnect conn
+
+  return $ map (fromSql . head) result where
+    pattern = '\'': movesSoFar ++ "%'"
+    query = printf "SELECT game_id FROM go_stat_data %s LIMIT ?" (if null movesSoFar then "" else "WHERE moves LIKE " ++ pattern)

@@ -23,6 +23,7 @@ server = do
   
 router :: ServerPart Response
 router = msum [ dir "movebrowser" moveBrowserC
+              , dir "games" gamesC
               , dir "public" $ serveDirectory EnableBrowsing [] "public"
               , mainPageC
               ]
@@ -34,6 +35,16 @@ router = msum [ dir "movebrowser" moveBrowserC
 mainPageC :: ServerPart Response
 mainPageC = do
   ok $ toResponse $ mainPage onLineConfig
+  
+------------------------
+--  The game browser  --
+------------------------
+
+gamesC :: ServerPart Response
+gamesC = do
+  movesSoFar <- look "moves" `mplus` (return [])
+  langStr    <- look "lang"  `mplus` (return "pl")
+  ok $ toResponse $ gamesPage onLineConfig
 
 ----------------------------
 --  The moveBrowser page  --
@@ -52,6 +63,22 @@ moveBrowserC = do
           
   moves <- liftIO $ queryStatsDB movesSoFar  
   ok $ toResponse $ moveBrowser count moves movesSoFar (onLineConfig { language = lang })
+  
+---------------------------
+--  A fetching shortcut  --
+---------------------------
+
+fetchMovesAndLang :: ServerPart (String, Messages)
+fetchMovesAndLang = do
+  movesSoFar <- look "moves" `mplus` (return [])
+  langStr    <- look "lang"  `mplus` (return "pl")
+  
+  let lang = 
+        case langStr of
+          "pl" -> pl
+          _    -> eng  
+          
+  return (movesSoFar, lang)
 
 -----------------------------------------------
 --  The configuration of the online version  --

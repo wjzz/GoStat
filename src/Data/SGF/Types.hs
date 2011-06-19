@@ -115,5 +115,6 @@ moveToCoordinates (x,y) = first : second where
   
 moveStrToCoordinates :: String -> String
 moveStrToCoordinates "00"     = "PASS"
+moveStrToCoordinates ""       = "END"
 moveStrToCoordinates [d1, d2] = curry moveToCoordinates (digitToInt d1) (digitToInt d2)
-moveStrToCoordinates _ = "ERROR"
+moveStrToCoordinates s        = "ERROR: [" ++ s ++ "]"
