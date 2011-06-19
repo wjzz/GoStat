@@ -21,6 +21,8 @@ import qualified Lang as L
 data Configuration = Configuration { mainPageUrl        :: String
                                    , moveBrowserMainUrl :: String
                                    , moveBrowserMakeUrl :: Language -> String -> String
+                                   , gameBrowserMakeUrl :: Language -> String -> String
+                                   --, gameDetailsMakeUrl :: Language -> String -> String
                                    , imagesMakeUrl      :: String -> String
                                    , cssUrl             :: String
                                    , jsUrls             :: [String]
@@ -45,7 +47,7 @@ globalHeader config = header << ((thetitle << L.title lang)
 
 mainPage :: Configuration -> Html
 mainPage config = pHeader +++ pBody where
-  lang = language config
+  lang    = language config
   pHeader = globalHeader config
 
   -- TODO should this use moveBrowserMainUrl langStr ?
@@ -62,9 +64,34 @@ mainPage config = pHeader +++ pBody where
 --  The games browser page  --
 ------------------------------
 
-gamesPage :: Configuration -> Html
-gamesPage config = h1 << "Welcome to game browser!"
+gamesPage :: [FilePath] -> Int -> String -> Configuration -> Html
+gamesPage games count movesSoFar config = pHeader +++ pBody where
+  pGameCount = primHtml $ L.gamesInDb lang count
+  lang       = language config
+  pHeader    = globalHeader config
+  
+  pBody = body $ concatHtml [ pGameCount
+                            , hr
+                            , concatHtml $ intersperse br $ map makeLink games
+                            ]
+          
+  makeLink game = anchor ! [href url] << primHtml (drop 48 game) where
+    url = printf "game?path=%s" game
 
+-----------------------------
+--  The game details page  --
+-----------------------------
+
+gameDetailsPage :: Maybe SGF -> Maybe FilePath -> Configuration -> Html
+gameDetailsPage _           Nothing     config = primHtml $ printf "No game specifed."
+gameDetailsPage Nothing     (Just path) config = primHtml $ printf "Game %s not found. An internal error might have occured" (drop 48 path)
+gameDetailsPage (Just game) (Just path) config = pHeader +++ pBody where
+  lang       = language config
+  pHeader    = globalHeader config
+  
+  pBody = body $ concatHtml [ primHtml path
+                            ]
+  
 -----------------------------
 --  The move browser page  --
 -----------------------------

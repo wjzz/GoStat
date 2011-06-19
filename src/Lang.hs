@@ -27,6 +27,7 @@ data Messages = Messages { langName             :: Language
                          , whiteWinningPerc     :: String
                          , blackWinningPerc     :: String
                          , gameOver             :: String
+--                         , show
                          }
 
 eng :: Messages

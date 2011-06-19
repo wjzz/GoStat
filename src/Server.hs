@@ -4,6 +4,7 @@
 -}
 module Server where
 
+import Data.SGF.Parsing
 import DB
 import Pages
 import Lang
@@ -23,8 +24,9 @@ server = do
   
 router :: ServerPart Response
 router = msum [ dir "movebrowser" moveBrowserC
-              , dir "games" gamesC
-              , dir "public" $ serveDirectory EnableBrowsing [] "public"
+              , dir "games"       gamesC
+              , dir "game"        gameDetailsC
+              , dir "public" $ serveDirectory EnableBrowsing [] "public"                
               , mainPageC
               ]
          
@@ -42,9 +44,29 @@ mainPageC = do
 
 gamesC :: ServerPart Response
 gamesC = do
-  movesSoFar <- look "moves" `mplus` (return [])
-  langStr    <- look "lang"  `mplus` (return "pl")
-  ok $ toResponse $ gamesPage onLineConfig
+  (count, movesSoFar, lang) <- fetchStats
+  
+  limit <- (read `fmap` look "limit") `mplus` return 5
+  games <- liftIO $ queryGamesListDB movesSoFar limit
+  
+  ok $ toResponse $ gamesPage games count movesSoFar (onLineConfig { language = lang })
+
+-----------------------------
+--  The game details page  --
+-----------------------------
+
+gameDetailsC :: ServerPart Response
+gameDetailsC = do
+  (count, movesSoFar, lang) <- fetchStats
+  gamePathM <- ((\x -> [x]) `fmap` look "path") `mplus` return []
+  contents <- liftIO $ mapM (readFile) gamePathM
+  
+  let sgf = do
+        case contents of
+          [file] -> either (const Nothing) Just (parseSGF file)
+          _      -> Nothing
+
+  ok $ toResponse $ gameDetailsPage Nothing Nothing (onLineConfig { language = lang })
 
 ----------------------------
 --  The moveBrowser page  --
@@ -52,24 +74,18 @@ gamesC = do
 
 moveBrowserC :: ServerPart Response
 moveBrowserC = do
-  count      <- liftIO $ queryCountDB  
-  movesSoFar <- look "moves" `mplus` (return [])
-  langStr    <- look "lang"  `mplus` (return "pl")
+  (count, movesSoFar, lang) <- fetchStats 
+  moves                     <- liftIO $ queryStatsDB movesSoFar  
   
-  let lang = 
-        case langStr of
-          "pl" -> pl
-          _    -> eng
-          
-  moves <- liftIO $ queryStatsDB movesSoFar  
   ok $ toResponse $ moveBrowser count moves movesSoFar (onLineConfig { language = lang })
   
 ---------------------------
 --  A fetching shortcut  --
 ---------------------------
 
-fetchMovesAndLang :: ServerPart (String, Messages)
-fetchMovesAndLang = do
+fetchStats :: ServerPart (Int, String, Messages)
+fetchStats = do
+  count      <- liftIO $ queryCountDB  
   movesSoFar <- look "moves" `mplus` (return [])
   langStr    <- look "lang"  `mplus` (return "pl")
   
@@ -78,7 +94,7 @@ fetchMovesAndLang = do
           "pl" -> pl
           _    -> eng  
           
-  return (movesSoFar, lang)
+  return (count, movesSoFar, lang)
 
 -----------------------------------------------
 --  The configuration of the online version  --
