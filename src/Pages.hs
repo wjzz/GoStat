@@ -116,7 +116,7 @@ gamesPage games count movesSoFar config = pHeader +++ pBody where
                             , concatHtml $ intersperse br $ map makeLink games
                             ]
           
-  makeLink game = anchor ! [href url] << primHtml (drop 48 game) where
+  makeLink game = anchor ! [href url] << primHtml game where
     url = gameDetailsMakeUrl config (L.langName lang) game
 
 -----------------------------
@@ -125,7 +125,7 @@ gamesPage games count movesSoFar config = pHeader +++ pBody where
 
 gameDetailsPage :: Int -> Maybe SGF -> Maybe FilePath -> Configuration -> Html
 gameDetailsPage _ _           Nothing     config = primHtml $ printf "No game specifed."
-gameDetailsPage _ Nothing     (Just path) config = primHtml $ printf "Game %s not found. An internal error might have occured" (drop 48 path)
+gameDetailsPage _ Nothing     (Just path) config = primHtml $ printf "Game %s not found. An internal error might have occured" path
 gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config

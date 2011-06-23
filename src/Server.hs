@@ -51,7 +51,9 @@ gamesC = do
   limit <- (read `fmap` look "limit") `mplus` return 200
   games <- liftIO $ queryGamesListDB movesSoFar limit
   
-  ok $ toResponse $ gamesPage games count movesSoFar (onLineConfig { language = lang })
+  let relativeGames = map makeRelative games
+  
+  ok $ toResponse $ gamesPage relativeGames count movesSoFar (onLineConfig { language = lang })
 
 -----------------------------
 --  The game details page  --
@@ -61,17 +63,16 @@ gameDetailsC :: ServerPart Response
 gameDetailsC = do
   (count, _movesSoFar, lang) <- fetchStats
   gamePathM <- ((\x -> [x]) `fmap` look "path") `mplus` return []
-  contents <- liftIO $ mapM (readFile) gamePathM
+  contents <- liftIO $ mapM (readFile . makeAbsolute) gamePathM
   
-  let sgf = do
+  let sgf = 
         case contents of
           [file] -> either (const Nothing) Just (parseSGF file)
           _      -> Nothing
           
   let path = case gamePathM of
         [filePath] -> Just filePath
-        _          -> Nothing
-        
+        _          -> Nothing        
 
   ok $ toResponse $ gameDetailsPage count sgf path (onLineConfig { language = lang })
 
@@ -103,6 +104,22 @@ fetchStats = do
           
   return (count, movesSoFar, lang)
 
+------------------------------
+--  Make the path relative  --
+------------------------------
+
+--TODO 
+-- use IO and find this directory dynamically, on the run
+
+absolutePathToGameDir :: FilePath
+absolutePathToGameDir = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/"
+
+makeRelative :: FilePath -> FilePath
+makeRelative = drop (length absolutePathToGameDir)
+
+makeAbsolute :: FilePath -> FilePath
+makeAbsolute s = absolutePathToGameDir ++ s
+
 -----------------------------------------------
 --  The configuration of the online version  --
 -----------------------------------------------
@@ -133,4 +150,4 @@ gameDetailsUrlMaker :: Language -> FilePath -> String
 gameDetailsUrlMaker lang path = printf "/game?lang=%s&path=%s" lang path
 
 sgfDownloadUrlMaker :: FilePath -> String
-sgfDownloadUrlMaker path = printf "/sgf/%s" (drop 48 path)
+sgfDownloadUrlMaker path = printf "/sgf/%s" path
