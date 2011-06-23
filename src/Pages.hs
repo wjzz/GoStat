@@ -4,12 +4,12 @@
 -}
 module Pages where
 
-import Data.SGF.Types
+import Data.SGF.Types hiding (moves)
 import Data.Char
 import Data.Function
 import Data.List
 import Text.Printf
-import Text.XHtml hiding (dir, color, black, white, lang)
+import Text.XHtml hiding (dir, color, black, white, lang, link)
 
 import Lang (Language, Messages, allLanguages, capitalize)
 import qualified Lang as L
@@ -24,7 +24,7 @@ data Configuration = Configuration { mainPageUrl        :: String
                                    , moveBrowserMainUrl :: String
                                    , moveBrowserMakeUrl :: Language -> MovesSoFar -> String
                                    , gameBrowserMakeUrl :: Language -> MovesSoFar -> String
-                                   , gameDetailsMakeUrl :: Language -> FilePath   -> String
+                                   , gameDetailsMakeUrl :: Language -> Int        -> String
                                    , gameDownloadLink   :: FilePath -> String
                                    , imagesMakeUrl      :: String   -> String
                                    , cssUrl             :: String
@@ -101,14 +101,14 @@ mainPage config = pHeader +++ pBody where
   
   welcome = h1 << "Witaj w programie do go!"
   
-  pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl config)] << h3 << L.goToMovesBrowser lang
+  --pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl config)] << h3 << L.goToMovesBrowser lang
 
 ------------------------------
 --  The games browser page  --
 ------------------------------
 
-gameBrowserPage :: [FilePath] -> Int -> (Int, Int, Int) -> String -> Configuration -> Html
-gameBrowserPage games count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBody where
+gameBrowserPage :: [(Int, FilePath)] -> Int -> (Int, Int, Int) -> String -> Configuration -> Html
+gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config
   
@@ -132,27 +132,27 @@ gameBrowserPage games count (allGames, bWin, wWin) movesSoFar config = pHeader +
     mBrowserUrl = moveBrowserMakeUrl config (L.langName lang) movesSoFar
   numberOfGames                = primHtml $ printf "%s %d"   (L.numberOfGames lang) allGames  
   currentPositionWinningChance = primHtml $ printf "%s %d%%" (L.chanceOfWinning lang) percentage
-  numberOfShownGames           = primHtml $ L.noOfShownGames lang
+  numberOfShownGames           = primHtml $ printf "%s %d"   (L.noOfShownGames lang) (length gameInfos)
           
-  makeLink game = tr $ concatHtml $ map td (map primHtml  ["","","","","",""] ++ [link]) where
+  makeLink (idd, game) = tr $ concatHtml $ map td (map primHtml  [show idd, "","","","",""] ++ [link]) where
     link = anchor ! [href url] << primHtml game
-    url  = gameDetailsMakeUrl config (L.langName lang) game
+    url  = gameDetailsMakeUrl config (L.langName lang) idd
   
-  gameList = table << (tHeader +++ (concatHtml $ map makeLink games))
+  gameList = table << (tHeader +++ (concatHtml $ map makeLink gameInfos))
   tHeader = tr $ concatHtml $ map (\l -> th << l) ["no", "black", "black rank", "white", "white rank", "result", "link"]
 
 -----------------------------
 --  The game details page  --
 -----------------------------
 
-gameDetailsPage :: Int -> Maybe SGF -> Maybe FilePath -> Configuration -> Html
-gameDetailsPage _ _           Nothing     config = primHtml $ printf "No game specifed."
-gameDetailsPage _ Nothing     (Just path) config = primHtml $ printf "Game %s not found. An internal error might have occured" path
-gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
+type GameId = Int
+
+gameDetailsPage :: Int -> GameId -> SGF -> FilePath -> MovesSoFar -> Configuration -> Html
+gameDetailsPage count gameId game path movesSoFar config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config
   
-  pBody = body $ concatHtml [ globalHeader count config (\l -> gameDetailsMakeUrl config l path)
+  pBody = body $ concatHtml [ globalHeader count config (\l -> gameDetailsMakeUrl config l gameId)
                             , hr
                             , gameInContext
                             , hr
@@ -174,7 +174,7 @@ gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
 
   downloadGame = anchor ! [href (gameDownloadLink config path)] << (L.downloadSgf lang) 
           
-  movesSoFar = getMovesStr game
+  --movesSoFar = getMovesStr game
                  
   finalPosition = board config True [] movesSoFar
   
@@ -185,6 +185,7 @@ gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
       Unfinished  -> L.noResult lang
       Win Black _ -> "B+"
       Win White _ -> "W+"
+      Draw        -> error "Found a draw: impossible case!"
   
   gameSummary = dI "gameSummary" $ table << bData
   
@@ -222,12 +223,7 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ p
                                       ]
             
   boardDiv   = board config True candidates movesSoFar
-  
-  pMovesList = thediv $ concatHtml [ pMoveHeader
-                                     --, board config True candidates movesSoFar
-                                   , leftTable
-                                   , rightTable ]
-               
+                 
   -- smaller parts
   
   currentStatistics = concatHtml [ currentPositionWinningChance
@@ -267,7 +263,6 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ p
   leftTable  = dI "leftTable"  << (pH1 +++ pMoves movesTotal)
   rightTable = dI "rightTable" << (pH2 +++ pMoves movesPercentage)
 
-  pMoveHeader = h2 << L.availableMoves       lang
   pH1         = h4 << L.movesByTotalCount    lang
   pH2         = h4 << L.movesByWinPercentage lang
   
@@ -289,17 +284,17 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ p
                        , th << (if blacksTurn then L.blackWinningPerc lang else L.whiteWinningPerc lang)
                        ]
   
-  makeRow (move, count, black, white) = tr ! [ identifier trid] << concatHtml [ td << moveField
+  makeRow (move, cnt, blk, wht) = tr ! [ identifier trid] << concatHtml [ td << moveField
                                                                               , td << countField
-                                                                              , td << show black
-                                                                              , td << show white
-                                                                              , td << percentage
+                                                                              , td << show blk
+                                                                              , td << show wht
+                                                                              , td << localPercentage
                                                                               ] where
-    percentage     = show ((100 * current) `div` count) ++ "%"
-    current        = if blacksTurn then black else white
-    url            = moveBrowserMakeUrl config langName $ movesSoFar ++ move
+    localPercentage = show ((100 * current) `div` cnt) ++ "%"
+    current         = if blacksTurn then blk else wht
+    url             = moveBrowserMakeUrl config langName $ movesSoFar ++ move
 
-    countField = anchor ! [href gamesUrl ] << show count where
+    countField = anchor ! [href gamesUrl ] << show cnt where
       gamesUrl = gameBrowserMakeUrl config langName $ movesSoFar ++ move
 
     moveField  

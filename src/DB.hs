@@ -5,7 +5,7 @@
 -}
 module DB where
 
-import SgfBatching
+import SgfBatching hiding (moves)
 
 import Control.Monad
 import Data.Maybe
@@ -48,8 +48,7 @@ addFilesToDB = do
            then putStrLn $ "done " ++ show index
            else return ()
         execute stmt [toSql win, toSql mvs, toSql file]
-        return ()
-        
+        return ()        
   
   commit conn
   disconnect conn
@@ -86,13 +85,13 @@ queryStatsDB movesSoFar = do
     black_query = printf query_template start_index ("WHERE WINNER = ?" ++ 
                                                      (if null movesSoFar then "" else "AND moves LIKE" ++ pattern))
         
-    count black [moves, totalCount] = (fromSql moves, tc, b, w) where
+    count black [moves, totalCount] = (fromSql moves, tc, bWin, wWin) where
       black_count :: Maybe Int
       black_count = fmap fromSql $ lookup moves $ map (\[a,b] -> (a,b)) black
       
       tc = fromSql totalCount
-      b = fromMaybe 0 black_count
-      w = tc - b
+      bWin = fromMaybe 0 black_count
+      wWin = tc - bWin
     count _ _ = ("",0,0,0)
 
 -- |Returns a statistic in the form (total_played, black won, white won) about the current position
@@ -117,8 +116,8 @@ queryCurrStatsDB movesSoFar = do
     total_query = printf query_template ("WHERE moves LIKE "                ++ pattern)
     black_query = printf query_template ("WHERE WINNER = ? AND moves LIKE " ++ pattern)
 
--- |Returns a list of all paths of games with the given position, but not more that the given limit
-queryGamesListDB :: String -> Int -> IO [String]
+-- |Returns a list of full data of games with the given position, but not more that the given limit
+queryGamesListDB :: String -> Int -> IO [(Int, String)]
 queryGamesListDB movesSoFar limit = do
   conn <- connectPostgreSQL ""
 
@@ -126,6 +125,18 @@ queryGamesListDB movesSoFar limit = do
   
   disconnect conn
 
-  return $ map (fromSql . head) result where
+  return $ map (\(idd:game_id:_) -> (fromSql idd, fromSql game_id)) result where
     pattern = '\'': movesSoFar ++ "%'"
-    query = printf "SELECT game_id FROM go_stat_data %s LIMIT ?" (if null movesSoFar then "" else "WHERE moves LIKE " ++ pattern)
+    query = printf "SELECT id, game_id FROM go_stat_data %s LIMIT ?" (if null movesSoFar then "" else "WHERE moves LIKE " ++ pattern)
+    
+queryFindGameById :: Int -> IO (Maybe (String, FilePath))
+queryFindGameById gameId = do
+  conn <- connectPostgreSQL ""
+
+  result <- (quickQuery' conn "SELECT moves, game_id FROM go_stat_data WHERE id = ?" [toSql gameId]) 
+  
+  disconnect conn
+  
+  return $ case result of
+    ((path:moves:_):_) -> Just (fromSql path, fromSql moves)
+    _                 -> Nothing

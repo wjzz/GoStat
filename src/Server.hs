@@ -9,6 +9,7 @@ import DB
 import Pages
 import Lang
 
+import Control.Arrow
 import Control.Monad
 import Control.Monad.Trans
 import Happstack.Server hiding (body, path)
@@ -51,30 +52,42 @@ gameBrowserC = do
   limit <- (read `fmap` look "limit") `mplus` return 200
   games <- liftIO $ queryGamesListDB movesSoFar limit
   
-  let relativeGames = map makeRelative games
+  let idsWithRelativeGames = map (second makeRelative) games
   
-  ok $ toResponse $ gameBrowserPage relativeGames count currentStats movesSoFar (onLineConfig { language = lang })
+  ok $ toResponse $ gameBrowserPage idsWithRelativeGames count currentStats movesSoFar (onLineConfig { language = lang })
 
 -----------------------------
 --  The game details page  --
 -----------------------------
 
 gameDetailsC :: ServerPart Response
-gameDetailsC = do
-  (count, _currentStats, _movesSoFar, lang) <- fetchStats
-  gamePathM <- ((\x -> [x]) `fmap` look "path") `mplus` return []
-  contents <- liftIO $ mapM (readFile . makeAbsolute) gamePathM
+gameDetailsC = do 
   
-  let sgf = 
-        case contents of
-          [file] -> either (const Nothing) Just (parseSGF file)
-          _      -> Nothing
-          
-  let path = case gamePathM of
-        [filePath] -> Just filePath
-        _          -> Nothing        
+  (count, _currentStats, _movesSoFar, lang) <- fetchStats
 
-  ok $ toResponse $ gameDetailsPage count sgf path (onLineConfig { language = lang })
+  gameIdM <- ((Just . read) `fmap` look "id") `mplus` return Nothing
+  
+  case gameIdM of
+    Nothing  -> errorPage "No id given"
+    Just gameId -> do
+      qResult <- liftIO $ queryFindGameById gameId
+      
+      case qResult of
+        Nothing -> errorPage "Wrong id, game not found"
+        Just (movesSoFar, absPath) -> do
+          contents <- liftIO $ readFile absPath
+          
+          case parseSGF contents of
+            Left _ -> errorPage "Problem reading or parsing the given sgf"
+            Right sgf -> 
+              ok $ toResponse $ gameDetailsPage count gameId sgf (makeRelative absPath) 
+                                                movesSoFar (onLineConfig { language = lang })
+
+-- TODO
+-- create a real error page
+  
+errorPage :: String -> a
+errorPage s = error s
 
 ----------------------------
 --  The moveBrowser page  --
@@ -147,8 +160,8 @@ imageUrlMaker s = "/public/img/" ++ s
 gameBrowserUrlMaker :: Language -> MovesSoFar -> String
 gameBrowserUrlMaker lang moves = printf "/games?lang=%s&moves=%s" lang moves
 
-gameDetailsUrlMaker :: Language -> FilePath -> String
-gameDetailsUrlMaker lang path = printf "/game?lang=%s&path=%s" lang path
+gameDetailsUrlMaker :: Language -> Int -> String
+gameDetailsUrlMaker lang idd = printf "/game?lang=%s&id=%d" lang idd
 
 sgfDownloadUrlMaker :: FilePath -> String
 sgfDownloadUrlMaker path = printf "/sgf/%s" path
