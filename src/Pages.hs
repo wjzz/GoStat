@@ -107,8 +107,8 @@ mainPage config = pHeader +++ pBody where
 --  The games browser page  --
 ------------------------------
 
-gamesPage :: [FilePath] -> Int -> (Int, Int, Int) -> String -> Configuration -> Html
-gamesPage games count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBody where
+gameBrowserPage :: [FilePath] -> Int -> (Int, Int, Int) -> String -> Configuration -> Html
+gameBrowserPage games count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config
   
@@ -116,7 +116,7 @@ gamesPage games count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBo
                             , hr
                             , navigation
                             , hr
-                            , concatHtml $ intersperse br $ map makeLink games
+                            , gameList
                             ]          
   
   navigation = concatHtml [ currentPosition , br , br
@@ -134,8 +134,12 @@ gamesPage games count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBo
   currentPositionWinningChance = primHtml $ printf "%s %d%%" (L.chanceOfWinning lang) percentage
   numberOfShownGames           = primHtml $ L.noOfShownGames lang
           
-  makeLink game = anchor ! [href url] << primHtml game where
-    url = gameDetailsMakeUrl config (L.langName lang) game
+  makeLink game = tr $ concatHtml $ map td (map primHtml  ["","","","","",""] ++ [link]) where
+    link = anchor ! [href url] << primHtml game
+    url  = gameDetailsMakeUrl config (L.langName lang) game
+  
+  gameList = table << (tHeader +++ (concatHtml $ map makeLink games))
+  tHeader = tr $ concatHtml $ map (\l -> th << l) ["no", "black", "black rank", "white", "white rank", "result", "link"]
 
 -----------------------------
 --  The game details page  --

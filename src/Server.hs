@@ -25,7 +25,7 @@ server = do
   
 router :: ServerPart Response
 router = msum [ dir "movebrowser" moveBrowserC
-              , dir "games"       gamesC
+              , dir "games"       gameBrowserC
               , dir "game"        gameDetailsC
               , dir "public" $ serveDirectory EnableBrowsing [] "public"
               , dir "sgf"    $ serveDirectory EnableBrowsing [] "data"                                
@@ -44,8 +44,8 @@ mainPageC = do
 --  The game browser  --
 ------------------------
 
-gamesC :: ServerPart Response
-gamesC = do
+gameBrowserC :: ServerPart Response
+gameBrowserC = do
   (count, currentStats, movesSoFar, lang) <- fetchStats
   
   limit <- (read `fmap` look "limit") `mplus` return 200
@@ -53,7 +53,7 @@ gamesC = do
   
   let relativeGames = map makeRelative games
   
-  ok $ toResponse $ gamesPage relativeGames count currentStats movesSoFar (onLineConfig { language = lang })
+  ok $ toResponse $ gameBrowserPage relativeGames count currentStats movesSoFar (onLineConfig { language = lang })
 
 -----------------------------
 --  The game details page  --
