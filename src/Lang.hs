@@ -33,6 +33,7 @@ data Messages = Messages { langName             :: Language
                          , result               :: String
                          , date                 :: String
                          , downloadSgf          :: String
+                         , finalPosition        :: String
 --                         , show
                          }
 
@@ -62,6 +63,7 @@ eng = Messages { langName             = "eng"
                , result               = "Result"
                , date                 = "Date"
                , downloadSgf          = "Download game record (.sgf)"
+               , finalPosition        = "Final position"
                }
 
 pl :: Messages
@@ -90,6 +92,7 @@ pl =  Messages { langName             = "pl"
                , result               = "Wynik"
                , date                 = "Data"
                , downloadSgf          = "Pobierz zapis gry (.sgf)"
+               , finalPosition        = "Pozycja końcowa"
                }
       
 allLanguages :: [Language]

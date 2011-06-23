@@ -48,7 +48,7 @@ gamesC :: ServerPart Response
 gamesC = do
   (count, movesSoFar, lang) <- fetchStats
   
-  limit <- (read `fmap` look "limit") `mplus` return 5
+  limit <- (read `fmap` look "limit") `mplus` return 200
   games <- liftIO $ queryGamesListDB movesSoFar limit
   
   ok $ toResponse $ gamesPage games count movesSoFar (onLineConfig { language = lang })

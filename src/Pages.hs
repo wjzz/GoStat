@@ -71,12 +71,10 @@ globalHeader count config makeUrl = concatHtml [ flags
                                                , br 
                                                , br
                                                , primHtml $ L.gamesInDb lang count
-                                               , hr
                                                , pHomePageLink 
-
                                                ] where
   
-  pHomePageLink = anchor ! [href (mainPageUrl config)] << h4 << L.backToMain lang
+  pHomePageLink = h4 << anchor ! [href (moveBrowserMainUrl config)] << L.backToMain lang
   lang = language config
   
   makeFlag langStr = anchor ! [href (makeUrl langStr) ] 
@@ -134,12 +132,15 @@ gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
   
   pBody = body $ concatHtml [ globalHeader count config (\l -> gameDetailsMakeUrl config l path)
                             , hr
-                            , downloadGame
-                            , hr
-                            , gameSummary
-                            , hr
-                            , finalPosition
-                            , dI "eidogo" eidogo
+                            , dI "gameLeft" $ concatHtml [ gameSummary 
+                                                         , br
+                                                         , downloadGame 
+                                                         , br
+                                                         , br
+                                                         , finalPosition 
+                                                         , italics $ primHtml(L.finalPosition lang)
+                                                         ]
+                            , dI "gameRight" eidogo
                             ]
           
   eidogo = dC "eidogo-player-auto" ! [strAttr "sgf" (gameDownloadLink config path)] << noHtml
@@ -156,10 +157,12 @@ gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
       Win Black _ -> "B+"
       Win White _ -> "W+"
   
-  gameSummary = dI "gameResult" $ table << (bHeader +++ bData)
+  gameSummary = dI "gameSummary" $ table << bData
   
-  bHeader = tr << map (\l -> th << l) [capitalize (L.black lang), capitalize (L.white lang), L.result lang, L.date lang]
-  bData   = tr << map (\l -> td << l) [blk, wht, result, dt]
+  labels = [capitalize (L.black lang), capitalize (L.white lang), L.result lang, L.date lang]
+  values = [blk, wht, result, dt]
+
+  bData   = map (\(l,v) -> tr << ((td << (l ++ ":")) +++ (td << v))) (zip labels values)
 
 -----------------------------
 --  The move browser page  --
