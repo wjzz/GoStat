@@ -40,7 +40,7 @@ isRight _          = False
 
 test_right, test_len, test_black, test_white, test_winner :: Assertion
 
-test_right  = unsafePerformIO (print sgf >> print (sgfSummary `fmap` sgf)) 
+test_right  = unsafePerformIO (print sgf >> print (sgfTestSummary `fmap` sgf)) 
               `seq` (isRight sgf) @?= True
 test_len    = Right 46 @?= (length . moves) `fmap` sgf
 test_black  = Right "Andrew87" @?= black `fmap` sgf

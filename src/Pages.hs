@@ -11,19 +11,22 @@ import Data.List
 import Text.Printf
 import Text.XHtml hiding (dir, color, black, white, lang)
 
-import Lang (Language, Messages, allLanguages)
+import Lang (Language, Messages, allLanguages, capitalize)
 import qualified Lang as L
 
 ----------------------------------------------------
 --  A type for storing the basic data about urls  --
 ----------------------------------------------------
 
+type MovesSoFar = String
+
 data Configuration = Configuration { mainPageUrl        :: String
                                    , moveBrowserMainUrl :: String
-                                   , moveBrowserMakeUrl :: Language -> String -> String
-                                   , gameBrowserMakeUrl :: Language -> String -> String
-                                   --, gameDetailsMakeUrl :: Language -> String -> String
-                                   , imagesMakeUrl      :: String -> String
+                                   , moveBrowserMakeUrl :: Language -> MovesSoFar -> String
+                                   , gameBrowserMakeUrl :: Language -> MovesSoFar -> String
+                                   , gameDetailsMakeUrl :: Language -> FilePath   -> String
+                                   , gameDownloadLink   :: FilePath -> String
+                                   , imagesMakeUrl      :: String   -> String
                                    , cssUrl             :: String
                                    , jsUrls             :: [String]
                                    , language           :: Messages
@@ -33,13 +36,30 @@ data Configuration = Configuration { mainPageUrl        :: String
 --  A common header  --
 -----------------------
 
-globalHeader :: Configuration -> Html
-globalHeader config = header << ((thetitle << L.title lang) 
+htmlHeader :: Configuration -> Html
+htmlHeader config = header << ((thetitle << L.title lang) 
                                  +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
                                  +++ concatHtml (map buildScript $ jsUrls config)) 
   where
     buildScript url = script ! [thetype "text/javascript",src url] << noHtml --
     lang            = language config
+
+---------------------------------
+--  Header used in most pages  --
+---------------------------------
+
+globalHeader :: Int -> Configuration -> (Language -> String) -> Html
+globalHeader count config makeUrl = concatHtml [ flags 
+                                               , br 
+                                               , primHtml $ L.gamesInDb lang count
+                                               ] where
+  lang = language config
+  
+  makeFlag langStr = anchor ! [href (makeUrl langStr) ] 
+                     << (thespan ! [theclass "flag"] $ (image ! [width "36" , height "24" , src (imagesMakeUrl config (langStr ++ "_flag.gif"))]))
+  
+  flags = concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages
+
 
 ---------------------
 --  The main page  --
@@ -48,7 +68,7 @@ globalHeader config = header << ((thetitle << L.title lang)
 mainPage :: Configuration -> Html
 mainPage config = pHeader +++ pBody where
   lang    = language config
-  pHeader = globalHeader config
+  pHeader = htmlHeader config
 
   -- TODO should this use moveBrowserMainUrl langStr ?
   makeFlag langStr = anchor ! [href (moveBrowserMakeUrl config langStr []) ] 
@@ -66,44 +86,64 @@ mainPage config = pHeader +++ pBody where
 
 gamesPage :: [FilePath] -> Int -> String -> Configuration -> Html
 gamesPage games count movesSoFar config = pHeader +++ pBody where
-  pGameCount = primHtml $ L.gamesInDb lang count
   lang       = language config
-  pHeader    = globalHeader config
+  pHeader    = htmlHeader config
   
-  pBody = body $ concatHtml [ pGameCount
+  pBody = body $ concatHtml [ globalHeader count config (\l -> gameBrowserMakeUrl config l movesSoFar)
                             , hr
                             , concatHtml $ intersperse br $ map makeLink games
                             ]
           
   makeLink game = anchor ! [href url] << primHtml (drop 48 game) where
-    url = printf "game?path=%s" game
+    url = gameDetailsMakeUrl config (L.langName lang) game
 
 -----------------------------
 --  The game details page  --
 -----------------------------
 
-gameDetailsPage :: Maybe SGF -> Maybe FilePath -> Configuration -> Html
-gameDetailsPage _           Nothing     config = primHtml $ printf "No game specifed."
-gameDetailsPage Nothing     (Just path) config = primHtml $ printf "Game %s not found. An internal error might have occured" (drop 48 path)
-gameDetailsPage (Just game) (Just path) config = pHeader +++ pBody where
+gameDetailsPage :: Int -> Maybe SGF -> Maybe FilePath -> Configuration -> Html
+gameDetailsPage _ _           Nothing     config = primHtml $ printf "No game specifed."
+gameDetailsPage _ Nothing     (Just path) config = primHtml $ printf "Game %s not found. An internal error might have occured" (drop 48 path)
+gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
   lang       = language config
-  pHeader    = globalHeader config
+  pHeader    = htmlHeader config
   
-  pBody = body $ concatHtml [ primHtml path
+  pBody = body $ concatHtml [ globalHeader count config (\l -> gameDetailsMakeUrl config l path)
+                            , hr
+                            , downloadGame
+                            , hr
+                            , gameSummary
+                            , hr
+                            , finalPosition 
                             ]
+          
+  downloadGame = anchor ! [href (gameDownloadLink config path)] << (L.downloadSgf lang) 
+          
+  finalPosition = board config True [] (getMovesStr game)
   
+  (blk, wht, res, dt) = sgfSummary game
+  
+  result = 
+    case res of
+      Unfinished  -> L.noResult lang
+      Win Black _ -> "B+"
+      Win White _ -> "W+"
+  
+  gameSummary = dI "gameResult" $ table << (bHeader +++ bData)
+  
+  bHeader = tr << map (\l -> th << l) [capitalize (L.black lang), capitalize (L.white lang), L.result lang, L.date lang]
+  bData   = tr << map (\l -> td << l) [blk, wht, result, dt]
+
 -----------------------------
 --  The move browser page  --
 -----------------------------
 
 moveBrowser :: Int -> [(String, Int, Int, Int)] -> String -> Configuration -> Html
 moveBrowser count moves movesSoFar config = pHeader +++ pBody where
-  
-  pGameCount = primHtml $ L.gamesInDb lang count
   lang       = language config
-  pHeader    = globalHeader config
+  pHeader    = htmlHeader config
   
-  pBody = body $ concatHtml [ pGameCount
+  pBody = body $ concatHtml [ globalHeader count config (\l -> moveBrowserMakeUrl config l movesSoFar)
                             , hr
                             , dI "boardInfo" $ boardDiv  +++ infoDiv
                             , dI "tables"    $ leftTable +++ rightTable 
@@ -183,8 +223,10 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
     percentage = show ((100 * current) `div` count) ++ "%"
     current    = if blacksTurn then black else white
     url        = moveBrowserMakeUrl config langName $ movesSoFar ++ move
+    gamesUrl   = gameBrowserMakeUrl config langName movesSoFar
+
     moveField  
-      | null move = primHtml $ L.gameOver lang
+      | null move = anchor ! [href gamesUrl] << L.gameOver lang
       | otherwise = anchor ! [href url] << thespan ! attrs << (moveStrToCoordinates move)
     attrs      = [ identifier idd
                  , strAttr "onMouseover" (printf "lstMouseOver(\"%s\",\"%s\")" imgUrl move)

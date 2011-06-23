@@ -82,11 +82,12 @@ getMeta str sgf =
     (x:_) -> x
        
 
-black, white, blackRank, whiteRank :: SGF -> String
+black, white, blackRank, whiteRank, date :: SGF -> String
 black = getMeta "BlackName"
 white = getMeta "WhiteName"
 blackRank = getMeta "BlackRank"
 whiteRank = getMeta "WhiteRank"
+date      = getMeta "Date"
 
 
 emptyMetaData :: MetaData
@@ -98,13 +99,19 @@ data SGF = SGF { metaData :: MetaData
                }
            deriving Show
 
-sgfSummary :: SGF -> String
-sgfSummary sgf = printf "%s [%s] vs. %s [%s]. " (black sgf) (blackRank sgf) (white sgf) (whiteRank sgf)
-                 ++ (case getWinnerName sgf of
-                        Just "masec" -> "Won"
-                        Just _ -> "Lost"
-                        Nothing -> "No result.")
+sgfTestSummary :: SGF -> String
+sgfTestSummary sgf = printf "%s [%s] vs. %s [%s]. " (black sgf) (blackRank sgf) (white sgf) (whiteRank sgf)
+                     ++ (case getWinnerName sgf of
+                            Just "masec" -> "Won"
+                            Just _ -> "Lost"
+                            Nothing -> "No result.")
 
+sgfSummary :: SGF -> (String, String, Result, String)
+sgfSummary sgf = ( showPlayer (black sgf) (blackRank sgf) 
+                 , showPlayer (white sgf) (whiteRank sgf)
+                 , getResult sgf
+                 , date sgf ) where
+  showPlayer n l = printf "%s [%s]" n l                   
 
 -- 11 -> i9
 -- 91 -> a9
@@ -118,3 +125,10 @@ moveStrToCoordinates "00"     = "PASS"
 moveStrToCoordinates ""       = "END"
 moveStrToCoordinates [d1, d2] = curry moveToCoordinates (digitToInt d1) (digitToInt d2)
 moveStrToCoordinates s        = "ERROR: [" ++ s ++ "]"
+
+movesToText :: Moves -> String
+movesToText ms = concatMap (\(x,y) -> show x ++ show y) ms
+
+getMovesStr :: SGF -> String
+getMovesStr sgf = movesToText $ moves sgf
+

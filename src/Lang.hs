@@ -4,6 +4,8 @@
 -}
 module Lang where
 
+import Data.Char
+
 type Language = String
 
 data Messages = Messages { langName             :: Language
@@ -27,6 +29,10 @@ data Messages = Messages { langName             :: Language
                          , whiteWinningPerc     :: String
                          , blackWinningPerc     :: String
                          , gameOver             :: String
+                         , noResult             :: String
+                         , result               :: String
+                         , date                 :: String
+                         , downloadSgf          :: String
 --                         , show
                          }
 
@@ -52,6 +58,10 @@ eng = Messages { langName             = "eng"
                , whiteWinningPerc     = "White winning %"
                , blackWinningPerc     = "Black winning %"
                , gameOver             = "End"
+               , noResult             = "No result"
+               , result               = "Result"
+               , date                 = "Date"
+               , downloadSgf          = "Download game record (.sgf)"
                }
 
 pl :: Messages
@@ -76,7 +86,15 @@ pl =  Messages { langName             = "pl"
                , whiteWinningPerc     = "Procent wygr. białego"
                , blackWinningPerc     = "Procent wygr. czarnego"
                , gameOver             = "Koniec"
+               , noResult             = "Nierozstrzygnięte"
+               , result               = "Wynik"
+               , date                 = "Data"
+               , downloadSgf          = "Pobierz zapis gry (.sgf)"
                }
       
 allLanguages :: [Language]
 allLanguages = ["pl", "eng"]
+
+capitalize :: String -> String
+capitalize []     = []
+capitalize (c:cs) = toUpper c : cs

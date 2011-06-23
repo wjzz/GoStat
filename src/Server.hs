@@ -11,7 +11,8 @@ import Lang
 
 import Control.Monad
 import Control.Monad.Trans
-import Happstack.Server hiding (body)
+import Happstack.Server hiding (body, path)
+import Text.Printf
 
 ---------------------------------------------------
 --  The top-level server and routing procedures  --
@@ -26,7 +27,8 @@ router :: ServerPart Response
 router = msum [ dir "movebrowser" moveBrowserC
               , dir "games"       gamesC
               , dir "game"        gameDetailsC
-              , dir "public" $ serveDirectory EnableBrowsing [] "public"                
+              , dir "public" $ serveDirectory EnableBrowsing [] "public"
+              , dir "sgf"    $ serveDirectory EnableBrowsing [] "data"                                
               , mainPageC
               ]
          
@@ -57,7 +59,7 @@ gamesC = do
 
 gameDetailsC :: ServerPart Response
 gameDetailsC = do
-  (count, movesSoFar, lang) <- fetchStats
+  (count, _movesSoFar, lang) <- fetchStats
   gamePathM <- ((\x -> [x]) `fmap` look "path") `mplus` return []
   contents <- liftIO $ mapM (readFile) gamePathM
   
@@ -65,8 +67,13 @@ gameDetailsC = do
         case contents of
           [file] -> either (const Nothing) Just (parseSGF file)
           _      -> Nothing
+          
+  let path = case gamePathM of
+        [filePath] -> Just filePath
+        _          -> Nothing
+        
 
-  ok $ toResponse $ gameDetailsPage Nothing Nothing (onLineConfig { language = lang })
+  ok $ toResponse $ gameDetailsPage count sgf path (onLineConfig { language = lang })
 
 ----------------------------
 --  The moveBrowser page  --
@@ -104,6 +111,9 @@ onLineConfig :: Configuration
 onLineConfig = Configuration { mainPageUrl        = "/"
                              , moveBrowserMainUrl = "/movebrowser"
                              , moveBrowserMakeUrl = urlMaker
+                             , gameBrowserMakeUrl = gameBrowserUrlMaker
+                             , gameDetailsMakeUrl = gameDetailsUrlMaker
+                             , gameDownloadLink   = sgfDownloadUrlMaker
                              , imagesMakeUrl      = imageUrlMaker
                              , cssUrl             = "/public/style.css"
                              , jsUrls             = ["/public/jquery.js", "/public/highlight.js"]
@@ -111,7 +121,16 @@ onLineConfig = Configuration { mainPageUrl        = "/"
                              }
 
 urlMaker :: Language -> String -> String
-urlMaker langN movesList = "/movebrowser?lang=" ++ langN ++ "&moves=" ++ movesList
+urlMaker langN movesList = printf "/movebrowser?lang=%s&moves=%s" langN movesList
 
 imageUrlMaker :: String -> String
 imageUrlMaker s = "/public/img/" ++ s 
+
+gameBrowserUrlMaker :: Language -> MovesSoFar -> String
+gameBrowserUrlMaker lang moves = printf "/games?lang=%s&moves=%s" lang moves
+
+gameDetailsUrlMaker :: Language -> FilePath -> String
+gameDetailsUrlMaker lang path = printf "/game?lang=%s&path=%s" lang path
+
+sgfDownloadUrlMaker :: FilePath -> String
+sgfDownloadUrlMaker path = printf "/sgf/%s" (drop 48 path)
