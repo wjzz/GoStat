@@ -7,6 +7,10 @@ body {
     //margin-right: 5%; // 100px;
 }
 
+#eidogo {
+    float: right;
+}
+
 #boardInfo {
     float: left;
     //width: 5%;

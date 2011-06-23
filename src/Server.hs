@@ -116,7 +116,7 @@ onLineConfig = Configuration { mainPageUrl        = "/"
                              , gameDownloadLink   = sgfDownloadUrlMaker
                              , imagesMakeUrl      = imageUrlMaker
                              , cssUrl             = "/public/style.css"
-                             , jsUrls             = ["/public/jquery.js", "/public/highlight.js"]
+                             , jsUrls             = ["/public/jquery.js", "/public/highlight.js", "/public/eidogo/player/js/all.compressed.js"]
                              , language           = eng
                              }
 

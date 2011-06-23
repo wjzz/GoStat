@@ -111,7 +111,9 @@ sgfSummary sgf = ( showPlayer (black sgf) (blackRank sgf)
                  , showPlayer (white sgf) (whiteRank sgf)
                  , getResult sgf
                  , date sgf ) where
-  showPlayer n l = printf "%s [%s]" n l                   
+  showPlayer n l 
+    | null l    = n
+    | otherwise = printf "%s [%s]" n l
 
 -- 11 -> i9
 -- 91 -> a9

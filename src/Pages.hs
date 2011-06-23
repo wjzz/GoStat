@@ -39,10 +39,28 @@ data Configuration = Configuration { mainPageUrl        :: String
 htmlHeader :: Configuration -> Html
 htmlHeader config = header << ((thetitle << L.title lang) 
                                  +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
+                                 +++ script ! [thetype "text/javascript"] << eidogoConfig
                                  +++ concatHtml (map buildScript $ jsUrls config)) 
   where
     buildScript url = script ! [thetype "text/javascript",src url] << noHtml --
     lang            = language config
+    
+    eidogoConfig = primHtml " \
+  \  eidogoConfig = { \
+  \      theme:          \"standard\", \
+  \      mode:           \"view\", \
+  \      showComments:    true, \ 
+  \      showPlayerInfo:  false, \
+  \      showGameInfo:    false, \
+  \      showTools:       false, \
+  \      showOptions:     true, \
+  \      showNavTree:     false, \
+  \      markCurrent:     true, \
+  \      markVariations:  false, \ 
+  \      markNext:        false, \
+  \      problemMode:     false, \
+  \      enableShortcuts: false \
+  \  };"
 
 ---------------------------------
 --  Header used in most pages  --
@@ -51,8 +69,14 @@ htmlHeader config = header << ((thetitle << L.title lang)
 globalHeader :: Int -> Configuration -> (Language -> String) -> Html
 globalHeader count config makeUrl = concatHtml [ flags 
                                                , br 
+                                               , br
                                                , primHtml $ L.gamesInDb lang count
+                                               , hr
+                                               , pHomePageLink 
+
                                                ] where
+  
+  pHomePageLink = anchor ! [href (mainPageUrl config)] << h4 << L.backToMain lang
   lang = language config
   
   makeFlag langStr = anchor ! [href (makeUrl langStr) ] 
@@ -114,9 +138,12 @@ gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
                             , hr
                             , gameSummary
                             , hr
-                            , finalPosition 
+                            , finalPosition
+                            , dI "eidogo" eidogo
                             ]
           
+  eidogo = dC "eidogo-player-auto" ! [strAttr "sgf" (gameDownloadLink config path)] << noHtml
+
   downloadGame = anchor ! [href (gameDownloadLink config path)] << (L.downloadSgf lang) 
           
   finalPosition = board config True [] (getMovesStr game)
@@ -215,23 +242,26 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
                        ]
   
   makeRow (move, count, black, white) = tr ! [ identifier trid] << concatHtml [ td << moveField
-                                                                              , td << show count
+                                                                              , td << countField
                                                                               , td << show black
                                                                               , td << show white
                                                                               , td << percentage
                                                                               ] where
-    percentage = show ((100 * current) `div` count) ++ "%"
-    current    = if blacksTurn then black else white
-    url        = moveBrowserMakeUrl config langName $ movesSoFar ++ move
-    gamesUrl   = gameBrowserMakeUrl config langName movesSoFar
+    percentage     = show ((100 * current) `div` count) ++ "%"
+    current        = if blacksTurn then black else white
+    url            = moveBrowserMakeUrl config langName $ movesSoFar ++ move
+
+    countField = anchor ! [href gamesUrl ] << show count where
+      gamesUrl = gameBrowserMakeUrl config langName $ movesSoFar ++ move
 
     moveField  
-      | null move = anchor ! [href gamesUrl] << L.gameOver lang
-      | otherwise = anchor ! [href url] << thespan ! attrs << (moveStrToCoordinates move)
-    attrs      = [ identifier idd
-                 , strAttr "onMouseover" (printf "lstMouseOver(\"%s\",\"%s\")" imgUrl move)
-                 , strAttr "onMouseout"  (printf "lstMouseOut(\"%s\")"  move)
-                 ]
+      | null move = anchor ! [href gameDetailsUrl] << L.gameOver lang
+      | otherwise = anchor ! [href url]            << thespan ! attrs << (moveStrToCoordinates move) where
+        gameDetailsUrl = gameBrowserMakeUrl config langName movesSoFar
+        attrs      = [ identifier idd
+                     , strAttr "onMouseover" (printf "lstMouseOver(\"%s\",\"%s\")" imgUrl move)
+                     , strAttr "onMouseout"  (printf "lstMouseOut(\"%s\")"  move)
+                     ]
     imgUrl     = imagesMakeUrl config $ if blacksTurn then moveFromColor B else moveFromColor W
     idd        = "lst" ++ move
     trid       = "tr"  ++ move
