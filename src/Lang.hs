@@ -34,6 +34,12 @@ data Messages = Messages { langName             :: Language
                          , date                 :: String
                          , downloadSgf          :: String
                          , finalPosition        :: String
+                         , showInContext        :: String
+                         , showCurrentPosition  :: String
+                         , numberOfGames        :: String
+                         , chanceOfWinning      :: String
+                         , noOfShownGames       :: String
+                         , matchingGamesList    :: String
 --                         , show
                          }
 
@@ -64,6 +70,12 @@ eng = Messages { langName             = "eng"
                , date                 = "Date"
                , downloadSgf          = "Download game record (.sgf)"
                , finalPosition        = "Final position"
+               , showInContext        = "Show game in context"
+               , showCurrentPosition  = "Show current position"
+               , numberOfGames        = "Number of games with this position: "
+               , chanceOfWinning      = "Winning probability of the current player: "
+               , noOfShownGames       = "Number of listed games: "
+               , matchingGamesList    = "List of matching games"
                }
 
 pl :: Messages
@@ -93,6 +105,13 @@ pl =  Messages { langName             = "pl"
                , date                 = "Data"
                , downloadSgf          = "Pobierz zapis gry (.sgf)"
                , finalPosition        = "Pozycja końcowa"
+               , showInContext        = "Pokaż grę w kontekście"
+               , showCurrentPosition  = "Pokaż bieżącą pozycję"
+               , numberOfGames        = "Wystąpień bieżącej pozycji: "
+               , chanceOfWinning      = "Szansa wygranej dla bieżącego gracza: "
+               , noOfShownGames       = "Liczba wyświetlonych gier: "
+               , matchingGamesList    = "Lista pasujących gier"
+
                }
       
 allLanguages :: [Language]

@@ -66,7 +66,8 @@ queryCountDB = do
     _          -> return 0
 
 
--- |Returns a statistic in the form (move, total_played, black won, white won)
+-- |Returns a statistic in the form (move, total_played, black won, white won) about all possible continuations
+-- |of the current position found the db
 queryStatsDB :: String -> IO [(String, Int, Int, Int)]
 queryStatsDB movesSoFar = do
   conn <- connectPostgreSQL ""
@@ -93,6 +94,28 @@ queryStatsDB movesSoFar = do
       b = fromMaybe 0 black_count
       w = tc - b
     count _ _ = ("",0,0,0)
+
+-- |Returns a statistic in the form (total_played, black won, white won) about the current position
+queryCurrStatsDB :: String -> IO (Int, Int, Int)
+queryCurrStatsDB movesSoFar = do
+  conn <- connectPostgreSQL ""
+    
+  total <- quickQuery' conn total_query []
+  black <- quickQuery' conn black_query [toSql 'b']  
+  
+  disconnect conn
+  
+  return $ count total black where 
+    count total' black' = (t, b, w) where
+      t = get total'
+      b = get black'
+      w = t - b
+      get = fromSql . head . head    
+    pattern     = '\'': movesSoFar ++ "%'"
+    
+    query_template = "SELECT COUNT(*) FROM go_stat_data %s" 
+    total_query = printf query_template ("WHERE moves LIKE "                ++ pattern)
+    black_query = printf query_template ("WHERE WINNER = ? AND moves LIKE " ++ pattern)
 
 -- |Returns a list of all paths of games with the given position, but not more that the given limit
 queryGamesListDB :: String -> Int -> IO [String]

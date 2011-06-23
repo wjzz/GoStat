@@ -46,14 +46,14 @@ mainPageC = do
 
 gamesC :: ServerPart Response
 gamesC = do
-  (count, movesSoFar, lang) <- fetchStats
+  (count, currentStats, movesSoFar, lang) <- fetchStats
   
   limit <- (read `fmap` look "limit") `mplus` return 200
   games <- liftIO $ queryGamesListDB movesSoFar limit
   
   let relativeGames = map makeRelative games
   
-  ok $ toResponse $ gamesPage relativeGames count movesSoFar (onLineConfig { language = lang })
+  ok $ toResponse $ gamesPage relativeGames count currentStats movesSoFar (onLineConfig { language = lang })
 
 -----------------------------
 --  The game details page  --
@@ -61,7 +61,7 @@ gamesC = do
 
 gameDetailsC :: ServerPart Response
 gameDetailsC = do
-  (count, _movesSoFar, lang) <- fetchStats
+  (count, _currentStats, _movesSoFar, lang) <- fetchStats
   gamePathM <- ((\x -> [x]) `fmap` look "path") `mplus` return []
   contents <- liftIO $ mapM (readFile . makeAbsolute) gamePathM
   
@@ -82,27 +82,28 @@ gameDetailsC = do
 
 moveBrowserC :: ServerPart Response
 moveBrowserC = do
-  (count, movesSoFar, lang) <- fetchStats 
-  moves                     <- liftIO $ queryStatsDB movesSoFar  
+  (count, currentStats, movesSoFar, lang) <- fetchStats 
+  moves                                   <- liftIO $ queryStatsDB movesSoFar  
   
-  ok $ toResponse $ moveBrowser count moves movesSoFar (onLineConfig { language = lang })
+  ok $ toResponse $ moveBrowser count currentStats moves movesSoFar (onLineConfig { language = lang })
   
 ---------------------------
 --  A fetching shortcut  --
 ---------------------------
 
-fetchStats :: ServerPart (Int, String, Messages)
+fetchStats :: ServerPart (Int, (Int, Int, Int), String, Messages)
 fetchStats = do
-  count      <- liftIO $ queryCountDB  
+  count      <- liftIO $ queryCountDB
   movesSoFar <- look "moves" `mplus` (return [])
   langStr    <- look "lang"  `mplus` (return "pl")
+  currStats  <- liftIO $ queryCurrStatsDB movesSoFar
   
   let lang = 
         case langStr of
           "pl" -> pl
           _    -> eng  
           
-  return (count, movesSoFar, lang)
+  return (count, currStats, movesSoFar, lang)
 
 ------------------------------
 --  Make the path relative  --

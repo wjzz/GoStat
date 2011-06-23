@@ -75,10 +75,11 @@ globalHeader count config makeUrl = concatHtml [ flags
                                                ] where
   
   pHomePageLink = h4 << anchor ! [href (moveBrowserMainUrl config)] << L.backToMain lang
-  lang = language config
+  lang          = language config
   
   makeFlag langStr = anchor ! [href (makeUrl langStr) ] 
-                     << (thespan ! [theclass "flag"] $ (image ! [width "36" , height "24" , src (imagesMakeUrl config (langStr ++ "_flag.gif"))]))
+                     << (thespan ! [theclass "flag"] $ (image ! [width "36" , height "24" , 
+                                                                 src (imagesMakeUrl config (langStr ++ "_flag.gif"))]))
   
   flags = concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages
 
@@ -106,15 +107,32 @@ mainPage config = pHeader +++ pBody where
 --  The games browser page  --
 ------------------------------
 
-gamesPage :: [FilePath] -> Int -> String -> Configuration -> Html
-gamesPage games count movesSoFar config = pHeader +++ pBody where
+gamesPage :: [FilePath] -> Int -> (Int, Int, Int) -> String -> Configuration -> Html
+gamesPage games count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config
   
   pBody = body $ concatHtml [ globalHeader count config (\l -> gameBrowserMakeUrl config l movesSoFar)
                             , hr
+                            , navigation
+                            , hr
                             , concatHtml $ intersperse br $ map makeLink games
-                            ]
+                            ]          
+  
+  navigation = concatHtml [ currentPosition , br , br
+                          , numberOfGames , br , br
+                          , currentPositionWinningChance , br , br
+                          , numberOfShownGames
+                          ]
+  blacksTurn = length movesSoFar `mod` 4 == 0          
+  percentage = (100 * current) `div` allGames where
+    current = if blacksTurn then bWin else wWin
+    
+  currentPosition              = anchor ! [ href mBrowserUrl] << primHtml (L.showCurrentPosition lang) where
+    mBrowserUrl = moveBrowserMakeUrl config (L.langName lang) movesSoFar
+  numberOfGames                = primHtml $ printf "%s %d"   (L.numberOfGames lang) allGames  
+  currentPositionWinningChance = primHtml $ printf "%s %d%%" (L.chanceOfWinning lang) percentage
+  numberOfShownGames           = primHtml $ L.noOfShownGames lang
           
   makeLink game = anchor ! [href url] << primHtml game where
     url = gameDetailsMakeUrl config (L.langName lang) game
@@ -132,6 +150,8 @@ gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
   
   pBody = body $ concatHtml [ globalHeader count config (\l -> gameDetailsMakeUrl config l path)
                             , hr
+                            , gameInContext
+                            , hr
                             , dI "gameLeft" $ concatHtml [ gameSummary 
                                                          , br
                                                          , downloadGame 
@@ -143,11 +163,16 @@ gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
                             , dI "gameRight" eidogo
                             ]
           
+  gameInContext = anchor ! [href mBrowserUrl] << (L.showInContext lang) where
+    mBrowserUrl = moveBrowserMakeUrl config (L.langName lang) movesSoFar
+
   eidogo = dC "eidogo-player-auto" ! [strAttr "sgf" (gameDownloadLink config path)] << noHtml
 
   downloadGame = anchor ! [href (gameDownloadLink config path)] << (L.downloadSgf lang) 
           
-  finalPosition = board config True [] (getMovesStr game)
+  movesSoFar = getMovesStr game
+                 
+  finalPosition = board config True [] movesSoFar
   
   (blk, wht, res, dt) = sgfSummary game
   
@@ -168,12 +193,14 @@ gameDetailsPage count (Just game) (Just path) config = pHeader +++ pBody where
 --  The move browser page  --
 -----------------------------
 
-moveBrowser :: Int -> [(String, Int, Int, Int)] -> String -> Configuration -> Html
-moveBrowser count moves movesSoFar config = pHeader +++ pBody where
+moveBrowser :: Int -> (Int, Int, Int) -> [(String, Int, Int, Int)] -> String -> Configuration -> Html
+moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config
   
   pBody = body $ concatHtml [ globalHeader count config (\l -> moveBrowserMakeUrl config l movesSoFar)
+                            , hr
+                            , currentStatistics
                             , hr
                             , dI "boardInfo" $ boardDiv  +++ infoDiv
                             , dI "tables"    $ leftTable +++ rightTable 
@@ -198,6 +225,20 @@ moveBrowser count moves movesSoFar config = pHeader +++ pBody where
                                    , rightTable ]
                
   -- smaller parts
+  
+  currentStatistics = concatHtml [ currentPositionWinningChance
+                                 , br , br
+                                 , numberOfGames
+                                 , br , br
+                                 , matchingGames
+                                 ]
+
+  percentage                   = (100 * current) `div` allGames where
+    current = if blacksTurn then bWin else wWin
+  currentPositionWinningChance = primHtml $ printf "%s %d%%" (L.chanceOfWinning lang) percentage
+  numberOfGames                = primHtml $ printf "%s %d"   (L.numberOfGames lang) allGames
+  matchingGames                = anchor ! [href gamesUrl] << primHtml (L.matchingGamesList lang) where
+    gamesUrl = gameBrowserMakeUrl config langName movesSoFar
 
   langName = L.langName (language config)
   takeBackLink 
