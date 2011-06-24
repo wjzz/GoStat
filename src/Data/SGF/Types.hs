@@ -54,8 +54,8 @@ getResult sgf@(SGF (MetaData meta) _) =
     Just res -> parseResult res 
       where
       parseResult result
-        | "B+" `isPrefixOf` result = Win Black (black sgf)
-        | "W+" `isPrefixOf` result = Win White (white sgf)
+        | "B+" `isPrefixOf` result = Win Black (getBlack sgf)
+        | "W+" `isPrefixOf` result = Win White (getWhite sgf)
         | otherwise                = Unfinished
 
 
@@ -82,12 +82,12 @@ getMeta str sgf =
     (x:_) -> x
        
 
-black, white, blackRank, whiteRank, date :: SGF -> String
-black = getMeta "BlackName"
-white = getMeta "WhiteName"
-blackRank = getMeta "BlackRank"
-whiteRank = getMeta "WhiteRank"
-date      = getMeta "Date"
+getBlack, getWhite, getBlackRank, getWhiteRank, date :: SGF -> String
+getBlack     = getMeta "BlackName"
+getWhite     = getMeta "WhiteName"
+getBlackRank = getMeta "BlackRank"
+getWhiteRank = getMeta "WhiteRank"
+date         = getMeta "Date"
 
 
 emptyMetaData :: MetaData
@@ -100,15 +100,15 @@ data SGF = SGF { metaData :: MetaData
            deriving Show
 
 sgfTestSummary :: SGF -> String
-sgfTestSummary sgf = printf "%s [%s] vs. %s [%s]. " (black sgf) (blackRank sgf) (white sgf) (whiteRank sgf)
+sgfTestSummary sgf = printf "%s [%s] vs. %s [%s]. " (getBlack sgf) (getBlackRank sgf) (getWhite sgf) (getWhiteRank sgf)
                      ++ (case getWinnerName sgf of
                             Just "masec" -> "Won"
-                            Just _ -> "Lost"
-                            Nothing -> "No result.")
+                            Just _       -> "Lost"
+                            Nothing      -> "No result.")
 
 sgfSummary :: SGF -> (String, String, Result, String)
-sgfSummary sgf = ( showPlayer (black sgf) (blackRank sgf) 
-                 , showPlayer (white sgf) (whiteRank sgf)
+sgfSummary sgf = ( showPlayer (getBlack sgf) (getBlackRank sgf) 
+                 , showPlayer (getWhite sgf) (getWhiteRank sgf)
                  , getResult sgf
                  , date sgf ) where
   showPlayer n l 

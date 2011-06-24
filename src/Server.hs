@@ -59,10 +59,8 @@ gameBrowserC config = do
   (count, currentStats, movesSoFar, lang) <- fetchStats config  
   limit <- (read `fmap` look "limit") `mplus` return 200
   games <- withConfig config $ queryGamesListDB movesSoFar limit
- 
-  let idsWithRelativeGames = map (second makeRelative) games
   
-  ok $ toResponse $ gameBrowserPage idsWithRelativeGames count currentStats movesSoFar (onLineBuilders { language = lang })
+  ok $ toResponse $ gameBrowserPage games count currentStats movesSoFar (onLineBuilders { language = lang })
 
 -----------------------------
 --  The game details page  --
@@ -81,13 +79,13 @@ gameDetailsC config = do
       
       case qResult of
         Nothing -> errorPage "Wrong id, game not found"
-        Just (movesSoFar, absPath) -> do
-          contents <- liftIO $ readFile absPath
+        Just (movesSoFar, relPath) -> do
+          contents <- liftIO $ readFile (makeAbsolute relPath)
           
           case parseSGF contents of
             Left _ -> errorPage "Problem reading or parsing the given sgf"
             Right sgf -> 
-              ok $ toResponse $ gameDetailsPage count gameId sgf (makeRelative absPath) 
+              ok $ toResponse $ gameDetailsPage count gameId sgf relPath
                                                 movesSoFar (onLineBuilders { language = lang })
 
 -- TODO
@@ -134,22 +132,6 @@ fetchStats config = do
   (count, currentStats) <- withConfig config $ fetchStatsWorker movesSoFar
   
   return (count, currentStats, movesSoFar, lang)
-
-------------------------------
---  Make the path relative  --
-------------------------------
-
---TODO 
--- use IO and find this directory dynamically, on the run
-
-absolutePathToGameDir :: FilePath
-absolutePathToGameDir = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/"
-
-makeRelative :: FilePath -> FilePath
-makeRelative = drop (length absolutePathToGameDir)
-
-makeAbsolute :: FilePath -> FilePath
-makeAbsolute s = absolutePathToGameDir ++ s
 
 -----------------------------------------------
 --  The configuration of the online version  --

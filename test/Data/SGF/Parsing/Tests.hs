@@ -43,8 +43,8 @@ test_right, test_len, test_black, test_white, test_winner :: Assertion
 test_right  = unsafePerformIO (print sgf >> print (sgfTestSummary `fmap` sgf)) 
               `seq` (isRight sgf) @?= True
 test_len    = Right 46 @?= (length . moves) `fmap` sgf
-test_black  = Right "Andrew87" @?= black `fmap` sgf
-test_white  = Right "masec" @?= white `fmap` sgf
+test_black  = Right "Andrew87" @?= getBlack `fmap` sgf
+test_white  = Right "masec" @?= getWhite `fmap` sgf
 test_winner = Right (Just "masec" ) @?= getWinnerName `fmap` sgf
 
 -- with this definition we will only get char from 'a' to 'i'

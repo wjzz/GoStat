@@ -32,12 +32,16 @@ fileToSGF input = do
 data GameInfo = GameInfo { sgfFileName  :: FilePath
                          , winner       :: Winner
                          , moves        :: [Move]
+                         , blackName    :: String
+                         , whiteName    :: String
+                         , blackRank    :: String
+                         , whiteRank    :: String
                          }
                 deriving Show
                 
 -- |Converts a GameInfo data so that it can be written in a db
-gameInfoToDB :: GameInfo -> (FilePath, Char, String)
-gameInfoToDB (GameInfo sgf win mvs) = (sgf, winToChar win, movesToString mvs) where
+gameInfoToDB :: GameInfo -> (FilePath, Char, String, String, String, String, String) -- b,w,brank,wrank
+gameInfoToDB (GameInfo sgf win mvs bName wName bRank wRank) = (sgf, winToChar win, movesToString mvs, bName, wName, bRank, wRank) where
   winToChar Black = 'b'
   winToChar White = 'w'
   
@@ -50,4 +54,4 @@ sgfToGameInfo fileName sgf = do
   let mvs = Data.SGF.Types.moves sgf
   guard (length mvs > 5)
   guard (not (isWithHandicap sgf))
-  return $ GameInfo fileName win (normalizeMoves mvs)
+  return $ GameInfo fileName win (normalizeMoves mvs) (getBlack sgf) (getWhite sgf) (getBlackRank sgf) (getWhiteRank sgf)

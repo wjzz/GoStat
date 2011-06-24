@@ -117,6 +117,22 @@ body {
     border-collapse: collapse;
     border-spacing: 0px;
 }
+
 #rightTable table td, #leftTable table td {
     border: 1px solid black;
+}
+
+/* ****************************************
+           The game browser page
+   ****************************************/
+
+#gameListTable table {
+    border: 1px solid black;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+#gameListTable td {
+    border: 1px solid black;
+    padding: 3px;
 }

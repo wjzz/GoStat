@@ -124,7 +124,7 @@ mainPage config = pHeader +++ pBody where
 --  The games browser page  --
 ------------------------------
 
-gameBrowserPage :: [(Int, FilePath)] -> Int -> (Int, Int, Int) -> String -> UrlBuilders -> Html
+gameBrowserPage :: [(Int, FilePath, String, String, String, String, String)] -> Int -> (Int, Int, Int) -> String -> UrlBuilders -> Html
 gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config
@@ -133,7 +133,7 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHead
                             , hr
                             , navigation
                             , hr
-                            , gameList
+                            , dI "gameListTable" gameList
                             ]          
   
   navigation = concatHtml [ currentPosition , br , br
@@ -151,12 +151,13 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHead
   currentPositionWinningChance = primHtml $ printf "%s %d%%" (L.chanceOfWinning lang) percentage
   numberOfShownGames           = primHtml $ printf "%s %d"   (L.noOfShownGames lang) (length gameInfos)
           
-  makeLink (idd, game) = tr $ concatHtml $ map td (map primHtml  [show idd, "","","","",""] ++ [link]) where
-    link = anchor ! [href url] << primHtml game
-    url  = gameDetailsMakeUrl config (L.langName lang) idd
+  makeLink (gameId, gamePath, winner, bName, wName, bRank, wRank) = 
+    tr $ concatHtml $ map td (map primHtml  [show gameId, bName, bRank, wName, wRank, winner] ++ [link]) where
+      link = anchor ! [href url] << primHtml gamePath
+      url  = gameDetailsMakeUrl config (L.langName lang) gameId
   
   gameList = table << (tHeader +++ (concatHtml $ map makeLink gameInfos))
-  tHeader = tr $ concatHtml $ map (\l -> th << l) ["no", "black", "black rank", "white", "white rank", "result", "link"]
+  tHeader = tr $ concatHtml $ map (\l -> th << l) ["no", "black", "black rank", "white", "white rank", "winner", "link"]
 
 -----------------------------
 --  The game details page  --
