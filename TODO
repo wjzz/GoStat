@@ -4,24 +4,13 @@ Display:
 [DONE] 2. Properly display PASSes
 [DONE] 2. Add move back button
 [DONE] 6. fix the error stuff
-
+[DONE] Abstract away the DB and allow for using Sqlite3.
 
 1. Detect captured stones?
 2. have a way of filtering moves that were very rare
-3. Create a GUI to enable convenient management of games db
-4. Abstract away the DB and allow for using Sqlite3.
-5. Improve Haddock comments
+3. enable convenient management of games db via javascript
+4. Improve Haddock comments
 
 
 Bugi:
-HTTP request failed with: src/Server.hs:117:24-61: Non-exhaustive patterns in lambda
-zapytanie: http://localhost:8000/movebrowser?moves=554445745466475748435342523573847776868587673625788372828156466364655895
 
-http://localhost:8000/movebrowser?lang=eng&moves=553435454433467674848385637273524342786867887787896657756296252414235322386182816571791315983793929469569151459959
-
-division by zero:
-[po dwu pasach]
-http://localhost:8000/movebrowser?lang=pl&moves=49557566577663353733444534242653255462748564837384728786962382817715675647421614367195619251659146210000
-podobna sytuacja
-http://localhost:8000/game?lang=pl&id=7242
-http://localhost:8000/movebrowser?lang=eng&moves=965586357653574756466633587359626564373827481724364418254939284529611514261613152322123211219552941293919282817183727491514181429123851918293727361777287826683698878889977969009900750079008900840000

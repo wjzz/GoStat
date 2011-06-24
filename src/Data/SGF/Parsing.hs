@@ -8,6 +8,7 @@ module Data.SGF.Parsing where
 import Data.SGF.Types
 
 import Data.Char(ord)
+import Data.Maybe
 import Text.ParserCombinators.Parsec hiding (runParser)
 
 ---------------------------
@@ -31,7 +32,7 @@ sgfParser = do
   char ';'
   mvs <- moveParser `sepBy` (char ';')
   --char ')'
-  return $ SGF { metaData = meta, moves = map maybeMoveToMove mvs }
+  return $ SGF { metaData = meta, moves = map maybeMoveToMove (dropFinalPasses mvs) }
   
 symb :: Parser Char
 symb = alphaNum <|> space  <|> oneOf "[].-:/\\()~,+-_"
@@ -50,6 +51,9 @@ metaDataParser = do
   meta <- many singleMeta
   return $ MetaData meta
 
+dropFinalPasses :: [Maybe Move] -> [Maybe Move]
+dropFinalPasses ls = reverse $ dropWhile isNothing $ reverse ls
+
 maybeMoveToMove :: Maybe Move -> Move
 maybeMoveToMove Nothing = (0,0)
 maybeMoveToMove (Just x) = x
@@ -64,7 +68,7 @@ moveParser :: Parser (Maybe Move)
 moveParser = do
   char 'B' <|> char 'W'
   char '['
-  m1  <- optionMaybe letter
+  m1 <- optionMaybe letter
   m2 <- optionMaybe letter
   char ']'
   many symb
