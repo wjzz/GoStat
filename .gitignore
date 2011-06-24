@@ -1,5 +1,6 @@
 *.hi
 *.o
+*.db
 docs/*
 data/*
 dist/*

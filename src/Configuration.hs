@@ -101,7 +101,7 @@ sqliteDir = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/db/games.db"
 
 defaultConfig :: Configuration
 defaultConfig = Configuration { dbServer = Sqlite3 sqliteDir -- PostgreSQL
-                              , gameDirs = [sgfDirectory]
+                              , gameDirs = []
                               }
 
 ------------------------
