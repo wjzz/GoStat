@@ -41,39 +41,43 @@ router config = msum [ dir "movebrowser" $ moveBrowserC config
 
 mainPageC :: Configuration -> ServerPart Response
 mainPageC config = do
-  ok $ toResponse $ mainPage onLineConfig
+  ok $ toResponse $ mainPage onLineBuilders
   
+----------------------------
+--  A readability helper  --
+----------------------------
+
+withConfig :: Configuration -> GoStatM a -> ServerPart a
+withConfig config action = liftIO $ runGoStatM config action
+
 ------------------------
 --  The game browser  --
 ------------------------
 
 gameBrowserC :: Configuration -> ServerPart Response
-gameBrowserC config = do undefined
-                         {-
-  (count, currentStats, movesSoFar, lang) <- fetchStats
-  
+gameBrowserC config = do 
+  (count, currentStats, movesSoFar, lang) <- fetchStats config  
   limit <- (read `fmap` look "limit") `mplus` return 200
-  games <- liftIO $ queryGamesListDB movesSoFar limit
-  
+  games <- withConfig config $ queryGamesListDB movesSoFar limit
+ 
   let idsWithRelativeGames = map (second makeRelative) games
   
-  ok $ toResponse $ gameBrowserPage idsWithRelativeGames count currentStats movesSoFar (onLineConfig { language = lang })
--}
+  ok $ toResponse $ gameBrowserPage idsWithRelativeGames count currentStats movesSoFar (onLineBuilders { language = lang })
+
 -----------------------------
 --  The game details page  --
 -----------------------------
 
 gameDetailsC :: Configuration -> ServerPart Response
-gameDetailsC config = do undefined
-  {-
-  (count, _currentStats, _movesSoFar, lang) <- fetchStats
+gameDetailsC config = do 
+  (count, _currentStats, _movesSoFar, lang) <- fetchStats config
 
   gameIdM <- ((Just . read) `fmap` look "id") `mplus` return Nothing
   
   case gameIdM of
-    Nothing  -> errorPage "No id given"
+    Nothing      -> errorPage "No id given"
     Just gameId -> do
-      qResult <- liftIO $ queryFindGameById gameId
+      qResult <- withConfig config $ queryFindGameById gameId
       
       case qResult of
         Nothing -> errorPage "Wrong id, game not found"
@@ -84,8 +88,8 @@ gameDetailsC config = do undefined
             Left _ -> errorPage "Problem reading or parsing the given sgf"
             Right sgf -> 
               ok $ toResponse $ gameDetailsPage count gameId sgf (makeRelative absPath) 
-                                                movesSoFar (onLineConfig { language = lang })
--}
+                                                movesSoFar (onLineBuilders { language = lang })
+
 -- TODO
 -- create a real error page
   
@@ -97,34 +101,40 @@ errorPage s = error s
 ----------------------------
 
 moveBrowserC :: Configuration -> ServerPart Response
-moveBrowserC config = do undefined
-  {-
-  (count, currentStats, movesSoFar, lang) <- fetchStats 
-  moves                                   <- liftIO $ queryStatsDB movesSoFar  
+moveBrowserC config = do 
+  (count, currentStats, movesSoFar, lang) <- fetchStats config
+  moves <- withConfig config $ queryStatsDB movesSoFar  
   
-  ok $ toResponse $ moveBrowser count currentStats moves movesSoFar (onLineConfig { language = lang })
--}
-  
+  ok $ toResponse $ moveBrowser count currentStats moves movesSoFar (onLineBuilders { language = lang })
   
 ---------------------------
 --  A fetching shortcut  --
 ---------------------------
 
-fetchStats :: ServerPart (Int, (Int, Int, Int), String, Messages)
-fetchStats = do undefined
-                {-
-  count      <- liftIO $ queryCountDB
+getParams :: ServerPart (String, Messages)
+getParams = do
   movesSoFar <- look "moves" `mplus` (return [])
   langStr    <- look "lang"  `mplus` (return "pl")
-  currStats  <- liftIO $ queryCurrStatsDB movesSoFar
-  
+
   let lang = 
         case langStr of
           "pl" -> pl
-          _    -> eng  
-          
-  return (count, currStats, movesSoFar, lang)
--}
+          _    -> eng
+  return (movesSoFar, lang)
+
+fetchStatsWorker :: String -> GoStatM (Int, (Int, Int, Int))
+fetchStatsWorker movesSoFar = do 
+  count     <- queryCountDB
+  currStats <- queryCurrStatsDB movesSoFar
+  return (count, currStats)
+  
+fetchStats :: Configuration -> ServerPart (Int, (Int, Int, Int), String, Messages)
+fetchStats config = do
+  (movesSoFar, lang)    <- getParams
+  (count, currentStats) <- withConfig config $ fetchStatsWorker movesSoFar
+  
+  return (count, currentStats, movesSoFar, lang)
+
 ------------------------------
 --  Make the path relative  --
 ------------------------------
@@ -145,18 +155,18 @@ makeAbsolute s = absolutePathToGameDir ++ s
 --  The configuration of the online version  --
 -----------------------------------------------
 
-onLineConfig :: UrlBuilders
-onLineConfig = UrlBuilders { mainPageUrl        = "/"
-                           , moveBrowserMainUrl = "/movebrowser"
-                           , moveBrowserMakeUrl = urlMaker
-                           , gameBrowserMakeUrl = gameBrowserUrlMaker
-                           , gameDetailsMakeUrl = gameDetailsUrlMaker
-                           , gameDownloadLink   = sgfDownloadUrlMaker
-                           , imagesMakeUrl      = imageUrlMaker
-                           , cssUrl             = "/public/style.css"
-                           , jsUrls             = ["/public/jquery.js", "/public/highlight.js", "/public/eidogo/player/js/all.compressed.js"]
-                           , language           = eng
-                           }
+onLineBuilders :: UrlBuilders
+onLineBuilders = UrlBuilders { mainPageUrl        = "/"
+                             , moveBrowserMainUrl = "/movebrowser"
+                             , moveBrowserMakeUrl = urlMaker
+                             , gameBrowserMakeUrl = gameBrowserUrlMaker
+                             , gameDetailsMakeUrl = gameDetailsUrlMaker
+                             , gameDownloadLink   = sgfDownloadUrlMaker
+                             , imagesMakeUrl      = imageUrlMaker
+                             , cssUrl             = "/public/style.css"
+                             , jsUrls             = ["/public/jquery.js", "/public/highlight.js", "/public/eidogo/player/js/all.compressed.js"]
+                             , language           = eng
+                             }
 
 urlMaker :: Language -> String -> String
 urlMaker langN movesList = printf "/movebrowser?lang=%s&moves=%s" langN movesList
