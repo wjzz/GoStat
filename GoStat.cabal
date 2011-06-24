@@ -25,6 +25,7 @@ Executable GoStat
                       strict == 0.3.*,
                       HDBC == 2.2.*,
                       HDBC-postgresql == 2.2.*,
+                      HDBC-sqlite3 == 2.3.*,
                       happstack-server == 6.0.*,
                       xhtml == 3000.2.*,
                       mtl == 2.0.*

@@ -22,3 +22,5 @@ http://localhost:8000/movebrowser?lang=eng&moves=5534354544334676748483856372735
 division by zero:
 [po dwu pasach]
 http://localhost:8000/movebrowser?lang=pl&moves=49557566577663353733444534242653255462748564837384728786962382817715675647421614367195619251659146210000
+podobna sytuacja
+http://localhost:8000/game?lang=pl&id=7242
