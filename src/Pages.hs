@@ -72,9 +72,12 @@ globalHeader count config makeUrl = concatHtml [ flags
                                                , br
                                                , primHtml $ L.gamesInDb lang count
                                                , pHomePageLink 
+                                               , pStartPageLink
                                                ] where
   
   pHomePageLink = h4 << anchor ! [href (moveBrowserMainUrl config)] << L.backToMain lang
+  
+  pStartPageLink = h4 << anchor ! [href (mainPageUrl config)] << "Start page"
   lang          = language config
   
   makeFlag langStr = anchor ! [href (makeUrl langStr) ] 
@@ -97,7 +100,21 @@ mainPage config = pHeader +++ pBody where
   makeFlag langStr = anchor ! [href (moveBrowserMakeUrl config langStr []) ] 
                      << image ! [width "180" , height "120" , src (imagesMakeUrl config (langStr ++ "_flag.gif"))]
   
-  pBody = body $ welcome +++ (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
+  pBody = body $ concatHtml [ welcome 
+                            , flags
+                            , hr
+                            , anchor ! [href (moveBrowserMakeUrl config "pl" [])] << "Move browser"
+                            , br
+                            , primHtml "Manage games"
+                            , br
+                            , primHtml "Test settings and view metastatistics"
+                            , br
+                            , primHtml "Generate offline version"
+                            , br
+                            , primHtml "Close application"
+                            ]
+          
+  flags = (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
   
   welcome = h1 << "Witaj w programie do go!"
   
