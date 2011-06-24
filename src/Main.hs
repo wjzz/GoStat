@@ -17,9 +17,17 @@ main :: IO ()
 main = do
   args <- getArgs
   
-  --config <- readConfig
-  let config = defaultConfig
+  configM <- readConfig configurationPath
+  config  <- 
+    case configM of
+      Left err -> do
+        putStrLn err
+        return defaultConfig
+      Right c -> return c
       
+  putStrLn "Current configuration:"
+  print config
+  
   case args of
     ("rebuild":_) -> do
       putStrLn "Starting DB rebuilding..."
