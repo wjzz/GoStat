@@ -44,14 +44,20 @@ createDB = do
 
 deleteDB :: GoStatM ()
 deleteDB = withConnection $ \(ConnWrapper conn) -> do
-    run conn "DROP TABLE go_stat_data" []
-    commit conn
+    catch (do
+              run conn "DROP TABLE go_stat_data" []
+              commit conn)
+      (const (return ()))
 
 addFilesToDB :: GoStatM ()
 addFilesToDB = do
   dirs <- gameDirs <$> getConfig
   withConnection (\(ConnWrapper conn) -> do 
   putStrLn "connected to DB..."
+  
+  len <- length <$> getSGFs dirs
+  putStrLn $ printf "%d games to analyze." len
+  
   files <- getSGFs dirs
   
   stmt <- prepare conn "INSERT INTO go_stat_data (winner, moves, game_id) VALUES (?,?,?)"
@@ -63,11 +69,12 @@ addFilesToDB = do
       Just gi -> do
         let (_, win, mvs) = gameInfoToDB gi
         --print (length mvs)
-        if index `mod` 1000 == 0
-           then putStrLn $ "done " ++ show index
-           else return ()
         execute stmt [toSql win, toSql mvs, toSql file]
-        return ()        
+        return ()
+    if index `mod` 1000 == 0
+      then putStrLn $ printf "done %d (%2d%%)" index ((100 * index) `div` len)
+      else return ()
+
   
   commit conn)
   liftIO $ putStrLn "closed connection to DB"
