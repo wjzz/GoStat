@@ -1,4 +1,3 @@
-
 {-# OPTIONS -Wall #-}
 {-
   @author: Wojciech Jedynak (wjedynak@gmail.com)
@@ -18,12 +17,8 @@ import System.FilePath.Find hiding (fileName)
 getFileNames :: FilePath -> IO [FilePath]
 getFileNames topDir = find always (extension ==? ".sgf") topDir
 
-sgfDirectory :: FilePath
-sgfDirectory = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/"
-
-getSGFs :: IO [FilePath]
-getSGFs = getFileNames sgfDirectory
-
+getSGFs :: [FilePath] -> IO [FilePath]
+getSGFs dirs = concat `fmap` mapM getFileNames dirs
 
 fileToSGF :: String -> Maybe (FilePath, SGF)
 fileToSGF input = do
@@ -56,27 +51,3 @@ sgfToGameInfo fileName sgf = do
   guard (length mvs > 5)
   guard (not (isWithHandicap sgf))
   return $ GameInfo fileName win (normalizeMoves mvs)
-{-
-aux :: FilePath -> IO Int
-aux file = do
-  l <- length `fmap` Prelude.readFile file
-  l `seq`  return l
-
-aux2 :: FilePath -> IO (Maybe GameInfo)
-aux2 file = do
-  l <- (fileToSGF >=> uncurry sgfToGameInfo) `fmap` Strict.readFile file
-  return l
-
-loadSGFs :: IO [GameInfo]
-loadSGFs = do
-  files <- getSGFs
-  gameInfos <- mapM aux files
-  --gameInfos <- {-map (fileToSGF >=> uncurry sgfToGameInfo) `fmap`-} mapM aux {-Strict.readFile-} files
-  --value <- sum `fmap` mapM aux files
-  --print value
-  --let gameInfos = map (fileToSGF >=> uncurry sgfToGameInfo) inputs
-  
-  return $ map undefined gameInfos
-  --return $ catMaybes gameInfos
-  --return $ [] -- map undefined files
--}

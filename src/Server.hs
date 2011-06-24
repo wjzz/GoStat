@@ -8,6 +8,7 @@ import Data.SGF.Parsing
 import DB
 import Pages
 import Lang
+import Configuration
 
 import Control.Arrow
 import Control.Monad
@@ -19,9 +20,9 @@ import Text.Printf
 --  The top-level server and routing procedures  --
 ---------------------------------------------------
 
-server :: IO ()
+server :: GoStatM ()
 server = do
-  putStrLn "Listening on port 8000..."
+  liftIO $ putStrLn "Listening on port 8000..."
   simpleHTTP nullConf $ router
   
 router :: ServerPart Response

@@ -1,4 +1,3 @@
-{-# LANGUAGE Rank2Types #-}
 {-# OPTIONS -Wall -fno-warn-unused-do-bind #-}
 
 {-
@@ -10,40 +9,50 @@ import SgfBatching hiding (moves)
 
 import Control.Applicative
 import Control.Monad
+import Control.Monad.Reader
 import Data.Maybe
 import Database.HDBC
-import Database.HDBC.PostgreSQL(connectPostgreSQL)
-import Database.HDBC.Sqlite3   (connectSqlite3)
-
+import Database.HDBC.PostgreSQL (connectPostgreSQL)
+import Database.HDBC.Sqlite3    (connectSqlite3)
 import System.IO.Strict as Strict
 import Text.Printf
 
-withConnection :: (ConnWrapper -> IO a) -> IO a
+import Configuration
+
+withConnection :: (ConnWrapper -> IO a) -> GoStatM a
 withConnection dbAction = do
-  --conn <- ConnWrapper <$> connectPostgreSQL ""
-  conn <- ConnWrapper <$> connectSqlite3 "/home/wjzz/Dropbox/Programy/Haskell/GoStat/db/games.db"
-  result <- dbAction conn
-  disconnect conn
+  db   <- dbServer <$> getConfig
+  conn <- (case db of
+              PostgreSQL     -> liftIO $ ConnWrapper <$> connectPostgreSQL ""
+              Sqlite3 dbPath -> liftIO $ ConnWrapper <$> connectSqlite3 dbPath)
+          
+  result <- liftIO $ dbAction conn
+  liftIO $ disconnect conn
   return result
 
-createDB :: IO ()
-createDB =
+createDB :: GoStatM ()
+createDB = do
+  db <- dbServer <$> getConfig
+  
+  let createTable = case db of
+        PostgreSQL-> "CREATE TABLE go_stat_data (id SERIAL  PRIMARY KEY, winner CHAR NOT NULL, moves VARCHAR(700) NOT NULL, game_id VARCHAR(255))"
+        Sqlite3 _ -> "CREATE TABLE go_stat_data (id INTEGER PRIMARY KEY, winner CHAR NOT NULL, moves VARCHAR(700) NOT NULL, game_id VARCHAR(255))"
+
   withConnection $ \(ConnWrapper conn) -> do
-    run conn "CREATE TABLE go_stat_data (id SERIAL PRIMARY KEY, winner CHAR NOT NULL, moves VARCHAR(700) NOT NULL, game_id VARCHAR(255))" []
+    run conn createTable []
     commit conn
 
-deleteDB :: IO ()
-deleteDB = 
-  withConnection $ \(ConnWrapper conn) -> do
+deleteDB :: GoStatM ()
+deleteDB = withConnection $ \(ConnWrapper conn) -> do
     run conn "DROP TABLE go_stat_data" []
     commit conn
 
-
-addFilesToDB :: IO ()
+addFilesToDB :: GoStatM ()
 addFilesToDB = do
+  dirs <- gameDirs <$> getConfig
   withConnection (\(ConnWrapper conn) -> do 
   putStrLn "connected to DB..."
-  files <- getSGFs
+  files <- getSGFs dirs
   
   stmt <- prepare conn "INSERT INTO go_stat_data (winner, moves, game_id) VALUES (?,?,?)"
   
@@ -61,9 +70,9 @@ addFilesToDB = do
         return ()        
   
   commit conn)
-  putStrLn "closed connection with DB"
+  liftIO $ putStrLn "closed connection to DB"
   
-queryCountDB :: IO Int
+queryCountDB :: GoStatM Int
 queryCountDB = do
   answer <- withConnection $ \(ConnWrapper conn) -> do
     quickQuery' conn "SELECT count(*) FROM go_stat_data" []
@@ -75,7 +84,7 @@ queryCountDB = do
 
 -- |Returns a statistic in the form (move, total_played, black won, white won) about all possible continuations
 -- |of the current position found the db
-queryStatsDB :: String -> IO [(String, Int, Int, Int)]
+queryStatsDB :: String -> GoStatM [(String, Int, Int, Int)]
 queryStatsDB movesSoFar = do
   (total, black) <- withConnection $ \(ConnWrapper conn) -> do
     total <- quickQuery' conn total_query []
@@ -101,7 +110,7 @@ queryStatsDB movesSoFar = do
     count _ _ = ("",0,0,0)
 
 -- |Returns a statistic in the form (total_played, black won, white won) about the current position
-queryCurrStatsDB :: String -> IO (Int, Int, Int)
+queryCurrStatsDB :: String -> GoStatM (Int, Int, Int)
 queryCurrStatsDB movesSoFar = do
   (total, black) <- withConnection $ \(ConnWrapper conn) -> 
     do  
@@ -122,7 +131,7 @@ queryCurrStatsDB movesSoFar = do
     black_query = printf query_template ("WHERE WINNER = ? AND moves LIKE " ++ pattern)
 
 -- |Returns a list of full data of games with the given position, but not more that the given limit
-queryGamesListDB :: String -> Int -> IO [(Int, String)]
+queryGamesListDB :: String -> Int -> GoStatM [(Int, String)]
 queryGamesListDB movesSoFar limit = do
   result <- withConnection $ \(ConnWrapper conn) -> 
      quickQuery' conn query [toSql limit]
@@ -131,7 +140,7 @@ queryGamesListDB movesSoFar limit = do
     pattern = '\'': movesSoFar ++ "%'"
     query = printf "SELECT id, game_id FROM go_stat_data %s LIMIT ?" (if null movesSoFar then "" else "WHERE moves LIKE " ++ pattern)
     
-queryFindGameById :: Int -> IO (Maybe (String, FilePath))
+queryFindGameById :: Int -> GoStatM (Maybe (String, FilePath))
 queryFindGameById gameId = do
   result <- withConnection $ \(ConnWrapper conn) -> 
     quickQuery' conn "SELECT moves, game_id FROM go_stat_data WHERE id = ?" [toSql gameId]
