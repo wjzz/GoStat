@@ -43,8 +43,8 @@ buildMoveBrowser n currentLevel movesSoFar = do
       | currentLevel < 1 = forkChild m >> return ()
       | otherwise        = m
 
-offLineConfig :: Configuration
-offLineConfig = Configuration { mainPageUrl        = "../index.htm"
+offLineConfig :: UrlBuilders
+offLineConfig = UrlBuilders { mainPageUrl        = "../index.htm"
                               , moveBrowserMainUrl = "moves/move.htm"
                               , moveBrowserMakeUrl = mbUrl
                               , cssUrl             = "../style.css"

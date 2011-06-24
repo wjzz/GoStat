@@ -1,0 +1,3 @@
+db-server:postgreql;
+db-server:sqlite3;db/list.db
+game-dirs:/home/wjzz...

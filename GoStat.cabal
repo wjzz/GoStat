@@ -8,6 +8,14 @@ Maintainer:          wjedynak@gmail.com
 Category:            Game
 Build-type:          Simple
 Cabal-version:       >=1.2
+Extra-source-files: README
+--                    doc/release-notes/*.txt
+-- data-dir:           src/data
+-- data-files:         Agda.css
+--                     emacs-mode/*.el
+--                     EpicInclude/AgdaPrelude.e
+--                     EpicInclude/stdagda.c
+--                     EpicInclude/stdagda.h
 
 library
   ghc-options: -Wall -fno-warn-unused-do-bind -rtsopts -threaded
@@ -17,6 +25,8 @@ library
   hs-source-dirs: src
 
 Executable GoStat
+
+
   GHC-Options: -W -Wall -O3 -rtsopts -threaded
   Hs-source-dirs: src 
   Main-is:    	      Main.hs

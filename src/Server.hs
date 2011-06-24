@@ -138,18 +138,18 @@ makeAbsolute s = absolutePathToGameDir ++ s
 --  The configuration of the online version  --
 -----------------------------------------------
 
-onLineConfig :: Configuration
-onLineConfig = Configuration { mainPageUrl        = "/"
-                             , moveBrowserMainUrl = "/movebrowser"
-                             , moveBrowserMakeUrl = urlMaker
-                             , gameBrowserMakeUrl = gameBrowserUrlMaker
-                             , gameDetailsMakeUrl = gameDetailsUrlMaker
-                             , gameDownloadLink   = sgfDownloadUrlMaker
-                             , imagesMakeUrl      = imageUrlMaker
-                             , cssUrl             = "/public/style.css"
-                             , jsUrls             = ["/public/jquery.js", "/public/highlight.js", "/public/eidogo/player/js/all.compressed.js"]
-                             , language           = eng
-                             }
+onLineConfig :: UrlBuilders
+onLineConfig = UrlBuilders { mainPageUrl        = "/"
+                           , moveBrowserMainUrl = "/movebrowser"
+                           , moveBrowserMakeUrl = urlMaker
+                           , gameBrowserMakeUrl = gameBrowserUrlMaker
+                           , gameDetailsMakeUrl = gameDetailsUrlMaker
+                           , gameDownloadLink   = sgfDownloadUrlMaker
+                           , imagesMakeUrl      = imageUrlMaker
+                           , cssUrl             = "/public/style.css"
+                           , jsUrls             = ["/public/jquery.js", "/public/highlight.js", "/public/eidogo/player/js/all.compressed.js"]
+                           , language           = eng
+                           }
 
 urlMaker :: Language -> String -> String
 urlMaker langN movesList = printf "/movebrowser?lang=%s&moves=%s" langN movesList

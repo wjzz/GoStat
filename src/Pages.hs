@@ -20,23 +20,23 @@ import qualified Lang as L
 
 type MovesSoFar = String
 
-data Configuration = Configuration { mainPageUrl        :: String
-                                   , moveBrowserMainUrl :: String
-                                   , moveBrowserMakeUrl :: Language -> MovesSoFar -> String
-                                   , gameBrowserMakeUrl :: Language -> MovesSoFar -> String
-                                   , gameDetailsMakeUrl :: Language -> Int        -> String
-                                   , gameDownloadLink   :: FilePath -> String
-                                   , imagesMakeUrl      :: String   -> String
-                                   , cssUrl             :: String
-                                   , jsUrls             :: [String]
-                                   , language           :: Messages
-                                   }
+data UrlBuilders = UrlBuilders { mainPageUrl        :: String
+                               , moveBrowserMainUrl :: String
+                               , moveBrowserMakeUrl :: Language -> MovesSoFar -> String
+                               , gameBrowserMakeUrl :: Language -> MovesSoFar -> String
+                               , gameDetailsMakeUrl :: Language -> Int        -> String
+                               , gameDownloadLink   :: FilePath -> String
+                               , imagesMakeUrl      :: String   -> String
+                               , cssUrl             :: String
+                               , jsUrls             :: [String]
+                               , language           :: Messages
+                               }
 
 -----------------------
 --  A common header  --
 -----------------------
 
-htmlHeader :: Configuration -> Html
+htmlHeader :: UrlBuilders -> Html
 htmlHeader config = header << ((thetitle << L.title lang) 
                                  +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
                                  +++ script ! [thetype "text/javascript"] << eidogoConfig
@@ -66,7 +66,7 @@ htmlHeader config = header << ((thetitle << L.title lang)
 --  Header used in most pages  --
 ---------------------------------
 
-globalHeader :: Int -> Configuration -> (Language -> String) -> Html
+globalHeader :: Int -> UrlBuilders -> (Language -> String) -> Html
 globalHeader count config makeUrl = concatHtml [ flags 
                                                , br 
                                                , br
@@ -88,7 +88,7 @@ globalHeader count config makeUrl = concatHtml [ flags
 --  The main page  --
 ---------------------
 
-mainPage :: Configuration -> Html
+mainPage :: UrlBuilders -> Html
 mainPage config = pHeader +++ pBody where
   lang    = language config
   pHeader = htmlHeader config
@@ -107,7 +107,7 @@ mainPage config = pHeader +++ pBody where
 --  The games browser page  --
 ------------------------------
 
-gameBrowserPage :: [(Int, FilePath)] -> Int -> (Int, Int, Int) -> String -> Configuration -> Html
+gameBrowserPage :: [(Int, FilePath)] -> Int -> (Int, Int, Int) -> String -> UrlBuilders -> Html
 gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config
@@ -147,7 +147,7 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHead
 
 type GameId = Int
 
-gameDetailsPage :: Int -> GameId -> SGF -> FilePath -> MovesSoFar -> Configuration -> Html
+gameDetailsPage :: Int -> GameId -> SGF -> FilePath -> MovesSoFar -> UrlBuilders -> Html
 gameDetailsPage count gameId game path movesSoFar config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config
@@ -198,7 +198,7 @@ gameDetailsPage count gameId game path movesSoFar config = pHeader +++ pBody whe
 --  The move browser page  --
 -----------------------------
 
-moveBrowser :: Int -> (Int, Int, Int) -> [(String, Int, Int, Int)] -> String -> Configuration -> Html
+moveBrowser :: Int -> (Int, Int, Int) -> [(String, Int, Int, Int)] -> String -> UrlBuilders -> Html
 moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ pBody where
   lang       = language config
   pHeader    = htmlHeader config
@@ -359,7 +359,7 @@ getImage point str =
     Nothing    -> imageFromPoint point
     Just color -> imageFromColor color
 
-getIntersect :: String -> String -> Configuration -> Bool -> [Point] -> Point -> String -> Html
+getIntersect :: String -> String -> UrlBuilders -> Bool -> [Point] -> Point -> String -> Html
 getIntersect _ _        config False _     point str = image ! [src (imagesMakeUrl config $ (getImage point str))]
 getIntersect imgUrl url config True  candidates point@(i,j) str 
   | point `elem` candidates = 
@@ -373,7 +373,7 @@ getIntersect imgUrl url config True  candidates point@(i,j) str
      anchor ! [href url] << thespan ! attrs << primHtml "x"                              
   | otherwise = getIntersect imgUrl url config False candidates point str
 
-board :: Configuration -> Bool -> [String] -> String -> Html
+board :: UrlBuilders -> Bool -> [String] -> String -> Html
 board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
   tbl = table ! [border 0] ! [cellspacing 0] ! [cellpadding 0] << (bHeader +++ concatHtml (map row [1..9]))
   
