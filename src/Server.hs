@@ -23,31 +23,33 @@ import Text.Printf
 server :: GoStatM ()
 server = do
   liftIO $ putStrLn "Listening on port 8000..."
-  simpleHTTP nullConf $ router
+  config <- getConfig
+  liftIO $ simpleHTTP nullConf $ router config
   
-router :: ServerPart Response
-router = msum [ dir "movebrowser" moveBrowserC
-              , dir "games"       gameBrowserC
-              , dir "game"        gameDetailsC
-              , dir "public" $ serveDirectory EnableBrowsing [] "public"
-              , dir "sgf"    $ serveDirectory EnableBrowsing [] "data"                                
-              , mainPageC
-              ]
+router :: Configuration -> ServerPart Response
+router config = msum [ dir "movebrowser" $ moveBrowserC config
+                     , dir "games"       $ gameBrowserC config
+                     , dir "game"        $ gameDetailsC config
+                     , dir "public"      $ serveDirectory EnableBrowsing [] "public"
+                     , dir "sgf"         $ serveDirectory EnableBrowsing [] "data"                                
+                     , mainPageC config
+                     ]
          
 ---------------------
 --  The main page  --
 ---------------------
 
-mainPageC :: ServerPart Response
-mainPageC = do
+mainPageC :: Configuration -> ServerPart Response
+mainPageC config = do
   ok $ toResponse $ mainPage onLineConfig
   
 ------------------------
 --  The game browser  --
 ------------------------
 
-gameBrowserC :: ServerPart Response
-gameBrowserC = do
+gameBrowserC :: Configuration -> ServerPart Response
+gameBrowserC config = do undefined
+                         {-
   (count, currentStats, movesSoFar, lang) <- fetchStats
   
   limit <- (read `fmap` look "limit") `mplus` return 200
@@ -56,14 +58,14 @@ gameBrowserC = do
   let idsWithRelativeGames = map (second makeRelative) games
   
   ok $ toResponse $ gameBrowserPage idsWithRelativeGames count currentStats movesSoFar (onLineConfig { language = lang })
-
+-}
 -----------------------------
 --  The game details page  --
 -----------------------------
 
-gameDetailsC :: ServerPart Response
-gameDetailsC = do 
-  
+gameDetailsC :: Configuration -> ServerPart Response
+gameDetailsC config = do undefined
+  {-
   (count, _currentStats, _movesSoFar, lang) <- fetchStats
 
   gameIdM <- ((Just . read) `fmap` look "id") `mplus` return Nothing
@@ -83,7 +85,7 @@ gameDetailsC = do
             Right sgf -> 
               ok $ toResponse $ gameDetailsPage count gameId sgf (makeRelative absPath) 
                                                 movesSoFar (onLineConfig { language = lang })
-
+-}
 -- TODO
 -- create a real error page
   
@@ -94,19 +96,23 @@ errorPage s = error s
 --  The moveBrowser page  --
 ----------------------------
 
-moveBrowserC :: ServerPart Response
-moveBrowserC = do
+moveBrowserC :: Configuration -> ServerPart Response
+moveBrowserC config = do undefined
+  {-
   (count, currentStats, movesSoFar, lang) <- fetchStats 
   moves                                   <- liftIO $ queryStatsDB movesSoFar  
   
   ok $ toResponse $ moveBrowser count currentStats moves movesSoFar (onLineConfig { language = lang })
+-}
+  
   
 ---------------------------
 --  A fetching shortcut  --
 ---------------------------
 
 fetchStats :: ServerPart (Int, (Int, Int, Int), String, Messages)
-fetchStats = do
+fetchStats = do undefined
+                {-
   count      <- liftIO $ queryCountDB
   movesSoFar <- look "moves" `mplus` (return [])
   langStr    <- look "lang"  `mplus` (return "pl")
@@ -118,7 +124,7 @@ fetchStats = do
           _    -> eng  
           
   return (count, currStats, movesSoFar, lang)
-
+-}
 ------------------------------
 --  Make the path relative  --
 ------------------------------
