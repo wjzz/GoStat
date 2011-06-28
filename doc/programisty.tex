@@ -48,11 +48,29 @@ polskim bądź angielskim.
 
 \subsection{Konfiguracja programu}
 
-Dane konfiguracyjne
+W programie potrzebujemy przechowywać dwie informacje: jakiej bazy danych używa (chce używać) użytkownik i gdzie znajduje się jego
+kolekcja zapisów partii go, które chciałby analizować naszym programem. Do przechowywania ww. danych używamy bardzo prostego, 
+autorskiego formatu. Funkcje związane z wczytywanien, analizą leksykalną oraz zapisywaniem znajdują się w module Configuration 
+(w pliku src/Configuration.hs).
 
 \subsubsection{Opis formatu pliku CONFIG}
 
-header:value1;value2;
+Format pliku jest opisywany przez poniższą gramatykę w postaci EBNF: \\
+
+config ::= declaration* \\ 
+declaration ::= db | dirs | '--' *anything* \\
+db = dbserver ':' dbversion \\ 
+dbversion = sqlite3 ';' path ';' | postgresql ';' \\
+dirs = gamedirs ':' path ';' \\
+
+Przykładowy plik konfiguracyjny:
+
+-- new config
+dbserver:sqlite3;/home/wjzz/Dropbox/Programy/Haskell/GoStat/db/games.db;
+--dbserver:postgresql;
+gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/;
+
+
 
 \subsection{Baza danych}
 
@@ -69,23 +87,21 @@ Używana jest jedna tabela o nazwie go\_stat\_data.
 \textbf{Opis pól tabeli go\_stat\_data}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{| c | c | c | c | } \hline
- Pole    & Typ          & NULL dozwolone? & Opis \\ \hline
- id      & PRIMARY KEY  & nie & unikatowy identyfikator gry \\ \hline
- winner  & CHAR         & nie & zwycięzca gry ('b' lub 'w') \\ \hline
+ Pole    & Typ          & NULL dozwolone? & Opis                  \\ \hline
+ id      & PRIMARY KEY  & nie & unikatowy identyfikator gry       \\ \hline
+ winner  & CHAR         & nie & zwycięzca gry ('b' lub 'w')       \\ \hline
  moves   & VARCHAR(700) & nie & znormalizowany przebieg rozgrywki \\ \hline
- path    & VARCHAR(255) & nie & względna scieżka do gry \\ \hline
- b\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) czarnego \\ \hline
- w\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) białego \\ \hline
- b\_rank & VARCHAR(10)  & tak & ranking czarnego \\ \hline
- w\_rank & VARCHAR(10)  & tak & ranking białego \\ \hline
+ path    & VARCHAR(255) & nie & względna scieżka do gry           \\ \hline
+ b\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) czarnego     \\ \hline
+ w\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) białego      \\ \hline
+ b\_rank & VARCHAR(10)  & tak & ranking czarnego                  \\ \hline
+ w\_rank & VARCHAR(10)  & tak & ranking białego                   \\ \hline
 \end{tabular}
-% \vspace{10ex}
-
 
 \end{center}
 
-
-Pola takie i takie.
+Jedyne pola, która nie są wymagane to pola b\_rank i w\_rank. Wynika to z tego, że na niektórych serwerach do gry w go
+nie jest wymagane podanie swojego orientacyjnego poziomu ani rankingu. 
 
 \subsection{Struktura modułów}
 Lista modułów wchodzących w skład projektu:
@@ -100,15 +116,22 @@ Pliki css, javascript, obrazki
 \subsubsection{Cabal}
 \subsubsection{Happstack}
 \subsubsection{HUnit, QuickCheck, test-framework}
-\subsubsection{postresql, sqlite3, HDBC}
+\subsubsection{HDBC, HDBC-postresql, HDBC-sqlite3}
 \subsubsection{Parsec 2}
 \subsubsection{xhtml 3000}
 \subsubsection{inne (filemanip, strict, mtl)}
 
 \subsection{Narzędzia}
-\subsubsection{Git}
+W niniejszej sekcji wymieniono i pokrótce opisano najważniejsze narzędzia, które pozwoliły ukończyć projekt.
+
+\subsubsection{Git i portal http://github.com}
+Git to system do kontroli wersji autorstwa Linuxa Torwardsa (TODO: sprawdzić pisownię). Github to portal, który pozwala
+na przechowywanie kodu źródłowego (ogólnie: repozytoriów kodu zarządzanych przez git) i udostępnienie go innym programistom.
+Poprzez użycie tych zasobów rozwiązałem kwestię składowania projektu i mogłem swobodnie eksperymentować: nietrafione zmiany
+można było wycofać jednym poleceniem.
+
 \subsubsection{Latex}
-\subsubsection{Emacs}
+System \LaTeX pozwolił na utworzenie dokumentacji w formacie pdf, który jest standardem w informatyce.
 
 \section{Słownik}
 Czarny \\
@@ -120,6 +143,10 @@ Haskell \\
 zapis gry \\
 ranking (gracza) \\
 znormalizowany przebieg gry \\
+go \\
+serwer do gry w go \\
+gramatyka bezkontekstowa \\
+postac EBNF \\ 
 
 %% 2.0. Organizacja projektu
 %% 2.0.0. Cykl życia aplikacji
@@ -130,14 +157,6 @@ znormalizowany przebieg gry \\
 %% 2.2. Omowienie modulow
 %% 2.2.1. Data.SGF
 %% 2.2.2. Transformations (opis funkcji i niezmiennikow)
-%% 2.3. Lista użytych narzędzi i bibliotek wraz z omowieniem i przykladami
-%% 2.3.1. Cabal
-%% 2.3.2. Happstack
-%% 2.3.3. HUnit, QuickCheck, test-framework
-%% 2.3.4. postresql, HDBC
-%% 2.3.5. Parsec 2
-%% 2.3.6. xhtml 3000
-%% 2.3.7. inne (filemanip, strict, mtl)
 
 
 \end{document}
