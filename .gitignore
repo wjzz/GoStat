@@ -6,3 +6,7 @@ data/*
 dist/*
 bin/*
 db/*
+*.aux
+*.log
+*.toc
+*.out

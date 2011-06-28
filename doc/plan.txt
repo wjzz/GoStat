@@ -29,6 +29,9 @@
 3. Motywacja dla projektu
 3.1. Krótkie wprowadzenie do go
 3.2. Cel projektu: zadanie Fajfiego
+
+TODO: 
+ 3.3 Opis Haskella, jego mocnych stron itd
 3.3. Dlaczego Haskell?
 
 4. Podrecznik: "Programowanie w Haskellu: aspekty praktyczne"
