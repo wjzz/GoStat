@@ -2,13 +2,15 @@
 % z eidogo: ktorej gry mamy uzyc?
 % mozliwe rozwiazanie: trzymac takze plik sgf w bazie... (ew go generowac w locie - brzmi dobrze...!)
 
-\documentclass[11pt,leqno]{article}
+\documentclass[10pt,leqno]{article}
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \frenchspacing
-\usepackage{indentfirst}
-
+%\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{framed}
+\usepackage[textwidth=14cm,textheight=24cm]{geometry}
 
 \title{\LARGE Licencjacki projekt programistyczny 2011 \\ 
        \ \\
@@ -55,20 +57,26 @@ autorskiego formatu. Funkcje związane z wczytywanien, analizą leksykalną oraz
 
 \subsubsection{Opis formatu pliku CONFIG}
 
-Format pliku jest opisywany przez poniższą gramatykę w postaci EBNF: \\
-
-config ::= declaration* \\ 
+Format pliku jest opisywany przez poniższą gramatykę w postaci EBNF:
+\begin{framed}
+\noindent config ::= declaration* \\ 
 declaration ::= db | dirs | '--' *anything* \\
 db = dbserver ':' dbversion \\ 
 dbversion = sqlite3 ';' path ';' | postgresql ';' \\
-dirs = gamedirs ':' path ';' \\
+dirs = gamedirs ':' path ';'
+\end{framed}
 
 Przykładowy plik konfiguracyjny:
 
--- new config
-dbserver:sqlite3;/home/wjzz/Dropbox/Programy/Haskell/GoStat/db/games.db;
---dbserver:postgresql;
-gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/;
+\begin{framed}
+\noindent \--\-- new config \\
+\--\--dbserver:postgresql; \\ 
+dbserver:sqlite3;/home/wojtekdb/games.db; \\
+gamedirs:/home/wojtek/data/;
+\end{framed}
+
+%\begin{minipage}[pos]{width} text 
+%\end{minipage}
 
 
 
@@ -106,20 +114,51 @@ nie jest wymagane podanie swojego orientacyjnego poziomu ani rankingu.
 \subsection{Struktura modułów}
 Lista modułów wchodzących w skład projektu:
 
+\subsubsection{Data.SGF.Parsing i Data.SGF.Types}
+Analiza plików SGF
+
+\subsubsection{Transformations}
+Przekształcenia matematyczne i normalizacja ruchów
+
+\subsubsection{SgfBatching}
+Konwersja plików SGF do formatu, który będzie łatwo zapisać w bazie danych
+
+\subsubsection{Lang}
+Komunikaty w języku polskim i angielskim
+
+\subsubsection{Configuration}
+Obsługa pliku CONFIG.
+
+\subsubsection{Pages}
+Tworzenie szablonów stron WWW.
+
+\subsubsection{DB}
+Zarządzanie bazą danych.
+
+\subsubsection{Server}
+Serwer HTTP. 
+
+\subsubsection{Main}
+Punkt startowy aplikacji.
+
+% \subsubsection{Offline}
+
+
+
 \subsection{Pozostałe pliki}
 Pliki css, javascript, obrazki
 
 \section{Kompilacja i testowanie}
 
-\section{Wykorzystane biblioteki i narzędzia}
-\subsection{Biblioteki}
-\subsubsection{Cabal}
-\subsubsection{Happstack}
-\subsubsection{HUnit, QuickCheck, test-framework}
-\subsubsection{HDBC, HDBC-postresql, HDBC-sqlite3}
-\subsubsection{Parsec 2}
-\subsubsection{xhtml 3000}
-\subsubsection{inne (filemanip, strict, mtl)}
+\section{Wykorzystane biblioteki i narzędzia pomocnicze}
+\subsection{Biblioteki, pakiety, moduły}
+\subsubsection{Śledzenie zależności (Cabal)}
+\subsubsection{Serwer HTTP (Happstack)}
+\subsubsection{Testowanie (HUnit, QuickCheck, test-framework)}
+\subsubsection{Zarządzanie bazą danych (HDBC, HDBC-postresql, HDBC-sqlite3)}
+\subsubsection{Analiza leksykalna (Parsec)}
+\subsubsection{Generowanie html (xhtml 3000)}
+\subsubsection{Pozostałe (filemanip, strict, mtl)}
 
 \subsection{Narzędzia}
 W niniejszej sekcji wymieniono i pokrótce opisano najważniejsze narzędzia, które pozwoliły ukończyć projekt.
