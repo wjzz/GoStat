@@ -1,0 +1,143 @@
+% TODO uzycie wzglednej sciezki do gry moze spowodowac problemy
+% z eidogo: ktorej gry mamy uzyc?
+% mozliwe rozwiazanie: trzymac takze plik sgf w bazie... (ew go generowac w locie - brzmi dobrze...!)
+
+\documentclass[11pt,leqno]{article}
+\usepackage[polish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\frenchspacing
+\usepackage{indentfirst}
+
+
+\title{\LARGE Licencjacki projekt programistyczny 2011 \\ 
+       \ \\
+       Program do wykonywania obliczeń statystycznych związanych z grą go \\ 
+       \ \\
+       Dokumentacja programisty }
+
+% TODO autor wieksza czcionka
+
+\author{Wojciech Jedynak}
+\date{Wrocław, \today}
+
+\begin{document}
+
+\maketitle 
+
+\thispagestyle{empty}
+\tableofcontents
+
+\newpage
+
+\section{Wprowadzenie}
+
+\subsection{Cel dokumentacji}
+Celem niniejszego dokumentu jest takie przedstawienie struktury projektu, aby umożliwić jego modyfikacje oraz utrzymywanie programistom, którzy
+znają Haskella, ale nie należeli do początkowego zespołu. Wykaz użytych bibliotek powinien był pomocą, gdy instalacja oprogrogramowania nie powiedzie się i 
+konieczna będzie kompilacja programu ze źródeł. Dodatkowo życzeniem autora jest nakreślenie wykonanej pracy tak, aby zainteresowane osoby
+były w stanie (w razie potrzeby) na wykorzystanie opisanych tu rozwiązań w swoich projektach.
+
+\section{Organizacja projektu}
+
+\subsection{Ogólny opis}
+Program został napisany niemal w całości w Haskellu. Uruchamiany jest za pomocą wiersza poleceń, a komunikacja z użytkownikiem
+odbywa się za pomocą interfejsu WWW. Lista katalogów, które stanowią kolekcję plików SGF zapisywana jest do pliku konfiguracyjnego,
+wstępnie przetworzone (\emph{znormalizowane}) gry są przechowywane w bazie danych. Dialog z użytkownikiem może odbywać się w języku
+polskim bądź angielskim.
+
+\subsection{Konfiguracja programu}
+
+Dane konfiguracyjne
+
+\subsubsection{Opis formatu pliku CONFIG}
+
+header:value1;value2;
+
+\subsection{Baza danych}
+
+Program pozwala na użycie baz Sqlite3 oraz PostgreSQL. Możliwa jest zmiana decyzji co do tego, która z nich jest używana; 
+wymagane jest wówczas przebudowanie zawartości, gdyż protokół komunikacyjny bazy PostgreSQL nie jest kompatybilny z protokołem
+bazy Sqlite3. Ani użytkownik ani programista nie muszą zajmować się ręczną administracją bazy danych: służy do tego odpowiedni
+moduł (DB w pliku src/DB.hs). 
+
+Używana jest jedna tabela o nazwie go\_stat\_data.
+
+\subsubsection{Tabela go\_stat\_data}
+
+\begin{center}
+\textbf{Opis pól tabeli go\_stat\_data}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{| c | c | c | c | } \hline
+ Pole    & Typ          & NULL dozwolone? & Opis \\ \hline
+ id      & PRIMARY KEY  & nie & unikatowy identyfikator gry \\ \hline
+ winner  & CHAR         & nie & zwycięzca gry ('b' lub 'w') \\ \hline
+ moves   & VARCHAR(700) & nie & znormalizowany przebieg rozgrywki \\ \hline
+ path    & VARCHAR(255) & nie & względna scieżka do gry \\ \hline
+ b\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) czarnego \\ \hline
+ w\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) białego \\ \hline
+ b\_rank & VARCHAR(10)  & tak & ranking czarnego \\ \hline
+ w\_rank & VARCHAR(10)  & tak & ranking białego \\ \hline
+\end{tabular}
+% \vspace{10ex}
+
+
+\end{center}
+
+
+Pola takie i takie.
+
+\subsection{Struktura modułów}
+Lista modułów wchodzących w skład projektu:
+
+\subsection{Pozostałe pliki}
+Pliki css, javascript, obrazki
+
+\section{Kompilacja i testowanie}
+
+\section{Wykorzystane biblioteki i narzędzia}
+\subsection{Biblioteki}
+\subsubsection{Cabal}
+\subsubsection{Happstack}
+\subsubsection{HUnit, QuickCheck, test-framework}
+\subsubsection{postresql, sqlite3, HDBC}
+\subsubsection{Parsec 2}
+\subsubsection{xhtml 3000}
+\subsubsection{inne (filemanip, strict, mtl)}
+
+\subsection{Narzędzia}
+\subsubsection{Git}
+\subsubsection{Latex}
+\subsubsection{Emacs}
+
+\section{Słownik}
+Czarny \\
+Biały \\
+plik SGF \\
+interfejs WWW \\
+serwer HTTP \\
+Haskell \\
+zapis gry \\
+ranking (gracza) \\
+znormalizowany przebieg gry \\
+
+%% 2.0. Organizacja projektu
+%% 2.0.0. Cykl życia aplikacji
+%% 2.0.1. Struktura modułów
+%% 2.0.2. Baza danych
+%% 2.0.3. Automatycznie generowana dokumentacja (API)
+%% 2.1. Kompilacja i testowanie projektu - konkretne polecenia
+%% 2.2. Omowienie modulow
+%% 2.2.1. Data.SGF
+%% 2.2.2. Transformations (opis funkcji i niezmiennikow)
+%% 2.3. Lista użytych narzędzi i bibliotek wraz z omowieniem i przykladami
+%% 2.3.1. Cabal
+%% 2.3.2. Happstack
+%% 2.3.3. HUnit, QuickCheck, test-framework
+%% 2.3.4. postresql, HDBC
+%% 2.3.5. Parsec 2
+%% 2.3.6. xhtml 3000
+%% 2.3.7. inne (filemanip, strict, mtl)
+
+
+\end{document}
