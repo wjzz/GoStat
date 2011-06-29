@@ -3,15 +3,35 @@
 {-
   @author: Wojciech Jedynak (wjedynak@gmail.com)
 -}
-module Data.SGF.Types where
+module Data.SGF.Types ( Move
+                      , Header
+                      , SGF (..)
+                      , MetaData (..)
+                      , Winner (..)
+                      , Result (..)
+                      , isWithHandicap
+                      , getBlack  
+                      , getWhite
+                      , getBlackRank
+                      , getWhiteRank
+                      , getResult
+                      , getWinner
+                      , getWinnerName
+                      , headerFromString
+                      , getMovesStr
+                      , sgfSummary
+                      , sgfTestSummary
+                      , moveStrToCoordinates
+                      , moveToCoordinates
+                      ) where
 
 import Control.Applicative
-import Data.List(isPrefixOf)
 import Data.Char
-import Data.Maybe(isJust)
+import Data.List  (isPrefixOf)
+import Data.Maybe (isJust)
 import Text.Printf
 
-type Move = (Int, Int)
+type Move  = (Int, Int)
 type Moves = [Move]
 
 data Header = BlackName | WhiteName | Ruleset | Application | 
@@ -89,10 +109,10 @@ getBlackRank = getMeta "BlackRank"
 getWhiteRank = getMeta "WhiteRank"
 date         = getMeta "Date"
 
-
+{-
 emptyMetaData :: MetaData
 emptyMetaData = MetaData []
-
+-}
 
 data SGF = SGF { metaData :: MetaData
                , moves ::  Moves

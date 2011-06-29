@@ -114,8 +114,24 @@ nie jest wymagane podanie swojego orientacyjnego poziomu ani rankingu.
 \subsection{Struktura modułów}
 Lista modułów wchodzących w skład projektu:
 
-\subsubsection{Data.SGF.Parsing i Data.SGF.Types}
-Analiza plików SGF
+\subsubsection{Data.SGF.Types i Data.SGF.Parsing}
+
+\begin{framed}
+\noindent type Move  = (Int, Int) \\
+type Moves = [Move] \\
+type PlayerName = String \\ 
+data Winner     = Black | White \\
+data Result = Unfinished | Draw | Win Winner PlayerName \\
+
+\noindent parseSGF :: String -> Either String SGF \\
+getResult :: SGF -> Result \\
+isWithHandicap :: SGF -> Bool \\
+getBlack, getWhite, getBlackRank, getWhiteRank, date :: SGF -> String
+\end{framed}
+
+Moduły Data.Sgf.Types i Data.SGF.Parsing zawierają deklaracje typów służących do 
+przechowywania informacji o danej partii (m.in. wynik, dane graczy, lista ruchów) oraz funkcje, które
+pozwalają dane te wyświetlać i analizować. 
 
 \subsubsection{Transformations}
 Przekształcenia matematyczne i normalizacja ruchów

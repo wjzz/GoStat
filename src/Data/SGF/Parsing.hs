@@ -3,11 +3,14 @@
 {-
   @author: Wojciech Jedynak (wjedynak@gmail.com)
 -}
-module Data.SGF.Parsing where
+module Data.SGF.Parsing ( parseSGF
+                        , maybeMove 
+                        , module Data.SGF.Types
+                        ) where
 
 import Data.SGF.Types
 
-import Data.Char(ord)
+import Data.Char (ord)
 import Data.Maybe
 import Text.ParserCombinators.Parsec hiding (runParser)
 
@@ -23,6 +26,16 @@ parseSGF input =
    case parse sgfParser "" input' of
      Left e  -> Left $ show e
      Right v -> Right v
+
+maybeMove :: (Maybe Char, Maybe Char) -> Maybe Move
+maybeMove (m1, m2) = do
+  f <- m1
+  s <- m2
+  return $ (9 - (ord f - ord 'a'), ord s - ord 'a' + 1)
+
+------------------------
+--  Helper functions  --
+------------------------
 
 sgfParser :: Parser SGF
 sgfParser = do
@@ -57,12 +70,6 @@ dropFinalPasses ls = reverse $ dropWhile isNothing $ reverse ls
 maybeMoveToMove :: Maybe Move -> Move
 maybeMoveToMove Nothing = (0,0)
 maybeMoveToMove (Just x) = x
-
-maybeMove :: (Maybe Char, Maybe Char) -> Maybe Move
-maybeMove (m1, m2) = do
-  f <- m1
-  s <- m2
-  return $ (9 - (ord f - ord 'a'), ord s - ord 'a' + 1)
 
 moveParser :: Parser (Maybe Move)
 moveParser = do
