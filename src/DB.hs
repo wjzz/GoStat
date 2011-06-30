@@ -93,7 +93,8 @@ addFilesToDB = do
         return ()
         
     if index `mod` 1000 == 0
-      then putStrLn $ printf "done %d (%2d%%)" index ((100 * index) `div` len)
+      then do putStrLn $ printf "done %d (%2d%%)" index ((100 * index) `div` len)
+              commit conn
       else return ()
 
   commit conn)

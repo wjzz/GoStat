@@ -26,9 +26,10 @@ server :: GoStatM ()
 server = do
   liftIO $ putStrLn "Listening on port 8000..."
   config <- getConfig
-  liftIO $ simpleHTTP nullConf $ router config
+  cm     <- liftIO $ newMVar config
+  liftIO $ simpleHTTP nullConf $ router cm
   
-router :: Configuration -> ServerPart Response
+router :: MVar Configuration -> ServerPart Response
 router config = msum [ dir "movebrowser" $ moveBrowserC config
                      , dir "games"       $ gameBrowserC config
                      , dir "game"        $ gameDetailsC config
@@ -45,8 +46,9 @@ router config = msum [ dir "movebrowser" $ moveBrowserC config
 --  The main page  --
 ---------------------
 
-mainPageC :: Configuration -> ServerPart Response
-mainPageC config = do
+mainPageC :: MVar Configuration -> ServerPart Response
+mainPageC mconfig = do
+  config <- liftIO $ readMVar mconfig
   ok $ toResponse $ mainPage onLineBuilders
   
 ----------------------------
@@ -60,8 +62,9 @@ withConfig config action = liftIO $ runGoStatM config action
 --  The game browser  --
 ------------------------
 
-gameBrowserC :: Configuration -> ServerPart Response
-gameBrowserC config = do 
+gameBrowserC :: MVar Configuration -> ServerPart Response
+gameBrowserC mconfig = do 
+  config <- liftIO $ readMVar mconfig
   (count, currentStats, movesSoFar, lang) <- fetchStats config  
   limit <- (read `fmap` look "limit") `mplus` return 200
   games <- withConfig config $ queryGamesListDB movesSoFar limit
@@ -72,8 +75,9 @@ gameBrowserC config = do
 --  The game details page  --
 -----------------------------
 
-gameDetailsC :: Configuration -> ServerPart Response
-gameDetailsC config = do 
+gameDetailsC :: MVar Configuration -> ServerPart Response
+gameDetailsC mconfig = do 
+  config <- liftIO $ readMVar mconfig
   (count, _currentStats, _movesSoFar, lang) <- fetchStats config
 
   gameIdM <- ((Just . read) `fmap` look "id") `mplus` return Nothing
@@ -104,8 +108,9 @@ errorPage s = error s
 --  The moveBrowser page  --
 ----------------------------
 
-moveBrowserC :: Configuration -> ServerPart Response
-moveBrowserC config = do 
+moveBrowserC :: MVar Configuration -> ServerPart Response
+moveBrowserC mconfig = do 
+  config <- liftIO $ readMVar mconfig
   (count, currentStats, movesSoFar, lang) <- fetchStats config
   moves <- withConfig config $ queryStatsDB movesSoFar  
 
@@ -119,23 +124,26 @@ moveBrowserC config = do
 --  The rebuild controller  --
 ------------------------------
   
-rebuildC :: Configuration -> ServerPart Response
-rebuildC config = do 
+rebuildC :: MVar Configuration -> ServerPart Response
+rebuildC mconfig = do 
+  config <- liftIO $ readMVar mconfig
   liftIO $ putStrLn "Will rebuild the db..."
   liftIO $ forkIO $ (runGoStatM config rebuildDB)
-  mainPageC config
+  mainPageC mconfig
 
 -----------------------------------
 --  Configuring the application  --
 -----------------------------------
 
-configureC :: Configuration -> ServerPart Response
-configureC config = do
+configureC :: MVar Configuration -> ServerPart Response
+configureC mconfig = do
+  config <- liftIO $ readMVar mconfig
   lang <- fetchLang
   ok $ toResponse $ configForm config (onLineBuilders { language = lang })
   
-changeConfigureC :: Configuration -> ServerPart Response
-changeConfigureC config = do
+changeConfigureC :: MVar Configuration -> ServerPart Response
+changeConfigureC mconfig = do
+  config <- liftIO $ readMVar mconfig
   decodeBody $ defaultBodyPolicy "/tmp" 0 1000 1000
   dbServerStr <- look "dbServer"
   sqlitePath  <- look "sqlitePath"
@@ -153,8 +161,9 @@ changeConfigureC config = do
 --  SgfServing  --
 ------------------
 
-sgfBrowserC :: Configuration -> FilePath -> ServerPart Response
-sgfBrowserC config path = do
+sgfBrowserC :: MVar Configuration -> FilePath -> ServerPart Response
+sgfBrowserC mconfig path = do
+  config <- liftIO $ readMVar mconfig
   file <- liftIO $ readFile path
   ok $ toResponse file
 
