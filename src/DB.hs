@@ -64,9 +64,9 @@ createDB = do
 
 deleteDB :: GoStatM ()
 deleteDB = withConnection $ \(ConnWrapper conn) -> do
-    catch (do
+    catch (handleSqlError (do
               run conn "DROP TABLE go_stat_data" []
-              commit conn)
+              commit conn))
       (const (return ()))
 
 addFilesToDB :: GoStatM ()
