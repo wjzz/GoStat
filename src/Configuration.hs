@@ -123,6 +123,7 @@ getConfig = ask
 --TODO 
 -- use IO and find this directory dynamically, on the run
 
+{-
 absolutePathToGameDir :: FilePath
 absolutePathToGameDir = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/"
 
@@ -131,3 +132,4 @@ makeRelative = drop (length absolutePathToGameDir)
 
 makeAbsolute :: FilePath -> FilePath
 makeAbsolute s = absolutePathToGameDir ++ s
+-}

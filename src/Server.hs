@@ -11,6 +11,8 @@ import Lang
 import Configuration
 
 import Control.Arrow
+import Control.Concurrent
+import Control.Concurrent.MVar
 import Control.Monad
 import Control.Monad.Trans
 import Happstack.Server hiding (body, path)
@@ -31,7 +33,8 @@ router config = msum [ dir "movebrowser" $ moveBrowserC config
                      , dir "games"       $ gameBrowserC config
                      , dir "game"        $ gameDetailsC config
                      , dir "public"      $ serveDirectory EnableBrowsing [] "public"
-                     , dir "sgf"         $ serveDirectory EnableBrowsing [] "data"                                
+                     , dir "sgf"         $ uriRest (sgfBrowserC config)
+                     , dir "rebuild"     $ rebuildC config
                      , mainPageC config
                      ]
          
@@ -80,7 +83,7 @@ gameDetailsC config = do
       case qResult of
         Nothing -> errorPage "Wrong id, game not found"
         Just (movesSoFar, relPath) -> do
-          contents <- liftIO $ readFile (makeAbsolute relPath)
+          contents <- liftIO $ readFile relPath
           
           case parseSGF contents of
             Left _ -> errorPage "Problem reading or parsing the given sgf"
@@ -105,6 +108,26 @@ moveBrowserC config = do
   
   ok $ toResponse $ moveBrowser count currentStats moves movesSoFar (onLineBuilders { language = lang })
   
+------------------------------
+--  The rebuild controller  --
+------------------------------
+  
+rebuildC :: Configuration -> ServerPart Response
+rebuildC config = do 
+  liftIO $ putStrLn "Will rebuild the db..."
+  liftIO $ forkIO $ (runGoStatM config rebuildDB)
+  mainPageC config
+
+  
+------------------
+--  SgfServing  --
+------------------
+
+sgfBrowserC :: Configuration -> FilePath -> ServerPart Response
+sgfBrowserC config path = do
+  file <- liftIO $ readFile path
+  ok $ toResponse file
+
 ---------------------------
 --  A fetching shortcut  --
 ---------------------------
@@ -145,9 +168,10 @@ onLineBuilders = UrlBuilders { mainPageUrl        = "/"
                              , gameDetailsMakeUrl = gameDetailsUrlMaker
                              , gameDownloadLink   = sgfDownloadUrlMaker
                              , imagesMakeUrl      = imageUrlMaker
+                             , rebuildUrl         = rebuildUrlMaker
                              , cssUrl             = "/public/style.css"
                              , jsUrls             = ["/public/jquery.js", "/public/highlight.js", "/public/eidogo/player/js/all.compressed.js"]
-                             , language           = eng
+                             , language           = pl
                              }
 
 urlMaker :: Language -> String -> String
@@ -163,4 +187,7 @@ gameDetailsUrlMaker :: Language -> Int -> String
 gameDetailsUrlMaker lang idd = printf "/game?lang=%s&id=%d" lang idd
 
 sgfDownloadUrlMaker :: FilePath -> String
-sgfDownloadUrlMaker path = printf "/sgf/%s" path
+sgfDownloadUrlMaker path = printf "/sgf%s" path
+
+rebuildUrlMaker :: Language -> String
+rebuildUrlMaker lang = printf "/rebuild?lang=%s" lang

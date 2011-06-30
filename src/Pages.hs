@@ -26,6 +26,7 @@ data UrlBuilders = UrlBuilders { mainPageUrl        :: String
                                , gameBrowserMakeUrl :: Language -> MovesSoFar -> String
                                , gameDetailsMakeUrl :: Language -> Int        -> String
                                , gameDownloadLink   :: FilePath -> String
+                               , rebuildUrl         :: Language -> String
                                , imagesMakeUrl      :: String   -> String
                                , cssUrl             :: String
                                , jsUrls             :: [String]
@@ -103,11 +104,11 @@ mainPage config = pHeader +++ pBody where
   pBody = body $ concatHtml [ welcome 
                             , flags
                             , hr
-                            , anchor ! [href (moveBrowserMakeUrl config "pl" [])] << "Move browser"
+                            , anchor ! [href (moveBrowserMakeUrl config (L.langName lang) [])] << "Move browser"
                             , br
                             , primHtml "Manage games"
                             , br
-                            , primHtml "Rebuild the database"
+                            , anchor ! [href (rebuildUrl config (L.langName lang)) ] $ primHtml "Rebuild the database"
                             ]
           
   flags = (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)

@@ -89,7 +89,7 @@ addFilesToDB = do
       Nothing -> return ()
       Just gi -> do
         let (_, win, mvs, bName, wName, bRank, wRank) = gameInfoToDB gi
-        execute stmt [toSql win, toSql mvs, toSql (makeRelative file), toSql bName, toSql wName, toSql bRank, toSql wRank]
+        execute stmt [toSql win, toSql mvs, toSql file, toSql bName, toSql wName, toSql bRank, toSql wRank]
         return ()
         
     if index `mod` 1000 == 0
