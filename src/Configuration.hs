@@ -3,6 +3,8 @@
 -}
 module Configuration where
 
+import Paths_GoStat
+
 import Control.Monad
 import Control.Monad.Reader
 import Data.List
@@ -80,8 +82,8 @@ showConfiguration (Configuration db gameDirs) =
 --  Loading and saving a configuration file  --
 -----------------------------------------------
 
-configurationPath :: FilePath
-configurationPath = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/CONFIG"
+configurationPath :: IO FilePath
+configurationPath = getDataFileName "CONFIG"
 
 readConfig :: FilePath -> IO (Either String Configuration)
 readConfig path = parseConfiguration `fmap` readFile path
@@ -93,14 +95,11 @@ writeConfig config path = writeFile path $ showConfiguration config
 --  Default config file  --
 ---------------------------
 
-sgfDirectory :: FilePath
-sgfDirectory = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/1"
-
-sqliteDir :: FilePath
-sqliteDir = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/db/games.db"
+sqliteDir :: IO FilePath
+sqliteDir = getDataFileName "db/games.db"
 
 defaultConfig :: Configuration
-defaultConfig = Configuration { dbServer = Sqlite3 sqliteDir -- PostgreSQL
+defaultConfig = Configuration { dbServer = PostgreSQL
                               , gameDirs = []
                               }
 

@@ -76,8 +76,8 @@ Executable GoStat
                       DB
                       Pages
                       Server
+                      Paths_GoStat
                       
-
 Executable GoStatTests
   GHC-Options:         -W -Wall
   Hs-source-dirs:      src test 
@@ -96,3 +96,4 @@ Executable GoStatTests
                        Data.SGF.Parsing.Tests
                        SgfBatching.Tests
                        Transformations.Tests
+                       Paths_GoStat

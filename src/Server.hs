@@ -160,7 +160,8 @@ changeConfigureC mconfig = do
   
   -- update the configuration
   liftIO $ swapMVar mconfig updatedConfig
-  liftIO $ writeConfig updatedConfig configurationPath  
+  configPath <- liftIO $ configurationPath  
+  liftIO $ writeConfig updatedConfig configPath
   
   --ok $ toResponse $ show updatedConfig
   mainPageC mconfig

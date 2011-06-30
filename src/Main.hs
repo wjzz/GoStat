@@ -11,7 +11,7 @@ import Server
 
 main :: IO ()
 main = do
-  configM <- readConfig configurationPath
+  configM <- readConfig =<< configurationPath
   config  <- 
     case configM of
       Left err -> do
