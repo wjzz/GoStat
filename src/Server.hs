@@ -108,8 +108,12 @@ moveBrowserC :: Configuration -> ServerPart Response
 moveBrowserC config = do 
   (count, currentStats, movesSoFar, lang) <- fetchStats config
   moves <- withConfig config $ queryStatsDB movesSoFar  
-  
-  ok $ toResponse $ moveBrowser count currentStats moves movesSoFar (onLineBuilders { language = lang })
+
+  if count == 0 
+    then
+      ok $ toResponse "The DB is empty. You should rebuild it!"
+    else
+      ok $ toResponse $ moveBrowser count currentStats moves movesSoFar (onLineBuilders { language = lang })
   
 ------------------------------
 --  The rebuild controller  --
