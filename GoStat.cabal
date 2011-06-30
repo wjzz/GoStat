@@ -48,7 +48,7 @@ Source-repository head
 --                     EpicInclude/stdagda.h
 
 library
-  ghc-options: -Wall -fno-warn-unused-do-bind -rtsopts
+  ghc-options: -Wall -fno-warn-unused-do-bind
   Build-depends:       base >= 3 && < 5,
                        parsec >= 2.1 && < 3
   exposed-modules: Data.SGF.Types, Data.SGF.Parsing
@@ -56,7 +56,7 @@ library
 
 Executable GoStat
 
-  GHC-Options: -W -Wall -O3 -rtsopts -threaded
+  GHC-Options: -W -Wall -threaded
   Hs-source-dirs: src 
   Main-is:    	      Main.hs
   Build-depends:      base >= 3 && < 5,
@@ -72,13 +72,14 @@ Executable GoStat
   Other-modules:      Configuration
                       SgfBatching
                       Transformations
+                      Lang
                       DB
                       Pages
                       Server
                       
 
 Executable GoStatTests
-  GHC-Options:         -W -Wall -O3 -rtsopts
+  GHC-Options:         -W -Wall
   Hs-source-dirs:      src test 
   Main-is:    	       Tests.hs
   Build-depends:       base >= 3 && < 5,
