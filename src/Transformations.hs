@@ -3,7 +3,24 @@
 {-
   @author: Wojciech Jedynak (wjedynak@gmail.com)
 -}
-module Transformations where
+module Transformations ( normalizeMoves
+                         -- testing 
+                       , isInside
+                       , isBelowMainDiagonal
+                       , isAboveMainDiagonal
+                       , isAboveHorizontal
+                       , isBelowHorizontal                         
+                       , isOnHorizontal
+                       , isOnMainDiagonal
+                       , findTriangle
+                       , findTriangles
+                       , triangles
+                       , mainDiagonalMirror
+                       , rotate90
+                       , horizontal
+                       , getTransformation
+                         
+                       ) where
 
 import Data.SGF.Types
 

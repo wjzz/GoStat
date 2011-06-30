@@ -136,6 +136,28 @@ pozwalają dane te wyświetlać i analizować.
 \subsubsection{Transformations}
 Przekształcenia matematyczne i normalizacja ruchów
 
+\begin{framed}
+\noindent normalizeMoves :: [Move] -> [Move] \\
+
+\noindent isOnMainDiagonal :: Move -> Bool  \\
+isAboveMainDiagonal :: Move -> Bool \\
+isBelowMainDiagonal :: Move -> Bool \\
+isOnHorizontal :: Move -> Bool \\
+isAboveHorizontal :: Move -> Bool \\
+isBelowHorizontal :: Move -> Bool
+
+\noindent horizontal :: Move -> Move \\
+rotate90 :: Move -> Move \\
+mainDiagonalMirror :: Move -> Move \\
+
+\noindent transformIntoFirst :: Triangle -> (Move -> Move) \\
+getTransformation :: Move -> (Move -> Move) \\
+
+\noindent triangles :: [Triangle] \\
+findTriangles :: Move -> [Triangle] \\
+findTriangle :: Move -> Triangle
+\end{framed}
+
 \subsubsection{SgfBatching}
 Konwersja plików SGF do formatu, który będzie łatwo zapisać w bazie danych
 
@@ -150,6 +172,17 @@ Tworzenie szablonów stron WWW.
 
 \subsubsection{DB}
 Zarządzanie bazą danych.
+
+\begin{framed}
+\noindent createDB :: GoStatM () \\
+deleteDB :: GoStatM () \\
+addFilesToDB :: GoStatM () \\
+queryCountDB :: GoStatM Int \\
+queryStatsDB :: String -> GoStatM [(String, Int, Int, Int)] \\
+queryCurrStatsDB :: String -> GoStatM (Int, Int, Int) \\
+queryGamesListDB :: String -> Int -> GoStatM [(Int, FilePath, String, String, String, String, String)] \\
+queryFindGameById :: Int -> GoStatM (Maybe (String, FilePath))
+\end{framed}          
 
 \subsubsection{Server}
 Serwer HTTP. 

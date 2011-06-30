@@ -3,7 +3,16 @@
 {-
   @author: Wojciech Jedynak (wjedynak@gmail.com)
 -}
-module DB where
+module DB ( createDB 
+          , deleteDB
+          , addFilesToDB
+          , queryCountDB
+          , queryStatsDB
+          , queryCurrStatsDB
+          , queryGamesListDB
+          , queryFindGameById
+          , rebuildDB
+          ) where
 
 import SgfBatching hiding (moves)
 
@@ -171,3 +180,12 @@ queryFindGameById gameId = do
     ((path:moves:_):_) -> Just (fromSql path, fromSql moves)
     _                  -> Nothing
 
+rebuildDB :: GoStatM ()
+rebuildDB = do
+  liftIO $ putStrLn "Starting DB rebuilding..."
+  deleteDB
+  liftIO $ putStrLn "Deleted DB."
+  createDB
+  liftIO $ putStrLn "Created DB."
+  addFilesToDB
+  liftIO $ putStrLn "DB rebuilding done!"

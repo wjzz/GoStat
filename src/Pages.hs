@@ -107,7 +107,7 @@ mainPage config = pHeader +++ pBody where
                             , br
                             , primHtml "Manage games"
                             , br
-                            , primHtml "Test settings and view metastatistics"
+                            , primHtml "Rebuild the database"
                             ]
           
   flags = (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
