@@ -7,4 +7,6 @@
 -- new config
 dbserver:sqlite3;/home/wjzz/Dropbox/Programy/Haskell/GoStat/db/games.db;
 --dbserver:postgresql;
-gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/;
+gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/1;
+gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/2;
+gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2010;

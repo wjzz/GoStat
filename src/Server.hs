@@ -34,7 +34,10 @@ router config = msum [ dir "movebrowser" $ moveBrowserC config
                      , dir "game"        $ gameDetailsC config
                      , dir "public"      $ serveDirectory EnableBrowsing [] "public"
                      , dir "sgf"         $ uriRest (sgfBrowserC config)
-                     , dir "rebuild"     $ rebuildC config
+                     , dir "rebuild"     $ rebuildC   config
+                     , dir "configure"   $ do methodM POST 
+                                              changeConfigureC config
+                     , dir "configure"   $ configureC config
                      , mainPageC config
                      ]
          
@@ -118,7 +121,24 @@ rebuildC config = do
   liftIO $ forkIO $ (runGoStatM config rebuildDB)
   mainPageC config
 
+-----------------------------------
+--  Configuring the application  --
+-----------------------------------
+
+configureC :: Configuration -> ServerPart Response
+configureC config = do
+  lang <- fetchLang
+  ok $ toResponse $ configForm config (onLineBuilders { language = lang })
   
+changeConfigureC :: Configuration -> ServerPart Response
+changeConfigureC config = do
+  decodeBody $ defaultBodyPolicy "/tmp" 0 1000 1000
+  dbServerStr <- look "dbServer"
+  sqlitePath  <- look "sqlitePath"
+  sgfDirs     <- look "dirs"
+  
+  ok $ toResponse $ unlines ["GOT IT" , dbServerStr, sqlitePath, sgfDirs]
+
 ------------------
 --  SgfServing  --
 ------------------
@@ -132,15 +152,20 @@ sgfBrowserC config path = do
 --  A fetching shortcut  --
 ---------------------------
 
+fetchLang :: ServerPart Messages
+fetchLang = do
+  langStr    <- look "lang"  `mplus` (return "pl")
+
+  return $ case langStr of
+          "pl" -> pl
+          _    -> eng
+
+
 getParams :: ServerPart (String, Messages)
 getParams = do
   movesSoFar <- look "moves" `mplus` (return [])
-  langStr    <- look "lang"  `mplus` (return "pl")
-
-  let lang = 
-        case langStr of
-          "pl" -> pl
-          _    -> eng
+  lang       <- fetchLang
+  
   return (movesSoFar, lang)
 
 fetchStatsWorker :: String -> GoStatM (Int, (Int, Int, Int))
@@ -169,6 +194,7 @@ onLineBuilders = UrlBuilders { mainPageUrl        = "/"
                              , gameDownloadLink   = sgfDownloadUrlMaker
                              , imagesMakeUrl      = imageUrlMaker
                              , rebuildUrl         = rebuildUrlMaker
+                             , configureUrl       = configureUrlMaker
                              , cssUrl             = "/public/style.css"
                              , jsUrls             = ["/public/jquery.js", "/public/highlight.js", "/public/eidogo/player/js/all.compressed.js"]
                              , language           = pl
@@ -191,3 +217,6 @@ sgfDownloadUrlMaker path = printf "/sgf%s" path
 
 rebuildUrlMaker :: Language -> String
 rebuildUrlMaker lang = printf "/rebuild?lang=%s" lang
+
+configureUrlMaker :: Language -> String
+configureUrlMaker lang = printf "/configure?lang=%s" lang

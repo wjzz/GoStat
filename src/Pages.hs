@@ -4,13 +4,14 @@
 -}
 module Pages where
 
-import Data.SGF.Types hiding (moves)
 import Data.Char
 import Data.Function
 import Data.List
 import Text.Printf
 import Text.XHtml hiding (dir, color, black, white, lang, link)
 
+import Configuration
+import Data.SGF.Types hiding (moves)
 import Lang (Language, Messages, allLanguages, capitalize)
 import qualified Lang as L
 
@@ -26,6 +27,7 @@ data UrlBuilders = UrlBuilders { mainPageUrl        :: String
                                , gameBrowserMakeUrl :: Language -> MovesSoFar -> String
                                , gameDetailsMakeUrl :: Language -> Int        -> String
                                , gameDownloadLink   :: FilePath -> String
+                               , configureUrl       :: Language -> String
                                , rebuildUrl         :: Language -> String
                                , imagesMakeUrl      :: String   -> String
                                , cssUrl             :: String
@@ -38,13 +40,13 @@ data UrlBuilders = UrlBuilders { mainPageUrl        :: String
 -----------------------
 
 htmlHeader :: UrlBuilders -> Html
-htmlHeader config = header << ((thetitle << L.title lang) 
-                                 +++ (thelink ! [href (cssUrl config)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
+htmlHeader urlBuilder = header << ((thetitle << L.title lang) 
+                                 +++ (thelink ! [href (cssUrl urlBuilder)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
                                  +++ script ! [thetype "text/javascript"] << eidogoConfig
-                                 +++ concatHtml (map buildScript $ jsUrls config)) 
+                                 +++ concatHtml (map buildScript $ jsUrls urlBuilder)) 
   where
     buildScript url = script ! [thetype "text/javascript",src url] << noHtml --
-    lang            = language config
+    lang            = language urlBuilder
     
     eidogoConfig = primHtml " \
   \  eidogoConfig = { \
@@ -68,7 +70,7 @@ htmlHeader config = header << ((thetitle << L.title lang)
 ---------------------------------
 
 globalHeader :: Int -> UrlBuilders -> (Language -> String) -> Html
-globalHeader count config makeUrl = concatHtml [ flags 
+globalHeader count urlBuilder makeUrl = concatHtml [ flags 
                                                , br 
                                                , br
                                                , primHtml $ L.gamesInDb lang count
@@ -76,14 +78,14 @@ globalHeader count config makeUrl = concatHtml [ flags
                                                , pStartPageLink
                                                ] where
   
-  pHomePageLink = h4 << anchor ! [href (moveBrowserMainUrl config)] << L.backToMain lang
+  pHomePageLink = h4 << anchor ! [href (moveBrowserMainUrl urlBuilder)] << L.backToMain lang
   
-  pStartPageLink = h4 << anchor ! [href (mainPageUrl config)] << "Start page"
-  lang          = language config
+  pStartPageLink = h4 << anchor ! [href (mainPageUrl urlBuilder)] << "Start page"
+  lang          = language urlBuilder
   
   makeFlag langStr = anchor ! [href (makeUrl langStr) ] 
                      << (thespan ! [theclass "flag"] $ (image ! [width "36" , height "24" , 
-                                                                 src (imagesMakeUrl config (langStr ++ "_flag.gif"))]))
+                                                                 src (imagesMakeUrl urlBuilder (langStr ++ "_flag.gif"))]))
   
   flags = concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages
 
@@ -93,40 +95,40 @@ globalHeader count config makeUrl = concatHtml [ flags
 ---------------------
 
 mainPage :: UrlBuilders -> Html
-mainPage config = pHeader +++ pBody where
-  lang    = language config
-  pHeader = htmlHeader config
+mainPage urlBuilder = pHeader +++ pBody where
+  lang    = language urlBuilder
+  pHeader = htmlHeader urlBuilder
 
   -- TODO should this use moveBrowserMainUrl langStr ?
-  makeFlag langStr = anchor ! [href (moveBrowserMakeUrl config langStr []) ] 
-                     << image ! [width "180" , height "120" , src (imagesMakeUrl config (langStr ++ "_flag.gif"))]
+  makeFlag langStr = anchor ! [href (moveBrowserMakeUrl urlBuilder langStr []) ] 
+                     << image ! [width "180" , height "120" , src (imagesMakeUrl urlBuilder (langStr ++ "_flag.gif"))]
   
   pBody = body $ concatHtml [ welcome 
                             , flags
                             , hr
-                            , anchor ! [href (moveBrowserMakeUrl config (L.langName lang) [])] << "Move browser"
-                            , br
-                            , primHtml "Manage games"
-                            , br
-                            , anchor ! [href (rebuildUrl config (L.langName lang)) ] $ primHtml "Rebuild the database"
+                            , anchor ! [href (moveBrowserMakeUrl urlBuilder (L.langName lang) [])] << "Move browser"
+                            , br , br
+                            , anchor ! [href (configureUrl urlBuilder (L.langName lang))] $ primHtml "Configure the application (game dirs and database)"
+                            , br , br
+                            , anchor ! [href (rebuildUrl urlBuilder (L.langName lang)) ] $ primHtml "Rebuild the database"
                             ]
           
   flags = (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
   
   welcome = h1 << "Witaj w programie do go!"
   
-  --pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl config)] << h3 << L.goToMovesBrowser lang
+  --pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl urlBuilder)] << h3 << L.goToMovesBrowser lang
 
 ------------------------------
 --  The games browser page  --
 ------------------------------
 
 gameBrowserPage :: [(Int, FilePath, String, String, String, String, String)] -> Int -> (Int, Int, Int) -> String -> UrlBuilders -> Html
-gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHeader +++ pBody where
-  lang       = language config
-  pHeader    = htmlHeader config
+gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar urlBuilder = pHeader +++ pBody where
+  lang       = language urlBuilder
+  pHeader    = htmlHeader urlBuilder
   
-  pBody = body $ concatHtml [ globalHeader count config (\l -> gameBrowserMakeUrl config l movesSoFar)
+  pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> gameBrowserMakeUrl urlBuilder l movesSoFar)
                             , hr
                             , navigation
                             , hr
@@ -143,7 +145,7 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHead
     current = if blacksTurn then bWin else wWin
     
   currentPosition              = anchor ! [ href mBrowserUrl] << primHtml (L.showCurrentPosition lang) where
-    mBrowserUrl = moveBrowserMakeUrl config (L.langName lang) movesSoFar
+    mBrowserUrl = moveBrowserMakeUrl urlBuilder (L.langName lang) movesSoFar
   numberOfGames                = primHtml $ printf "%s %d"   (L.numberOfGames lang) allGames  
   currentPositionWinningChance = primHtml $ printf "%s %d%%" (L.chanceOfWinning lang) percentage
   numberOfShownGames           = primHtml $ printf "%s %d"   (L.noOfShownGames lang) (length gameInfos)
@@ -151,7 +153,7 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHead
   makeLink (gameId, gamePath, winner, bName, wName, bRank, wRank) = 
     tr $ concatHtml $ map td (map primHtml  [show gameId, bName, bRank, wName, wRank, winner] ++ [link]) where
       link = anchor ! [href url] << primHtml gamePath
-      url  = gameDetailsMakeUrl config (L.langName lang) gameId
+      url  = gameDetailsMakeUrl urlBuilder (L.langName lang) gameId
   
   gameList = table << (tHeader +++ (concatHtml $ map makeLink gameInfos))
   tHeader = tr $ concatHtml $ map (\l -> th << l) ["no", "black", "black rank", "white", "white rank", "winner", "link"]
@@ -163,11 +165,11 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar config = pHead
 type GameId = Int
 
 gameDetailsPage :: Int -> GameId -> SGF -> FilePath -> MovesSoFar -> UrlBuilders -> Html
-gameDetailsPage count gameId game path movesSoFar config = pHeader +++ pBody where
-  lang       = language config
-  pHeader    = htmlHeader config
+gameDetailsPage count gameId game path movesSoFar urlBuilder = pHeader +++ pBody where
+  lang       = language urlBuilder
+  pHeader    = htmlHeader urlBuilder
   
-  pBody = body $ concatHtml [ globalHeader count config (\l -> gameDetailsMakeUrl config l gameId)
+  pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> gameDetailsMakeUrl urlBuilder l gameId)
                             , hr
                             , gameInContext
                             , hr
@@ -183,15 +185,15 @@ gameDetailsPage count gameId game path movesSoFar config = pHeader +++ pBody whe
                             ]
           
   gameInContext = anchor ! [href mBrowserUrl] << (L.showInContext lang) where
-    mBrowserUrl = moveBrowserMakeUrl config (L.langName lang) movesSoFar
+    mBrowserUrl = moveBrowserMakeUrl urlBuilder (L.langName lang) movesSoFar
 
-  eidogo = dC "eidogo-player-auto" ! [strAttr "sgf" (gameDownloadLink config path)] << noHtml
+  eidogo = dC "eidogo-player-auto" ! [strAttr "sgf" (gameDownloadLink urlBuilder path)] << noHtml
 
-  downloadGame = anchor ! [href (gameDownloadLink config path)] << (L.downloadSgf lang) 
+  downloadGame = anchor ! [href (gameDownloadLink urlBuilder path)] << (L.downloadSgf lang) 
           
   --movesSoFar = getMovesStr game
                  
-  finalPosition = board config True [] movesSoFar
+  finalPosition = board urlBuilder True [] movesSoFar
   
   (blk, wht, res, dt) = sgfSummary game
   
@@ -209,16 +211,72 @@ gameDetailsPage count gameId game path movesSoFar config = pHeader +++ pBody whe
 
   bData   = map (\(l,v) -> tr << ((td << (l ++ ":")) +++ (td << v))) (zip labels values)
 
+-------------------------------
+--  The configuration forms  --
+-------------------------------
+
+configForm :: Configuration -> UrlBuilders -> Html
+configForm configuration urlBuilder = pHeader +++ pBody where
+  pHeader    = htmlHeader urlBuilder
+  
+  pBody = body $ concatHtml [ h1 << "Configuration form"
+                            , hr
+                            , cForm
+                            ]
+          
+  cForm = form ! [method "POST"] $ concatHtml [ primHtml dbLabel
+                                              , dbSelectForm
+                                              , br
+                                              , br
+                                              , primHtml sqliteLabel
+                                              , br
+                                              , sqlitePath
+                                              , hr
+                                              , primHtml dirsLabel
+                                              , br
+                                              , dirsForm
+                                              , br
+                                              , submitButton
+                                              ]
+  dbLabel      = "Database that you want to use:"        
+  dbSelectForm = select ! [name "dbServer"] $ concatHtml $ map makeOption ["PostgreSQL", "SQLite3"] where
+        
+                 
+  currentDb = 
+    case dbServer configuration of
+      PostgreSQL -> "postgresql"
+      Sqlite3 _  -> "sqlite3"
+                 
+  makeOption dbName = option ! [value lowered] ! attrs $ primHtml dbName where
+    lowered = map toLower dbName
+    attrs   = if lowered == currentDb then [selected] else []
+  
+
+  sqliteLabel = "Location of the sqlite3 database (*.db)"
+  sqlitePath  = primHtml $ printf "<textarea name=\"sqlitePath\" cols=\"100\" rows=\"1\">%s</textarea>" dbPath
+  
+  dbPath = 
+    case dbServer configuration of
+      PostgreSQL -> ""
+      Sqlite3 p -> p
+    
+  
+  dirsLabel = "Directories with SGF files you want to analyze (one path each row):"
+  dirsForm = primHtml $ printf "<textarea name=\"dirs\" cols=\"100\" rows=\"10\">%s</textarea>" (unlines (gameDirs configuration))
+  
+  submitButton = submit "action" "submit changes"
+  
+
 -----------------------------
 --  The move browser page  --
 -----------------------------
 
 moveBrowser :: Int -> (Int, Int, Int) -> [(String, Int, Int, Int)] -> String -> UrlBuilders -> Html
-moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ pBody where
-  lang       = language config
-  pHeader    = htmlHeader config
+moveBrowser count (allGames, bWin, wWin) moves movesSoFar urlBuilder = pHeader +++ pBody where
+  lang       = language urlBuilder
+  pHeader    = htmlHeader urlBuilder
   
-  pBody = body $ concatHtml [ globalHeader count config (\l -> moveBrowserMakeUrl config l movesSoFar)
+  pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> moveBrowserMakeUrl urlBuilder l movesSoFar)
                             , hr
                             , currentStatistics
                             , hr
@@ -228,7 +286,7 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ p
           
   -- main parts of pBody
   
-  pHomePageLink = anchor ! [href (mainPageUrl config)] << h4 << L.backToMain lang
+  pHomePageLink = anchor ! [href (mainPageUrl urlBuilder)] << h4 << L.backToMain lang
           
   infoDiv = dI "infoBox" $ concatHtml [ movesSoFarField 
                                       , playerToMove
@@ -237,7 +295,7 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ p
                                       , pHomePageLink
                                       ]
             
-  boardDiv   = board config True candidates movesSoFar
+  boardDiv   = board urlBuilder True candidates movesSoFar
                  
   -- smaller parts
   
@@ -253,17 +311,17 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ p
   currentPositionWinningChance = primHtml $ printf "%s %d%%" (L.chanceOfWinning lang) percentage
   numberOfGames                = primHtml $ printf "%s %d"   (L.numberOfGames lang) allGames
   matchingGames                = anchor ! [href gamesUrl] << primHtml (L.matchingGamesList lang) where
-    gamesUrl = gameBrowserMakeUrl config langName movesSoFar
+    gamesUrl = gameBrowserMakeUrl urlBuilder langName movesSoFar
 
-  langName = L.langName (language config)
+  langName = L.langName (language urlBuilder)
   takeBackLink 
     | null movesSoFar = noHtml 
-    | otherwise       = anchor ! [href (moveBrowserMakeUrl config langName (init (init movesSoFar)))] 
+    | otherwise       = anchor ! [href (moveBrowserMakeUrl urlBuilder langName (init (init movesSoFar)))] 
                         << h3 << L.takeBackMove lang
   
   resetMovesField 
     | null movesSoFar = noHtml
-    | otherwise       = anchor ! [href (moveBrowserMakeUrl config langName [])] << h3 << L.resetMoves lang
+    | otherwise       = anchor ! [href (moveBrowserMakeUrl urlBuilder langName [])] << h3 << L.resetMoves lang
   
   noMoves         = length movesSoFar `div` 2
   movesSoFarField = h4 << (L.numberOfMoves lang ++ show noMoves)  
@@ -307,20 +365,20 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar config = pHeader +++ p
                                                                               ] where
     localPercentage = show ((100 * current) `div` cnt) ++ "%"
     current         = if blacksTurn then blk else wht
-    url             = moveBrowserMakeUrl config langName $ movesSoFar ++ move
+    url             = moveBrowserMakeUrl urlBuilder langName $ movesSoFar ++ move
 
     countField = anchor ! [href gamesUrl ] << show cnt where
-      gamesUrl = gameBrowserMakeUrl config langName $ movesSoFar ++ move
+      gamesUrl = gameBrowserMakeUrl urlBuilder langName $ movesSoFar ++ move
 
     moveField  
       | null move = anchor ! [href gameDetailsUrl] << L.gameOver lang
       | otherwise = anchor ! [href url]            << thespan ! attrs << (moveStrToCoordinates move) where
-        gameDetailsUrl = gameBrowserMakeUrl config langName movesSoFar
+        gameDetailsUrl = gameBrowserMakeUrl urlBuilder langName movesSoFar
         attrs      = [ identifier idd
                      , strAttr "onMouseover" (printf "lstMouseOver(\"%s\",\"%s\")" imgUrl move)
                      , strAttr "onMouseout"  (printf "lstMouseOut(\"%s\")"  move)
                      ]
-    imgUrl     = imagesMakeUrl config $ if blacksTurn then moveFromColor B else moveFromColor W
+    imgUrl     = imagesMakeUrl urlBuilder $ if blacksTurn then moveFromColor B else moveFromColor W
     idd        = "lst" ++ move
     trid       = "tr"  ++ move
 
@@ -375,8 +433,8 @@ getImage point str =
     Just color -> imageFromColor color
 
 getIntersect :: String -> String -> UrlBuilders -> Bool -> [Point] -> Point -> String -> Html
-getIntersect _ _        config False _     point str = image ! [src (imagesMakeUrl config $ (getImage point str))]
-getIntersect imgUrl url config True  candidates point@(i,j) str 
+getIntersect _ _        urlBuilder False _     point str = image ! [src (imagesMakeUrl urlBuilder $ (getImage point str))]
+getIntersect imgUrl url urlBuilder True  candidates point@(i,j) str 
   | point `elem` candidates = 
     let 
       move = show i ++ show j
@@ -386,19 +444,19 @@ getIntersect imgUrl url config True  candidates point@(i,j) str
               ]
     in  
      anchor ! [href url] << thespan ! attrs << primHtml "x"                              
-  | otherwise = getIntersect imgUrl url config False candidates point str
+  | otherwise = getIntersect imgUrl url urlBuilder False candidates point str
 
 board :: UrlBuilders -> Bool -> [String] -> String -> Html
-board config displayCand moves movesSoFar = dI "boardTable" $ tbl where
+board urlBuilder displayCand moves movesSoFar = dI "boardTable" $ tbl where
   tbl = table ! [border 0] ! [cellspacing 0] ! [cellpadding 0] << (bHeader +++ concatHtml (map row [1..9]))
   
   bHeader = tr << map (\n -> td << primHtml [n]) ['A'..'I']
   
   row j = tr << (concatHtml (map field (reverse [1..9])) +++ td << primHtml (show (10-j))) where
-    field i = td << getIntersect imgUrl url config displayCand candMoves (i,j) movesSoFar where
-      imgUrl    = imagesMakeUrl config (if length movesSoFar `mod` 4 == 0 then moveFromColor B else moveFromColor W)
-      url       = moveBrowserMakeUrl config langName $ movesSoFar ++ show i ++ show j
-      langName  = L.langName (language config)
+    field i = td << getIntersect imgUrl url urlBuilder displayCand candMoves (i,j) movesSoFar where
+      imgUrl    = imagesMakeUrl urlBuilder (if length movesSoFar `mod` 4 == 0 then moveFromColor B else moveFromColor W)
+      url       = moveBrowserMakeUrl urlBuilder langName $ movesSoFar ++ show i ++ show j
+      langName  = L.langName (language urlBuilder)
       candMoves = map (\[a,b] -> (digitToInt a, digitToInt b)) moves'
       moves'    = filter ((==2) . length) moves
 
