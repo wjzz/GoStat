@@ -6,7 +6,6 @@
 module Main where
 
 import Configuration
-import DB
 import Control.Monad.Trans
 import Server
 

@@ -143,8 +143,8 @@ configureC mconfig = do
   
 changeConfigureC :: MVar Configuration -> ServerPart Response
 changeConfigureC mconfig = do
-  config <- liftIO $ readMVar mconfig
-  decodeBody $ defaultBodyPolicy "/tmp" 0 1000 1000
+  config      <- liftIO $ readMVar mconfig
+  decodeBody  $  defaultBodyPolicy "/tmp" 0 1000 1000
   dbServerStr <- look "dbServer"
   sqlitePath  <- look "sqlitePath"
   sgfDirs     <- filter (/= '\r') `fmap` look "dirs"
@@ -155,7 +155,15 @@ changeConfigureC mconfig = do
   
   let updatedConfig = Configuration db (filter (not . null) $ lines sgfDirs)
   
-  ok $ toResponse $ show updatedConfig
+  -- TODO
+  -- what should be done if sqlitePath is empty?
+  
+  -- update the configuration
+  liftIO $ swapMVar mconfig updatedConfig
+  liftIO $ writeConfig updatedConfig configurationPath  
+  
+  --ok $ toResponse $ show updatedConfig
+  mainPageC mconfig
 
 ------------------
 --  SgfServing  --

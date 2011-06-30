@@ -1,12 +1,2 @@
--- old config
---dbserver:sqlite3;/home/wjzz/Dropbox/Programy/Haskell/GoStat/db/games.db;
---gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/1;
---gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/1;
---gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/2;
-
--- new config
-dbserver:sqlite3;/home/wjzz/Dropbox/Programy/Haskell/GoStat/db/games.db;
---dbserver:postgresql;
-gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/1;
-gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/2;
-gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2010;
+dbserver:postgresql;
+gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/;
