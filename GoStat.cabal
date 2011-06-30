@@ -14,11 +14,18 @@ Cabal-version:       >=1.6
 Tested-with:         GHC == 7.0.2
 Extra-source-files:  README
                      Makefile
-Data-files:          test/example.sgf
+
+Data-files:          CONFIG
+                     test/example.sgf
                      test/example2.sgf
+                     db/games.db
                      public/*.js
                      public/style.css
                      public/img/*.gif
+                     public/eidogo/player/css/*.css
+                     public/eidogo/player/i18n/*.js
+                     public/eidogo/player/images/*.gif
+                     public/eidogo/player/js/*.js
 
 
 Source-repository head
@@ -88,4 +95,3 @@ Executable GoStatTests
                        Data.SGF.Parsing.Tests
                        SgfBatching.Tests
                        Transformations.Tests
-example.sgf
