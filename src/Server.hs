@@ -135,9 +135,15 @@ changeConfigureC config = do
   decodeBody $ defaultBodyPolicy "/tmp" 0 1000 1000
   dbServerStr <- look "dbServer"
   sqlitePath  <- look "sqlitePath"
-  sgfDirs     <- look "dirs"
+  sgfDirs     <- filter (/= '\r') `fmap` look "dirs"
   
-  ok $ toResponse $ unlines ["GOT IT" , dbServerStr, sqlitePath, sgfDirs]
+  let db = case dbServerStr of
+             "postgresql" -> PostgreSQL
+             "sqlite3"    -> Sqlite3 sqlitePath
+  
+  let updatedConfig = Configuration db (filter (not . null) $ lines sgfDirs)
+  
+  ok $ toResponse $ show updatedConfig
 
 ------------------
 --  SgfServing  --
