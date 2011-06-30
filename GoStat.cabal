@@ -26,6 +26,8 @@ Data-files:          CONFIG
                      public/eidogo/player/i18n/*.js
                      public/eidogo/player/images/*.gif
                      public/eidogo/player/js/*.js
+                     public/eidogo/player/js/all.compressed.js
+
 
 
 Source-repository head
