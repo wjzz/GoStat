@@ -107,10 +107,12 @@ mainPage urlBuilder = pHeader +++ pBody where
                             , br , br
                             , anchor ! [href (configureUrl urlBuilder (L.langName lang))] << L.config lang
                             , br , br
-                            , anchor ! [htmlAttr "onclick" rebuildJS , href (rebuildUrl urlBuilder (L.langName lang)) ] << L.rebuild lang
+                            , anchor ! [htmlAttr "href" rebuildJS] << L.rebuild lang
                             ]
           
-  rebuildJS = primHtml $ printf "rebuildConfirm(%s)" (L.confirm lang)
+  rebuildJS = primHtml $ printf "javascript:rebuildConfirm('%s','%s')" (L.confirm lang) (rebuildUrl urlBuilder (L.langName lang)) 
+  rebuild =  (rebuildUrl urlBuilder (L.langName lang))
+  
   flags = (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
   
   welcome = h1 << (L.welcome lang)

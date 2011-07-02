@@ -11,6 +11,23 @@ Display:
 3. enable convenient management of games db via javascript
 4. Improve Haddock comments
 
+1. pass error (jeden pasuje drugi gra)
+2. eidogo translation
+3. better rebuilding interface
+4. check if directories given by the user exist
+5. find tmp dir using a os call, not by "/"
+6. pokazuj pytanie o sciezke, tylko gdy sqlite jest wybrane
+7. zrobic zeby folder do sqlite wybieralo sie przez okienko dialogowe z js
+8. ustalic, czy uzywamy makeMoverBrowserUrl [] czy moveBrowserMain
+9. change the favicon
+10. zmienic biblioteke do przechodzenia rekurencyjnego katalogow na taka, ktora dziala pod windows
+11. wygenerowac statyczne binarki dla windows i linux
+12. dopisac testy bazy danych
+13. sprawdzic co robimy z wygranymi przez czas
+14. pokazywanie ile procent juz zostalo ukonczonych z danej operacji
+15. wymusic konfiguracje na czystej maszynie
+16. ustalic jak ma wygladac poczatkowy plik konfiguracyjny
+17. pokazywanie dokladnego wyniku?
 
 Bugi:
 
