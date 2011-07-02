@@ -48,7 +48,7 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
                                  +++ progressBar
                                   )
   where
-    progressBar = noHtml --primHtml "<style> .ui-progressbar-value { background-image: url(/public/img/pbar-ani.gif); } </style>"
+    progressBar = noHtml -- -}primHtml "<style> .ui-progressbar-value { background-image: url(/public/img/pbar-ani.gif); } </style>"
     
     buildCss css = (thelink ! [href css] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
     
@@ -78,7 +78,7 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
 
 globalHeader :: Int -> UrlBuilders -> (Language -> String) -> Html
 globalHeader count urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) +++ progressBar where
-  progressBar = dI "progress" (dI "progressbar" noHtml)
+  progressBar = dI "progress" (dI "progressbar" noHtml +++ hr)
   
   linksMenu = dI "links" (unordList [pStartPageLink, pHomePageLink])
   flagsMenu = dI "flags" (unordList $ map makeFlag allLanguages)
@@ -127,6 +127,15 @@ mainPage urlBuilder = pHeader +++ pBody where
   
   --pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl urlBuilder)] << h3 << L.goToMovesBrowser lang
 
+-------------------------------------------------------
+--  The page that is displayed during DB rebuilding  --
+-------------------------------------------------------
+
+rebuildingPage :: UrlBuilders -> Html
+rebuildingPage urlBuilder = pHeader +++ pBody where
+  pHeader    = htmlHeader urlBuilder
+  pBody = noHtml
+  
 ------------------------------
 --  The games browser page  --
 ------------------------------
@@ -153,9 +162,9 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar urlBuilder = p
     
   currentPosition              = anchor ! [ href mBrowserUrl] << primHtml (L.showCurrentPosition lang) where
     mBrowserUrl = moveBrowserMakeUrl urlBuilder (L.langName lang) movesSoFar
-  numberOfGames                = primHtml $ printf "%s %d"   (L.numberOfGames lang) allGames  
+  numberOfGames                = primHtml $ printf "%s %d"   (L.numberOfGames lang)   allGames  
   currentPositionWinningChance = primHtml $ printf "%s %d%%" (L.chanceOfWinning lang) percentage
-  numberOfShownGames           = primHtml $ printf "%s %d"   (L.noOfShownGames lang) (length gameInfos)
+  numberOfShownGames           = primHtml $ printf "%s %d"   (L.noOfShownGames lang)  (length gameInfos)
           
   makeLink (gameId, gamePath, winner, bName, wName, bRank, wRank) = 
     tr $ concatHtml $ map td (map primHtml  [show gameId, bName, bRank, wName, wRank, winner] ++ [link]) where

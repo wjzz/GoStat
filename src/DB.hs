@@ -17,6 +17,8 @@ module DB ( createDB
 import SgfBatching hiding (moves)
 
 import Control.Applicative
+import Control.Concurrent
+import Control.Concurrent.MVar
 import Control.Monad
 import Control.Monad.Reader
 import Data.Maybe
@@ -69,8 +71,8 @@ deleteDB = withConnection $ \(ConnWrapper conn) -> do
               commit conn))
       (const (return ()))
 
-addFilesToDB :: GoStatM ()
-addFilesToDB = do
+addFilesToDB :: MVar (Maybe Int) -> GoStatM ()
+addFilesToDB mint = do
   dirs <- gameDirs <$> getConfig
   withConnection (\(ConnWrapper conn) -> do 
   putStrLn "connected to DB..."
@@ -92,12 +94,15 @@ addFilesToDB = do
         execute stmt [toSql win, toSql mvs, toSql file, toSql bName, toSql wName, toSql bRank, toSql wRank]
         return ()
         
-    if index `mod` 1000 == 0
-      then do putStrLn $ printf "done %d (%2d%%)" index ((100 * index) `div` len)
+    if index `mod` 100 == 0
+      then do let perc = ((100 * index) `div` len)
+              putStrLn $ printf "done %d (%2d%%)" index perc
+              swapMVar mint $ Just perc
               commit conn
       else return ()
 
   commit conn)
+  liftIO $ swapMVar mint Nothing
   liftIO $ putStrLn "closed connection to DB"
   
 queryCountDB :: GoStatM Int
@@ -181,12 +186,12 @@ queryFindGameById gameId = do
     ((path:moves:_):_) -> Just (fromSql path, fromSql moves)
     _                  -> Nothing
 
-rebuildDB :: GoStatM ()
-rebuildDB = do
+rebuildDB :: MVar (Maybe Int) -> GoStatM ()
+rebuildDB mint = do
   liftIO $ putStrLn "Starting DB rebuilding..."
   deleteDB
   liftIO $ putStrLn "Deleted DB."
   createDB
   liftIO $ putStrLn "Created DB."
-  addFilesToDB
+  addFilesToDB mint
   liftIO $ putStrLn "DB rebuilding done!"

@@ -36,7 +36,7 @@ router config mint = msum [ dir "movebrowser" $ moveBrowserC config
                           , dir "game"        $ gameDetailsC config
                           , dir "public"      $ serveDirectory EnableBrowsing [] "public"
                           , dir "sgf"         $ uriRest (sgfBrowserC config)
-                          , dir "rebuild"     $ rebuildC   config
+                          , dir "rebuild"     $ rebuildC mint config
                           , dir "configure"   $ do methodM POST 
                                                    changeConfigureC config
                           , dir "configure"   $ configureC config
@@ -127,11 +127,11 @@ moveBrowserC mconfig = do
 --  The rebuild controller  --
 ------------------------------
   
-rebuildC :: MVar Configuration -> ServerPart Response
-rebuildC mconfig = do 
+rebuildC :: MVar (Maybe Int) -> MVar Configuration -> ServerPart Response
+rebuildC mint mconfig = do 
   config <- liftIO $ readMVar mconfig
   liftIO $ putStrLn "Will rebuild the db..."
-  liftIO $ forkIO $ (runGoStatM config rebuildDB)
+  liftIO $ forkIO $ (runGoStatM config (rebuildDB mint))
   mainPageC mconfig
 
 -----------------------------------
@@ -177,7 +177,7 @@ changeConfigureC mconfig = do
 sgfBrowserC :: MVar Configuration -> FilePath -> ServerPart Response
 sgfBrowserC mconfig path = do
   config <- liftIO $ readMVar mconfig
-  file <- liftIO $ readFile path
+  file   <- liftIO $ readFile path
   ok $ toResponse file
 
 ----------------------------------
@@ -187,6 +187,9 @@ sgfBrowserC mconfig path = do
 statusC :: MVar (Maybe Int) -> ServerPart Response
 statusC mint = do
   mn <- liftIO $ readMVar mint
+  
+  liftIO $ print mn
+  liftIO $ threadDelay (50 * 1000)
 
   case mn of
     Nothing -> ok $ toResponse $ "free"

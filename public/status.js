@@ -8,14 +8,16 @@ function checkStatus() {
 
 function updateStatus(){
     $.get("/status", function(data){
-            if (!(data == "free"){
+            if (!(data == "free")){
                     var n = parseInt(data);
                     $("#progressbar").progressbar( "option", "value", n);
                     
                     if (n < 100){
                         updateStatus();
                     }
-                }
+            } else {
+                $("#progressbar").progressbar( "option", "value", 100);                    
+            }
         });  
 }
 
