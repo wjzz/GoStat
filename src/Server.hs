@@ -48,8 +48,9 @@ router config = msum [ dir "movebrowser" $ moveBrowserC config
 
 mainPageC :: MVar Configuration -> ServerPart Response
 mainPageC mconfig = do
+  lang <- fetchLang
   config <- liftIO $ readMVar mconfig
-  ok $ toResponse $ mainPage onLineBuilders
+  ok $ toResponse $ mainPage (onLineBuilders { language = lang })
   
 ----------------------------
 --  A readability helper  --
@@ -138,8 +139,9 @@ rebuildC mconfig = do
 configureC :: MVar Configuration -> ServerPart Response
 configureC mconfig = do
   config <- liftIO $ readMVar mconfig
-  lang <- fetchLang
-  ok $ toResponse $ configForm config (onLineBuilders { language = lang })
+  count  <- withConfig config queryCountDB
+  lang   <- fetchLang
+  ok     $  toResponse $ configForm count config (onLineBuilders { language = lang })
   
 changeConfigureC :: MVar Configuration -> ServerPart Response
 changeConfigureC mconfig = do
@@ -214,8 +216,8 @@ fetchStats config = do
 -----------------------------------------------
 
 onLineBuilders :: UrlBuilders
-onLineBuilders = UrlBuilders { mainPageUrl        = "/"
-                             , moveBrowserMainUrl = "/movebrowser"
+onLineBuilders = UrlBuilders { mainPageUrl        = ("/?lang=" ++)
+                             , moveBrowserMainUrl = ("/movebrowser?lang=" ++)
                              , moveBrowserMakeUrl = urlMaker
                              , gameBrowserMakeUrl = gameBrowserUrlMaker
                              , gameDetailsMakeUrl = gameDetailsUrlMaker

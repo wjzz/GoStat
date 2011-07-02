@@ -40,7 +40,20 @@ data Messages = Messages { langName             :: Language
                          , chanceOfWinning      :: String
                          , noOfShownGames       :: String
                          , matchingGamesList    :: String
---                         , show
+                         , welcome              :: String
+                         , config               :: String
+                         , rebuild              :: String                           
+                         , startPage :: String
+                         , number :: String
+                         , blackRank :: String
+                         , whiteRank :: String
+                         , winner :: String
+                         , link :: String
+                         , configurationForm :: String
+                         , databaseLabel :: String
+                         , sqlite3Location :: String
+                         , sgfDirectories :: String
+                         , submitChanges :: String
                          }
 
 eng :: Messages
@@ -50,7 +63,7 @@ eng = Messages { langName             = "eng"
                , goToMovesBrowser     = "Go to move browser"
                , black                = "black" 
                , white                = "white" 
-               , backToMain           = "Back to main page" 
+               , backToMain           = "Move browser" 
                , numberOfMoves        = "Number of moves so far: "
                , playerToMove         = "Player to move: "
                , takeBackMove         = "Take back last move"
@@ -76,6 +89,20 @@ eng = Messages { langName             = "eng"
                , chanceOfWinning      = "Winning probability of the current player: "
                , noOfShownGames       = "Number of listed games: "
                , matchingGamesList    = "List of matching games"
+               , welcome = "Welcome to GoStat"
+               , rebuild = "Rebuild the database"
+               , config = "Configure the application (game dirs and database)"
+               , startPage = "Start page"
+               , number = "no"
+               , blackRank = "black rank"
+               , whiteRank = "white rank"
+               , winner = "winner"
+               , link = "link"
+               , configurationForm = "Configuration form"
+               , databaseLabel = "Database that you want to use:"        
+               , sqlite3Location = "Location of the sqlite3 database (*.db)"
+               , sgfDirectories = "Directories with SGF files you want to analyze (one path each row):"
+               , submitChanges = "Submit changes"
                }
 
 pl :: Messages
@@ -85,7 +112,7 @@ pl =  Messages { langName             = "pl"
                , goToMovesBrowser     = "Przeglądarka ruchów"
                , black                = "czarny" 
                , white                = "biały" 
-               , backToMain           = "Powrót do strony głównej" 
+               , backToMain           = "Przeglądarka ruchów" 
                , numberOfMoves        = "Ruchów do tej pory: "
                , playerToMove         = "Ruch ma gracz: "
                , takeBackMove         = "Cofnij ostatni ruch"
@@ -111,6 +138,20 @@ pl =  Messages { langName             = "pl"
                , chanceOfWinning      = "Szansa wygranej dla bieżącego gracza: "
                , noOfShownGames       = "Liczba wyświetlonych gier: "
                , matchingGamesList    = "Lista pasujących gier"
+               , welcome = "Witaj w programie GoStat"
+               , rebuild = "Przebudowa bazy danych"
+               , config = "Konfiguracja"
+               , startPage = "Strona startowa"
+               , number = "nr"
+               , blackRank = "rank. czarnego"
+               , whiteRank = "rank. białego"
+               , winner = "zwycięzca"
+               , link = "odnośnik"
+               , configurationForm = "Formularz konfiguracyjny"
+               , databaseLabel = "Wybierz bazę danych:"
+               , sqlite3Location = "(Dotyczy sqlite3) lokalizacja pliku z bazą danych (ścieżka względna do pliku *.db)"
+               , sgfDirectories = "Katalogi z plikami .sgf (jeden katalog na wiersz) "
+               , submitChanges = "Zapisz ustawienia"
 
                }
       

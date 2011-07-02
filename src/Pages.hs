@@ -21,14 +21,15 @@ import qualified Lang as L
 
 type MovesSoFar = String
 
-data UrlBuilders = UrlBuilders { mainPageUrl        :: String
-                               , moveBrowserMainUrl :: String
+data UrlBuilders = UrlBuilders { mainPageUrl        :: Language -> String
+                               , moveBrowserMainUrl :: Language -> String
                                , moveBrowserMakeUrl :: Language -> MovesSoFar -> String
                                , gameBrowserMakeUrl :: Language -> MovesSoFar -> String
                                , gameDetailsMakeUrl :: Language -> Int        -> String
-                               , gameDownloadLink   :: FilePath -> String
                                , configureUrl       :: Language -> String
                                , rebuildUrl         :: Language -> String
+                               
+                               , gameDownloadLink   :: FilePath -> String
                                , imagesMakeUrl      :: String   -> String
                                , cssUrl             :: String
                                , jsUrls             :: [String]
@@ -70,18 +71,26 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
 ---------------------------------
 
 globalHeader :: Int -> UrlBuilders -> (Language -> String) -> Html
-globalHeader count urlBuilder makeUrl = concatHtml [ flags 
+globalHeader count urlBuilder makeUrl = menu where
+{-  concatHtml [ flags 
                                                , br 
                                                , br
                                                , primHtml $ L.gamesInDb lang count
                                                , pHomePageLink 
                                                , pStartPageLink
                                                ] where
+  -}
+  menu = dI "menu" (ulist $ unordList [ flags
+                                      , primHtml $ L.gamesInDb lang count
+                                      , pHomePageLink 
+                                      , pStartPageLink
+                                      ])
   
-  pHomePageLink = h4 << anchor ! [href (moveBrowserMainUrl urlBuilder)] << L.backToMain lang
+  pHomePageLink = h4 << anchor ! [href (moveBrowserMainUrl urlBuilder lName)] << L.backToMain lang
   
-  pStartPageLink = h4 << anchor ! [href (mainPageUrl urlBuilder)] << "Start page"
+  pStartPageLink = h4 << anchor ! [href (mainPageUrl urlBuilder lName)] << L.startPage lang
   lang          = language urlBuilder
+  lName         = L.langName lang
   
   makeFlag langStr = anchor ! [href (makeUrl langStr) ] 
                      << (thespan ! [theclass "flag"] $ (image ! [width "36" , height "24" , 
@@ -99,23 +108,22 @@ mainPage urlBuilder = pHeader +++ pBody where
   lang    = language urlBuilder
   pHeader = htmlHeader urlBuilder
 
-  -- TODO should this use moveBrowserMainUrl langStr ?
-  makeFlag langStr = anchor ! [href (moveBrowserMakeUrl urlBuilder langStr []) ] 
+  makeFlag langStr = anchor ! [href (mainPageUrl urlBuilder langStr) ] 
                      << image ! [width "180" , height "120" , src (imagesMakeUrl urlBuilder (langStr ++ "_flag.gif"))]
   
   pBody = body $ concatHtml [ welcome 
                             , flags
                             , hr
-                            , anchor ! [href (moveBrowserMakeUrl urlBuilder (L.langName lang) [])] << "Move browser"
+                            , anchor ! [href (moveBrowserMakeUrl urlBuilder (L.langName lang) [])] << L.goToMovesBrowser lang
                             , br , br
-                            , anchor ! [href (configureUrl urlBuilder (L.langName lang))] $ primHtml "Configure the application (game dirs and database)"
+                            , anchor ! [href (configureUrl urlBuilder (L.langName lang))] << L.config lang
                             , br , br
-                            , anchor ! [href (rebuildUrl urlBuilder (L.langName lang)) ] $ primHtml "Rebuild the database"
+                            , anchor ! [href (rebuildUrl urlBuilder (L.langName lang)) ] << L.rebuild lang
                             ]
           
   flags = (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
   
-  welcome = h1 << "Witaj w programie do go!"
+  welcome = h1 << (L.welcome lang)
   
   --pLinkToMoveBrowser = anchor ! [href (moveBrowserMainUrl urlBuilder)] << h3 << L.goToMovesBrowser lang
 
@@ -156,7 +164,8 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar urlBuilder = p
       url  = gameDetailsMakeUrl urlBuilder (L.langName lang) gameId
   
   gameList = table << (tHeader +++ (concatHtml $ map makeLink gameInfos))
-  tHeader = tr $ concatHtml $ map (\l -> th << l) ["no", "black", "black rank", "white", "white rank", "winner", "link"]
+  tHeader = tr $ concatHtml $ map (\l -> th << l) labels
+  labels  = map (flip ($) lang) [L.number, L.black, L.blackRank, L.white, L.whiteRank, L.winner, L.link] 
 
 -----------------------------
 --  The game details page  --
@@ -215,30 +224,35 @@ gameDetailsPage count gameId game path movesSoFar urlBuilder = pHeader +++ pBody
 --  The configuration forms  --
 -------------------------------
 
-configForm :: Configuration -> UrlBuilders -> Html
-configForm configuration urlBuilder = pHeader +++ pBody where
+configForm :: Int -> Configuration -> UrlBuilders -> Html
+configForm count configuration urlBuilder = pHeader +++ pBody where
   pHeader    = htmlHeader urlBuilder
+  lang       = language urlBuilder
   
-  pBody = body $ concatHtml [ h1 << "Configuration form"
+  pBody = body $ concatHtml [ globalHeader count urlBuilder (configureUrl urlBuilder)
+                            , hr
+                            , h1 << L.configurationForm lang
                             , hr
                             , cForm
                             ]
           
   cForm = form ! [method "POST"] $ concatHtml [ primHtml dbLabel
+                                              , br
                                               , dbSelectForm
                                               , br
                                               , br
                                               , primHtml sqliteLabel
                                               , br
                                               , sqlitePath
-                                              , hr
+                                              , br
+                                              , br
                                               , primHtml dirsLabel
                                               , br
                                               , dirsForm
                                               , br
                                               , submitButton
                                               ]
-  dbLabel      = "Database that you want to use:"        
+  dbLabel      = L.databaseLabel lang
   dbSelectForm = select ! [name "dbServer"] $ concatHtml $ map makeOption ["PostgreSQL", "SQLite3"] where
         
                  
@@ -252,7 +266,7 @@ configForm configuration urlBuilder = pHeader +++ pBody where
     attrs   = if lowered == currentDb then [selected] else []
   
 
-  sqliteLabel = "Location of the sqlite3 database (*.db)"
+  sqliteLabel = L.sqlite3Location lang
   sqlitePath  = primHtml $ printf "<textarea name=\"sqlitePath\" cols=\"100\" rows=\"1\">%s</textarea>" dbPath
   
   dbPath = 
@@ -261,10 +275,10 @@ configForm configuration urlBuilder = pHeader +++ pBody where
       Sqlite3 p -> p
     
   
-  dirsLabel = "Directories with SGF files you want to analyze (one path each row):"
+  dirsLabel = L.sgfDirectories lang
   dirsForm = primHtml $ printf "<textarea name=\"dirs\" cols=\"100\" rows=\"10\">%s</textarea>" (unlines (gameDirs configuration))
   
-  submitButton = submit "action" "submit changes"
+  submitButton = submit "action" (L.submitChanges lang)
   
 
 -----------------------------
@@ -285,14 +299,11 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar urlBuilder = pHeader +
                             ]
           
   -- main parts of pBody
-  
-  pHomePageLink = anchor ! [href (mainPageUrl urlBuilder)] << h4 << L.backToMain lang
           
   infoDiv = dI "infoBox" $ concatHtml [ movesSoFarField 
                                       , playerToMove
                                       , takeBackLink
                                       , resetMovesField
-                                      , pHomePageLink
                                       ]
             
   boardDiv   = board urlBuilder True candidates movesSoFar
