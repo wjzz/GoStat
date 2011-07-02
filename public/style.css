@@ -11,6 +11,52 @@ body {
     //margin-right: 5%; // 100px;
 }
 
+#menu {
+    //float: left;
+       height: 24px;
+//    margin: auto;
+    border: 1.5px dotted black;
+    margin: 0px 0px 15px 0px;
+    padding: 5px 0px 5px 0px;
+}
+
+#links {
+    float: left;
+}
+
+#flags {
+    float: right;
+}
+
+
+#flags img {
+    border: 1px solid black;
+    vertical-align: bottom;
+}
+
+#menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#menu li {
+    display: inline;
+    //float: left;
+}
+
+#menu a {
+    //text-decoration: none;
+    //font-size: 16px;
+    //font-family: „Trebuchet MS”, sans-serif;
+    color: #3c3c3c;
+    padding: 0 15px;
+ }
+
+
+#flags a {
+    padding: 0 5px;
+}
 /* *******************************
          the board display 
    *******************************/

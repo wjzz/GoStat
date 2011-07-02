@@ -71,24 +71,13 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
 ---------------------------------
 
 globalHeader :: Int -> UrlBuilders -> (Language -> String) -> Html
-globalHeader count urlBuilder makeUrl = menu where
-{-  concatHtml [ flags 
-                                               , br 
-                                               , br
-                                               , primHtml $ L.gamesInDb lang count
-                                               , pHomePageLink 
-                                               , pStartPageLink
-                                               ] where
-  -}
-  menu = dI "menu" (ulist $ unordList [ flags
-                                      , primHtml $ L.gamesInDb lang count
-                                      , pHomePageLink 
-                                      , pStartPageLink
-                                      ])
+globalHeader count urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) where
+  linksMenu = dI "links" (unordList [pHomePageLink, pStartPageLink])
+  flagsMenu = dI "flags" (unordList $ map makeFlag allLanguages)
   
-  pHomePageLink = h4 << anchor ! [href (moveBrowserMainUrl urlBuilder lName)] << L.backToMain lang
+  pHomePageLink = anchor ! [href (moveBrowserMainUrl urlBuilder lName)] << L.backToMain lang
   
-  pStartPageLink = h4 << anchor ! [href (mainPageUrl urlBuilder lName)] << L.startPage lang
+  pStartPageLink = anchor ! [href (mainPageUrl urlBuilder lName)] << L.startPage lang
   lang          = language urlBuilder
   lName         = L.langName lang
   
@@ -96,7 +85,7 @@ globalHeader count urlBuilder makeUrl = menu where
                      << (thespan ! [theclass "flag"] $ (image ! [width "36" , height "24" , 
                                                                  src (imagesMakeUrl urlBuilder (langStr ++ "_flag.gif"))]))
   
-  flags = concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages
+  flags = dI "flags" $ concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages
 
 
 ---------------------
@@ -137,7 +126,6 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar urlBuilder = p
   pHeader    = htmlHeader urlBuilder
   
   pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> gameBrowserMakeUrl urlBuilder l movesSoFar)
-                            , hr
                             , navigation
                             , hr
                             , dI "gameListTable" gameList
@@ -179,7 +167,6 @@ gameDetailsPage count gameId game path movesSoFar urlBuilder = pHeader +++ pBody
   pHeader    = htmlHeader urlBuilder
   
   pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> gameDetailsMakeUrl urlBuilder l gameId)
-                            , hr
                             , gameInContext
                             , hr
                             , dI "gameLeft" $ concatHtml [ gameSummary 
@@ -230,7 +217,6 @@ configForm count configuration urlBuilder = pHeader +++ pBody where
   lang       = language urlBuilder
   
   pBody = body $ concatHtml [ globalHeader count urlBuilder (configureUrl urlBuilder)
-                            , hr
                             , h1 << L.configurationForm lang
                             , hr
                             , cForm
@@ -291,7 +277,6 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar urlBuilder = pHeader +
   pHeader    = htmlHeader urlBuilder
   
   pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> moveBrowserMakeUrl urlBuilder l movesSoFar)
-                            , hr
                             , currentStatistics
                             , hr
                             , dI "boardInfo" $ boardDiv  +++ infoDiv
@@ -310,7 +295,9 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar urlBuilder = pHeader +
                  
   -- smaller parts
   
-  currentStatistics = concatHtml [ currentPositionWinningChance
+  currentStatistics = concatHtml [ primHtml $ L.gamesInDb lang count
+                                 , br , br
+                                 , currentPositionWinningChance
                                  , br , br
                                  , numberOfGames
                                  , br , br
