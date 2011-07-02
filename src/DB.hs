@@ -96,7 +96,7 @@ addFilesToDB mint = do
         
     if index `mod` 100 == 0
       then do let perc = ((100 * index) `div` len)
-              putStrLn $ printf "done %d (%2d%%)" index perc
+              --putStrLn $ printf "done %d (%2d%%)" index perc
               swapMVar mint $ Just perc
               commit conn
       else return ()

@@ -11,6 +11,8 @@ Display:
 3. enable convenient management of games db via javascript
 4. Improve Haddock comments
 
+0. add missing jquery-ui files in cabal
+
 1. pass error (jeden pasuje drugi gra)
 2. eidogo translation
 3. better rebuilding interface

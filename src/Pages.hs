@@ -77,9 +77,7 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
 ---------------------------------
 
 globalHeader :: Int -> UrlBuilders -> (Language -> String) -> Html
-globalHeader count urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) +++ progressBar where
-  progressBar = dI "progress" (dI "progressbar" noHtml +++ hr)
-  
+globalHeader count urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) where  
   linksMenu = dI "links" (unordList [pStartPageLink, pHomePageLink])
   flagsMenu = dI "flags" (unordList $ map makeFlag allLanguages)
   
@@ -108,7 +106,7 @@ mainPage urlBuilder = pHeader +++ pBody where
   makeFlag langStr = anchor ! [href (mainPageUrl urlBuilder langStr) ] 
                      << image ! [width "180" , height "120" , src (imagesMakeUrl urlBuilder (langStr ++ "_flag.gif"))]
   
-  pBody = body ! [strAttr "onLoad" "checkStatus()" ] $ concatHtml [ welcome 
+  pBody = body $ concatHtml [ welcome 
                             , flags
                             , hr
                             , anchor ! [href (moveBrowserMakeUrl urlBuilder (L.langName lang) [])] << L.goToMovesBrowser lang
@@ -134,7 +132,9 @@ mainPage urlBuilder = pHeader +++ pBody where
 rebuildingPage :: UrlBuilders -> Html
 rebuildingPage urlBuilder = pHeader +++ pBody where
   pHeader    = htmlHeader urlBuilder
-  pBody = noHtml
+  pBody      = body ! [strAttr "onLoad" "checkStatus()" ] $ dI "progress" << concatHtml [ dI "progressbar" noHtml
+                                                                                        , dI "percent" noHtml
+                                                                                        ]
   
 ------------------------------
 --  The games browser page  --
@@ -296,7 +296,7 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar urlBuilder = pHeader +
   lang       = language urlBuilder
   pHeader    = htmlHeader urlBuilder
   
-  pBody = body ! [strAttr "onLoad" "checkStatus()" ] $ concatHtml [ globalHeader count urlBuilder (\l -> moveBrowserMakeUrl urlBuilder l movesSoFar)
+  pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> moveBrowserMakeUrl urlBuilder l movesSoFar)
                             , currentStatistics
                             , hr
                             , dI "boardInfo" $ boardDiv  +++ infoDiv

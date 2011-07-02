@@ -132,7 +132,12 @@ rebuildC mint mconfig = do
   config <- liftIO $ readMVar mconfig
   liftIO $ putStrLn "Will rebuild the db..."
   liftIO $ forkIO $ (runGoStatM config (rebuildDB mint))
-  mainPageC mconfig
+  lang   <- fetchLang
+  
+  liftIO $ threadDelay (1000 * 1000)
+  ok $ toResponse $ rebuildingPage (onLineBuilders { language = lang })
+  
+  --mainPageC mconfig
 
 -----------------------------------
 --  Configuring the application  --
@@ -188,7 +193,7 @@ statusC :: MVar (Maybe Int) -> ServerPart Response
 statusC mint = do
   mn <- liftIO $ readMVar mint
   
-  liftIO $ print mn
+  --liftIO $ print mn
   liftIO $ threadDelay (50 * 1000)
 
   case mn of

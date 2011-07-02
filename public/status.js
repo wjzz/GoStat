@@ -11,19 +11,16 @@ function updateStatus(){
             if (!(data == "free")){
                     var n = parseInt(data);
                     $("#progressbar").progressbar( "option", "value", n);
+                    $("#percent").html("<h1>" + data + "%</h1>");
                     
                     if (n < 100){
                         updateStatus();
+                    } else {
+                        window.location.href = "/";
                     }
             } else {
-                $("#progressbar").progressbar( "option", "value", 100);                    
+                $("#progressbar").progressbar( "option", "value", 100);
+                window.location.href = "/";
             }
         });  
 }
-
-/*
-            for (i=0; i <= 100; ++i){
-                alert("hello" + i);
-                $("#progressbar").progressbar( "option", "value", i);
-                }
-*/
