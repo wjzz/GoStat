@@ -226,7 +226,11 @@ onLineBuilders = UrlBuilders { mainPageUrl        = ("/?lang=" ++)
                              , rebuildUrl         = rebuildUrlMaker
                              , configureUrl       = configureUrlMaker
                              , cssUrl             = "/public/style.css"
-                             , jsUrls             = ["/public/jquery.js", "/public/highlight.js", "/public/eidogo/player/js/all.compressed.js"]
+                             , jsUrls             = [ "/public/jquery.js" 
+                                                    , "/public/highlight.js"
+                                                    , "/public/confirm.js"
+                                                    , "/public/eidogo/player/js/all.compressed.js"
+                                                    ]
                              , language           = pl
                              }
 

@@ -48,7 +48,7 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
   where
     buildScript url = script ! [thetype "text/javascript",src url] << noHtml --
     lang            = language urlBuilder
-    
+        
     eidogoConfig = primHtml " \
   \  eidogoConfig = { \
   \      theme:          \"standard\", \
@@ -72,7 +72,7 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
 
 globalHeader :: Int -> UrlBuilders -> (Language -> String) -> Html
 globalHeader count urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) where
-  linksMenu = dI "links" (unordList [pHomePageLink, pStartPageLink])
+  linksMenu = dI "links" (unordList [pStartPageLink, pHomePageLink])
   flagsMenu = dI "flags" (unordList $ map makeFlag allLanguages)
   
   pHomePageLink = anchor ! [href (moveBrowserMainUrl urlBuilder lName)] << L.backToMain lang
@@ -107,9 +107,10 @@ mainPage urlBuilder = pHeader +++ pBody where
                             , br , br
                             , anchor ! [href (configureUrl urlBuilder (L.langName lang))] << L.config lang
                             , br , br
-                            , anchor ! [href (rebuildUrl urlBuilder (L.langName lang)) ] << L.rebuild lang
+                            , anchor ! [htmlAttr "onclick" rebuildJS , href (rebuildUrl urlBuilder (L.langName lang)) ] << L.rebuild lang
                             ]
           
+  rebuildJS = primHtml $ printf "rebuildConfirm(%s)" (L.confirm lang)
   flags = (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
   
   welcome = h1 << (L.welcome lang)

@@ -54,6 +54,7 @@ data Messages = Messages { langName             :: Language
                          , sqlite3Location :: String
                          , sgfDirectories :: String
                          , submitChanges :: String
+                         , confirm :: String
                          }
 
 eng :: Messages
@@ -103,6 +104,7 @@ eng = Messages { langName             = "eng"
                , sqlite3Location = "Location of the sqlite3 database (*.db)"
                , sgfDirectories = "Directories with SGF files you want to analyze (one path each row):"
                , submitChanges = "Submit changes"
+               , confirm = "Do you really want to rebuild the db?"
                }
 
 pl :: Messages
@@ -152,7 +154,7 @@ pl =  Messages { langName             = "pl"
                , sqlite3Location = "(Dotyczy sqlite3) lokalizacja pliku z bazą danych (ścieżka względna do pliku *.db)"
                , sgfDirectories = "Katalogi z plikami .sgf (jeden katalog na wiersz) "
                , submitChanges = "Zapisz ustawienia"
-
+               , confirm = "Czy na pewno przebudować bazę danych?"
                }
       
 allLanguages :: [Language]
