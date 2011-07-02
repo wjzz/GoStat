@@ -131,11 +131,17 @@ rebuildC :: MVar (Maybe Int) -> MVar Configuration -> ServerPart Response
 rebuildC mint mconfig = do 
   config <- liftIO $ readMVar mconfig
   liftIO $ putStrLn "Will rebuild the db..."
-  liftIO $ forkIO $ (runGoStatM config (rebuildDB mint))
+  
+  timeSample <- liftIO $ newEmptyMVar
+  let sampleSize = 100
+      
+  liftIO $ forkIO $ (runGoStatM config (rebuildDB mint sampleSize timeSample))
   lang   <- fetchLang
   
-  liftIO $ threadDelay (1000 * 1000)
-  ok $ toResponse $ rebuildingPage (onLineBuilders { language = lang })
+  -- wait till the db has been dropped and created
+  -- only after that start rendering the page
+  sample <- liftIO $ takeMVar timeSample
+  ok $ toResponse $ rebuildingPage sampleSize sample (onLineBuilders { language = lang })
   
   --mainPageC mconfig
 

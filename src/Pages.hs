@@ -129,8 +129,8 @@ mainPage urlBuilder = pHeader +++ pBody where
 --  The page that is displayed during DB rebuilding  --
 -------------------------------------------------------
 
-rebuildingPage :: UrlBuilders -> Html
-rebuildingPage urlBuilder = pHeader +++ pBody where
+rebuildingPage :: Int -> Int -> UrlBuilders -> Html
+rebuildingPage sampleSize timeSample urlBuilder = pHeader +++ pBody where
   pHeader    = htmlHeader urlBuilder
   pBody      = body ! [strAttr "onLoad" "checkStatus()" ] $ dI "progress" << concatHtml [ dI "progressbar" noHtml
                                                                                         , dI "percent" noHtml

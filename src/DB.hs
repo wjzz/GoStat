@@ -71,11 +71,13 @@ deleteDB = withConnection $ \(ConnWrapper conn) -> do
               commit conn))
       (const (return ()))
 
-addFilesToDB :: MVar (Maybe Int) -> GoStatM ()
-addFilesToDB mint = do
+addFilesToDB :: MVar (Maybe Int) -> Int -> MVar Int -> GoStatM ()
+addFilesToDB mint sampleSize timeSample = do
   dirs <- gameDirs <$> getConfig
   withConnection (\(ConnWrapper conn) -> do 
   putStrLn "connected to DB..."
+  
+  swapMVar mint $ Just 0
   
   len <- length <$> getSGFs dirs
   putStrLn $ printf "%d games to analyze." len
@@ -94,7 +96,10 @@ addFilesToDB mint = do
         execute stmt [toSql win, toSql mvs, toSql file, toSql bName, toSql wName, toSql bRank, toSql wRank]
         return ()
         
-    if index `mod` 100 == 0
+    when (index == 100) $ do
+      putMVar timeSample 100
+  
+    if index `mod` sampleSize == 0
       then do let perc = ((100 * index) `div` len)
               --putStrLn $ printf "done %d (%2d%%)" index perc
               swapMVar mint $ Just perc
@@ -186,12 +191,15 @@ queryFindGameById gameId = do
     ((path:moves:_):_) -> Just (fromSql path, fromSql moves)
     _                  -> Nothing
 
-rebuildDB :: MVar (Maybe Int) -> GoStatM ()
-rebuildDB mint = do
+rebuildDB :: MVar (Maybe Int) -> Int -> MVar Int -> GoStatM ()
+rebuildDB mint sampleSize timeSample = do
   liftIO $ putStrLn "Starting DB rebuilding..."
+  
   deleteDB
   liftIO $ putStrLn "Deleted DB."
+  
   createDB
   liftIO $ putStrLn "Created DB."
-  addFilesToDB mint
+  
+  addFilesToDB mint sampleSize timeSample 
   liftIO $ putStrLn "DB rebuilding done!"
