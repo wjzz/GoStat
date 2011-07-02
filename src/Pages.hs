@@ -31,7 +31,7 @@ data UrlBuilders = UrlBuilders { mainPageUrl        :: Language -> String
                                
                                , gameDownloadLink   :: FilePath -> String
                                , imagesMakeUrl      :: String   -> String
-                               , cssUrl             :: String
+                               , cssUrls            :: [String]
                                , jsUrls             :: [String]
                                , language           :: Messages
                                }
@@ -42,11 +42,17 @@ data UrlBuilders = UrlBuilders { mainPageUrl        :: Language -> String
 
 htmlHeader :: UrlBuilders -> Html
 htmlHeader urlBuilder = header << ((thetitle << L.title lang) 
-                                 +++ (thelink ! [href (cssUrl urlBuilder)] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
+                                 +++ concatHtml (map buildCss $ cssUrls urlBuilder) 
                                  +++ script ! [thetype "text/javascript"] << eidogoConfig
-                                 +++ concatHtml (map buildScript $ jsUrls urlBuilder)) 
+                                 +++ concatHtml (map buildScript $ jsUrls urlBuilder)
+                                 +++ progressBar
+                                  )
   where
-    buildScript url = script ! [thetype "text/javascript",src url] << noHtml --
+    progressBar = noHtml --primHtml "<style> .ui-progressbar-value { background-image: url(/public/img/pbar-ani.gif); } </style>"
+    
+    buildCss css = (thelink ! [href css] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
+    
+    buildScript url = script ! [thetype "text/javascript",src url] << noHtml
     lang            = language urlBuilder
         
     eidogoConfig = primHtml " \
@@ -71,7 +77,9 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
 ---------------------------------
 
 globalHeader :: Int -> UrlBuilders -> (Language -> String) -> Html
-globalHeader count urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) where
+globalHeader count urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) +++ progressBar where
+  progressBar = dI "progress" (dI "progressbar" noHtml)
+  
   linksMenu = dI "links" (unordList [pStartPageLink, pHomePageLink])
   flagsMenu = dI "flags" (unordList $ map makeFlag allLanguages)
   
@@ -100,7 +108,7 @@ mainPage urlBuilder = pHeader +++ pBody where
   makeFlag langStr = anchor ! [href (mainPageUrl urlBuilder langStr) ] 
                      << image ! [width "180" , height "120" , src (imagesMakeUrl urlBuilder (langStr ++ "_flag.gif"))]
   
-  pBody = body $ concatHtml [ welcome 
+  pBody = body ! [strAttr "onLoad" "checkStatus()" ] $ concatHtml [ welcome 
                             , flags
                             , hr
                             , anchor ! [href (moveBrowserMakeUrl urlBuilder (L.langName lang) [])] << L.goToMovesBrowser lang
@@ -279,7 +287,7 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar urlBuilder = pHeader +
   lang       = language urlBuilder
   pHeader    = htmlHeader urlBuilder
   
-  pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> moveBrowserMakeUrl urlBuilder l movesSoFar)
+  pBody = body ! [strAttr "onLoad" "checkStatus()" ] $ concatHtml [ globalHeader count urlBuilder (\l -> moveBrowserMakeUrl urlBuilder l movesSoFar)
                             , currentStatistics
                             , hr
                             , dI "boardInfo" $ boardDiv  +++ infoDiv

@@ -27,20 +27,22 @@ server = do
   liftIO $ putStrLn "Listening on port 8000..."
   config <- getConfig
   cm     <- liftIO $ newMVar config
-  liftIO $ simpleHTTP nullConf $ router cm
+  mint   <- liftIO $ newMVar Nothing
+  liftIO $ simpleHTTP nullConf $ router cm mint
   
-router :: MVar Configuration -> ServerPart Response
-router config = msum [ dir "movebrowser" $ moveBrowserC config
-                     , dir "games"       $ gameBrowserC config
-                     , dir "game"        $ gameDetailsC config
-                     , dir "public"      $ serveDirectory EnableBrowsing [] "public"
-                     , dir "sgf"         $ uriRest (sgfBrowserC config)
-                     , dir "rebuild"     $ rebuildC   config
-                     , dir "configure"   $ do methodM POST 
-                                              changeConfigureC config
-                     , dir "configure"   $ configureC config
-                     , mainPageC config
-                     ]
+router :: MVar Configuration -> MVar (Maybe Int) -> ServerPart Response
+router config mint = msum [ dir "movebrowser" $ moveBrowserC config
+                          , dir "games"       $ gameBrowserC config
+                          , dir "game"        $ gameDetailsC config
+                          , dir "public"      $ serveDirectory EnableBrowsing [] "public"
+                          , dir "sgf"         $ uriRest (sgfBrowserC config)
+                          , dir "rebuild"     $ rebuildC   config
+                          , dir "configure"   $ do methodM POST 
+                                                   changeConfigureC config
+                          , dir "configure"   $ configureC config
+                          , dir "status"      $ statusC mint
+                          , mainPageC config
+                          ]
          
 ---------------------
 --  The main page  --
@@ -178,6 +180,18 @@ sgfBrowserC mconfig path = do
   file <- liftIO $ readFile path
   ok $ toResponse file
 
+----------------------------------
+--  A handler for AJAX queries  --
+----------------------------------
+
+statusC :: MVar (Maybe Int) -> ServerPart Response
+statusC mint = do
+  mn <- liftIO $ readMVar mint
+
+  case mn of
+    Nothing -> ok $ toResponse $ "free"
+    Just n  -> ok $ toResponse $ show n
+
 ---------------------------
 --  A fetching shortcut  --
 ---------------------------
@@ -225,11 +239,17 @@ onLineBuilders = UrlBuilders { mainPageUrl        = ("/?lang=" ++)
                              , imagesMakeUrl      = imageUrlMaker
                              , rebuildUrl         = rebuildUrlMaker
                              , configureUrl       = configureUrlMaker
-                             , cssUrl             = "/public/style.css"
+                             , cssUrls            = [ "/public/style.css"
+                                                    , "/public/jquery-ui/development-bundle/themes/base/jquery.ui.all.css"
+                                                    ]
                              , jsUrls             = [ "/public/jquery.js" 
                                                     , "/public/highlight.js"
                                                     , "/public/confirm.js"
                                                     , "/public/eidogo/player/js/all.compressed.js"
+                                                    , "/public/jquery-ui/development-bundle/ui/jquery.ui.core.js"
+                                                    , "/public/jquery-ui/development-bundle/ui/jquery.ui.widget.js"
+                                                    , "/public/jquery-ui/development-bundle/ui/jquery.ui.progressbar.js"
+                                                    , "/public/status.js"
                                                     ]
                              , language           = pl
                              }
