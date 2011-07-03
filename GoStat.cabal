@@ -1,5 +1,5 @@
 Name:                GoStat
-Version:             0.9.5
+Version:             1.0
 Synopsis:            A Haskell program for analysing Go games and calculating statistics.
 Description:         
  GoStat is a Haskell program for analysing large collections of Go games (currently only on the 9x9 board). 
@@ -23,16 +23,176 @@ Extra-source-files:  README
                      public/eidogo/player/images/*.png
                      public/eidogo/player/js/*.js
                      public/eidogo/player/js/all.compressed.js
-                     public/jquery-ui/*
+
 
 Data-files:          CONFIG
                      test/example.sgf
                      test/example2.sgf
                      db/games.db
-                     
-                     
-                     
-
+                     public/jquery-ui/development-bundle/ui/jquery.ui.autocomplete.js
+                     public/jquery-ui/js/jquery-ui-1.8.14.custom.min.js
+                     public/jquery-ui/js/jquery-1.5.1.min.js
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.button.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.base.css
+                     public/jquery-ui/development-bundle/themes/base/images/ui-icons_cd0a0a_256x240.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-bg_glass_75_e6e6e6_1x400.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-icons_222222_256x240.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-bg_glass_55_fbf9ee_1x400.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-bg_glass_95_fef1ec_1x400.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-icons_454545_256x240.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-icons_888888_256x240.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-bg_glass_65_ffffff_1x400.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-bg_flat_0_aaaaaa_40x100.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-icons_2e83ff_256x240.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-bg_highlight-soft_75_cccccc_1x100.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-bg_flat_75_ffffff_40x100.png
+                     public/jquery-ui/development-bundle/themes/base/images/ui-bg_glass_75_dadada_1x400.png
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.accordion.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.autocomplete.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.tabs.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.datepicker.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.theme.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.dialog.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.slider.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.core.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.progressbar.css
+                     public/jquery-ui/development-bundle/themes/base/jquery.ui.all.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.button.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.base.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-bg_glass_100_f6f6f6_1x400.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-icons_ffffff_256x240.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-bg_gloss-wave_35_f6a828_500x100.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-icons_222222_256x240.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-icons_ef8c08_256x240.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-icons_ffd27a_256x240.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-bg_glass_65_ffffff_1x400.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-bg_glass_100_fdf5ce_1x400.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-icons_228ef1_256x240.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-bg_highlight-soft_75_ffe45c_1x100.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-bg_flat_10_000000_40x100.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-bg_diagonals-thick_18_b81900_40x40.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-bg_highlight-soft_100_eeeeee_1x100.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/images/ui-bg_diagonals-thick_20_666666_40x40.png
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.accordion.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery-ui-1.8.14.custom.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.autocomplete.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.tabs.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.datepicker.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.theme.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.dialog.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.slider.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.core.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.progressbar.css
+                     public/jquery-ui/development-bundle/themes/ui-lightness/jquery.ui.all.css
+                     public/jquery-ui/development-bundle/jquery-1.5.1.js
+                     public/jquery-ui/development-bundle/external/jquery.cookie.js
+                     public/jquery-ui/development-bundle/external/jquery.bgiframe-2.1.2.js
+                     public/jquery-ui/development-bundle/external/qunit.css
+                     public/jquery-ui/development-bundle/external/jquery.metadata.js
+                     public/jquery-ui/development-bundle/external/qunit.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ro.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ta.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-pl.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-sl.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-fa.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-fr.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-da.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-sk.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-gl.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-zh-CN.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-tj.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-en-NZ.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-et.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ru.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-uk.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-fr-CH.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-fi.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-de.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-en-AU.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-lt.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-fo.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-is.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ar-DZ.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-it.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-zh-TW.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-th.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-hy.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-az.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-he.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-pt-BR.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-cs.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ml.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-es.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ko.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-bs.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-vi.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-no.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-nl.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ca.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-lv.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-rm.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-sv.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-af.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-id.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-kz.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-eu.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-zh-HK.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-sr-SR.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-en-GB.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-bg.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-hr.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-hu.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery-ui-i18n.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-pt.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-sr.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ms.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-el.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-sq.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ar.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-eo.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-tr.js
+                     public/jquery-ui/development-bundle/ui/i18n/jquery.ui.datepicker-ja.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.datepicker.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.widget.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.button.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.tabs.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.dialog.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.autocomplete.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.progressbar.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.core.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.mouse.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.widget.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.mouse.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.accordion.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.tabs.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.slider.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.progressbar.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.position.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.dialog.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.autocomplete.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.datepicker.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.button.min.js
+                     public/jquery-ui/development-bundle/ui/minified/jquery.ui.core.min.js
+                     public/jquery-ui/development-bundle/ui/jquery-ui-1.8.14.custom.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.accordion.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.slider.js
+                     public/jquery-ui/development-bundle/ui/jquery.ui.position.js
+                     public/jquery-ui/index.html
+                     public/jquery-ui/css/ui-lightness/images/ui-bg_glass_100_f6f6f6_1x400.png
+                     public/jquery-ui/css/ui-lightness/images/ui-icons_ffffff_256x240.png
+                     public/jquery-ui/css/ui-lightness/images/ui-bg_gloss-wave_35_f6a828_500x100.png
+                     public/jquery-ui/css/ui-lightness/images/ui-icons_222222_256x240.png
+                     public/jquery-ui/css/ui-lightness/images/ui-icons_ef8c08_256x240.png
+                     public/jquery-ui/css/ui-lightness/images/ui-icons_ffd27a_256x240.png
+                     public/jquery-ui/css/ui-lightness/images/ui-bg_glass_65_ffffff_1x400.png
+                     public/jquery-ui/css/ui-lightness/images/ui-bg_glass_100_fdf5ce_1x400.png
+                     public/jquery-ui/css/ui-lightness/images/ui-icons_228ef1_256x240.png
+                     public/jquery-ui/css/ui-lightness/images/ui-bg_highlight-soft_75_ffe45c_1x100.png
+                     public/jquery-ui/css/ui-lightness/images/ui-bg_flat_10_000000_40x100.png
+                     public/jquery-ui/css/ui-lightness/images/ui-bg_diagonals-thick_18_b81900_40x40.png
+                     public/jquery-ui/css/ui-lightness/images/ui-bg_highlight-soft_100_eeeeee_1x100.png
+                     public/jquery-ui/css/ui-lightness/images/ui-bg_diagonals-thick_20_666666_40x40.png
+                     public/jquery-ui/css/ui-lightness/jquery-ui-1.8.14.custom.css
 
 Source-repository head
   type:      git
@@ -63,7 +223,6 @@ Executable GoStat
                       happstack-server == 6.0.*,
                       xhtml == 3000.2.*,
                       mtl == 2.0.*
-                      --parsec >= 2.1 && < 3
   Other-modules:      Configuration
                       SgfBatching
                       Transformations
@@ -79,8 +238,6 @@ Executable GoStatTests
   Main-is:    	       Tests.hs
   Build-depends:       base >= 3 && < 5,
                        parsec >= 2.1 && < 3,
-                       -- hdbc == 2.2.6.*,
-                       -- hdbc-postgresql == 2.2.3.*,
                        HUnit == 1.2.*,
                        QuickCheck == 1.2.*,
                        test-framework == 0.3.*,

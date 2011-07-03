@@ -6,8 +6,9 @@
 DONE:
   3. better rebuilding interface
   14. pokazywanie ile procent juz zostalo ukonczonych z danej operacji
-2. eidogo translation
-
+  2. eidogo translation
+  0. add missing jquery-ui files in cabal
+  10. zmienic biblioteke do przechodzenia rekurencyjnego katalogow na taka, ktora dziala pod windows
 
 
 WON'T DO SOON
@@ -23,13 +24,12 @@ WON'T DO SOON
   17. pokazywanie dokladnego wyniku?
   6. pokazuj pytanie o sciezke, tylko gdy sqlite jest wybrane
 
+NIE UMIEM
+  11. wygenerowac statyczne binarki dla windows i linux
+
 TO DO
 
 PILNE
-
-0. add missing jquery-ui files in cabal
-10. zmienic biblioteke do przechodzenia rekurencyjnego katalogow na taka, ktora dziala pod windows
-11. wygenerowac statyczne binarki dla windows i linux
 
 WAZNE
 12. dopisac testy bazy danych
