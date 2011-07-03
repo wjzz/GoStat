@@ -44,6 +44,7 @@ htmlHeader :: UrlBuilders -> Html
 htmlHeader urlBuilder = header << ((thetitle << L.title lang) 
                                  +++ concatHtml (map buildCss $ cssUrls urlBuilder) 
                                  +++ script ! [thetype "text/javascript"] << eidogoConfig
+                                 +++ script ! [thetype "text/javascript", src eidogoLangPath] << noHtml
                                  +++ concatHtml (map buildScript $ jsUrls urlBuilder)
                                  +++ progressBar
                                   )
@@ -52,9 +53,11 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
     
     buildCss css = (thelink ! [href css] ! [thetype "text/css"] ! [rel "stylesheet"] << noHtml)
     
-    buildScript url = script ! [thetype "text/javascript",src url] << noHtml
+    buildScript url = script ! [thetype "text/javascript", src url] << noHtml
     lang            = language urlBuilder
         
+    eidogoLangPath = printf "/public/eidogo/player/i18n/%s.js" (L.langName lang)
+    
     eidogoConfig = primHtml " \
   \  eidogoConfig = { \
   \      theme:          \"standard\", \
