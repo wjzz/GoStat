@@ -1,5 +1,5 @@
 Name:                GoStat
-Version:             0.9.5
+Version:             0.9.7
 Synopsis:            A Haskell program for analysing Go games and calculating statistics.
 Description:         
  GoStat is a Haskell program for analysing large collections of Go games (currently only on the 9x9 board). 
@@ -63,12 +63,12 @@ Executable GoStat
   Hs-source-dirs: src 
   Main-is:    	      Main.hs
   Build-depends:      base >= 3 && < 5,
-                      filemanip == 0.3.*,
+                      --filemanip == 0.3.*,
                       directory == 1.1.0.0,
                       filepath == 1.2.0.0,
                       strict == 0.3.*,
                       HDBC == 2.2.*,
-                      HDBC-postgresql == 2.2.*,
+                      --HDBC-postgresql == 2.2.*,
                       HDBC-sqlite3 == 2.3.*,
                       happstack-server == 6.0.*,
                       xhtml == 3000.2.*,

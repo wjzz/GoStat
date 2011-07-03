@@ -22,7 +22,7 @@ import Control.Monad
 import Control.Monad.Reader
 import Data.Maybe
 import Database.HDBC
-import Database.HDBC.PostgreSQL (connectPostgreSQL)
+--import Database.HDBC.PostgreSQL (connectPostgreSQL)
 import Database.HDBC.Sqlite3    (connectSqlite3)
 import System.CPUTime
 import System.IO.Strict as Strict
@@ -34,7 +34,7 @@ withConnection :: (ConnWrapper -> IO a) -> GoStatM a
 withConnection dbAction = do
   db   <- dbServer <$> getConfig
   conn <- (case db of
-              PostgreSQL     -> liftIO $ ConnWrapper <$> connectPostgreSQL ""
+              PostgreSQL     -> error "not supported on windows" --liftIO $ ConnWrapper <$> connectPostgreSQL ""
               Sqlite3 dbPath -> liftIO $ ConnWrapper <$> connectSqlite3 dbPath)
           
   result <- liftIO $ dbAction conn

@@ -10,7 +10,7 @@ import Data.SGF.Parsing
 import Transformations
 
 import Control.Monad
-import System.FilePath.Find hiding (fileName)
+--import System.FilePath.Find hiding (fileName)
 
 import System.Directory
 import System.FilePath
@@ -32,8 +32,8 @@ findSgfRecur topDir = do
 
 
 -- | Returns a lazy list of all files in a given directory (and in it's subdirectories)
-getFileNames :: FilePath -> IO [FilePath]
-getFileNames topDir = find always (extension ==? ".sgf") topDir
+--getFileNames :: FilePath -> IO [FilePath]
+--getFileNames topDir = find always (extension ==? ".sgf") topDir
 
 getSGFs :: [FilePath] -> IO [FilePath]
 getSGFs dirs = concat `fmap` mapM findSgfRecur dirs
