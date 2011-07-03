@@ -12,7 +12,6 @@ Display:
 4. Improve Haddock comments
 
 0. add missing jquery-ui files in cabal
-
 1. pass error (jeden pasuje drugi gra)
 2. eidogo translation
 3. better rebuilding interface
@@ -30,6 +29,8 @@ Display:
 15. wymusic konfiguracje na czystej maszynie
 16. ustalic jak ma wygladac poczatkowy plik konfiguracyjny
 17. pokazywanie dokladnego wyniku?
+18. check if database exists before querying it. if it doesn't ask the user to configure and rebuild the db
+19. niech przebudowa bedzie dostepna od razu z poziomu formularza konfiguracyjnego!
 
 Bugi:
 

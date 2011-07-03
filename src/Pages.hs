@@ -76,8 +76,8 @@ htmlHeader urlBuilder = header << ((thetitle << L.title lang)
 --  Header used in most pages  --
 ---------------------------------
 
-globalHeader :: Int -> UrlBuilders -> (Language -> String) -> Html
-globalHeader count urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) where  
+globalHeader :: UrlBuilders -> (Language -> String) -> Html
+globalHeader urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) where  
   linksMenu = dI "links" (unordList [pStartPageLink, pHomePageLink])
   flagsMenu = dI "flags" (unordList $ map makeFlag allLanguages)
   
@@ -91,7 +91,7 @@ globalHeader count urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) wher
                      << (thespan ! [theclass "flag"] $ (image ! [width "36" , height "24" , 
                                                                  src (imagesMakeUrl urlBuilder (langStr ++ "_flag.gif"))]))
   
-  flags = dI "flags" $ concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages
+  --flags = dI "flags" $ concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages
 
 
 ---------------------
@@ -117,7 +117,7 @@ mainPage urlBuilder = pHeader +++ pBody where
                             ]
           
   rebuildJS = primHtml $ printf "javascript:rebuildConfirm('%s','%s')" (L.confirm lang) (rebuildUrl urlBuilder (L.langName lang)) 
-  rebuild =  (rebuildUrl urlBuilder (L.langName lang))
+  --rebuild =  (rebuildUrl urlBuilder (L.langName lang))
   
   flags = (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
   
@@ -129,23 +129,24 @@ mainPage urlBuilder = pHeader +++ pBody where
 --  The page that is displayed during DB rebuilding  --
 -------------------------------------------------------
 
-rebuildingPage :: Int -> Int -> UrlBuilders -> Html
-rebuildingPage sampleSize timeSample urlBuilder = pHeader +++ pBody where
+rebuildingPage :: Int -> Int -> Int -> UrlBuilders -> Html
+rebuildingPage sampleSize timeSample totalSize urlBuilder = pHeader +++ pBody where
   pHeader    = htmlHeader urlBuilder
-  pBody      = body ! [strAttr "onLoad" "checkStatus()" ] $ dI "progress" << concatHtml [ dI "progressbar" noHtml
-                                                                                        , dI "percent" noHtml
-                                                                                        ]
+  pBody      = body ! [strAttr "onLoad" statusFunc ] $ dI "progress" << concatHtml [ dI "progressbar" noHtml
+                                                                                   , dI "percent" noHtml
+                                                                                   ]
+  statusFunc = printf "checkStatus(%d, %d, %d)" sampleSize timeSample totalSize
   
 ------------------------------
 --  The games browser page  --
 ------------------------------
 
-gameBrowserPage :: [(Int, FilePath, String, String, String, String, String)] -> Int -> (Int, Int, Int) -> String -> UrlBuilders -> Html
-gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar urlBuilder = pHeader +++ pBody where
+gameBrowserPage :: [(Int, FilePath, String, String, String, String, String)] -> (Int, Int, Int) -> String -> UrlBuilders -> Html
+gameBrowserPage gameInfos (allGames, bWin, wWin) movesSoFar urlBuilder = pHeader +++ pBody where
   lang       = language urlBuilder
   pHeader    = htmlHeader urlBuilder
   
-  pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> gameBrowserMakeUrl urlBuilder l movesSoFar)
+  pBody = body $ concatHtml [ globalHeader urlBuilder (\l -> gameBrowserMakeUrl urlBuilder l movesSoFar)
                             , navigation
                             , hr
                             , dI "gameListTable" gameList
@@ -181,12 +182,12 @@ gameBrowserPage gameInfos count (allGames, bWin, wWin) movesSoFar urlBuilder = p
 
 type GameId = Int
 
-gameDetailsPage :: Int -> GameId -> SGF -> FilePath -> MovesSoFar -> UrlBuilders -> Html
-gameDetailsPage count gameId game path movesSoFar urlBuilder = pHeader +++ pBody where
+gameDetailsPage :: GameId -> SGF -> FilePath -> MovesSoFar -> UrlBuilders -> Html
+gameDetailsPage gameId game path movesSoFar urlBuilder = pHeader +++ pBody where
   lang       = language urlBuilder
   pHeader    = htmlHeader urlBuilder
   
-  pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> gameDetailsMakeUrl urlBuilder l gameId)
+  pBody = body $ concatHtml [ globalHeader urlBuilder (\l -> gameDetailsMakeUrl urlBuilder l gameId)
                             , gameInContext
                             , hr
                             , dI "gameLeft" $ concatHtml [ gameSummary 
@@ -231,12 +232,12 @@ gameDetailsPage count gameId game path movesSoFar urlBuilder = pHeader +++ pBody
 --  The configuration forms  --
 -------------------------------
 
-configForm :: Int -> Configuration -> UrlBuilders -> Html
-configForm count configuration urlBuilder = pHeader +++ pBody where
+configForm :: Configuration -> UrlBuilders -> Html
+configForm configuration urlBuilder = pHeader +++ pBody where
   pHeader    = htmlHeader urlBuilder
   lang       = language urlBuilder
   
-  pBody = body $ concatHtml [ globalHeader count urlBuilder (configureUrl urlBuilder)
+  pBody = body $ concatHtml [ globalHeader urlBuilder (configureUrl urlBuilder)
                             , h1 << L.configurationForm lang
                             , hr
                             , cForm
@@ -296,7 +297,7 @@ moveBrowser count (allGames, bWin, wWin) moves movesSoFar urlBuilder = pHeader +
   lang       = language urlBuilder
   pHeader    = htmlHeader urlBuilder
   
-  pBody = body $ concatHtml [ globalHeader count urlBuilder (\l -> moveBrowserMakeUrl urlBuilder l movesSoFar)
+  pBody = body $ concatHtml [ globalHeader urlBuilder (\l -> moveBrowserMakeUrl urlBuilder l movesSoFar)
                             , currentStatistics
                             , hr
                             , dI "boardInfo" $ boardDiv  +++ infoDiv

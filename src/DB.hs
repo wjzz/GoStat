@@ -18,13 +18,13 @@ import SgfBatching hiding (moves)
 
 import Control.Applicative
 import Control.Concurrent
-import Control.Concurrent.MVar
 import Control.Monad
 import Control.Monad.Reader
 import Data.Maybe
 import Database.HDBC
 import Database.HDBC.PostgreSQL (connectPostgreSQL)
 import Database.HDBC.Sqlite3    (connectSqlite3)
+import System.CPUTime
 import System.IO.Strict as Strict
 import Text.Printf
 
@@ -71,20 +71,23 @@ deleteDB = withConnection $ \(ConnWrapper conn) -> do
               commit conn))
       (const (return ()))
 
-addFilesToDB :: MVar (Maybe Int) -> Int -> MVar Int -> GoStatM ()
-addFilesToDB mint sampleSize timeSample = do
-  dirs <- gameDirs <$> getConfig
-  withConnection (\(ConnWrapper conn) -> do 
+addFilesToDB :: MVar (Maybe Int) -> Int -> MVar Int -> MVar Int -> GoStatM ()
+addFilesToDB mint sampleSize timeSample totalSize = do
+ dirs <- gameDirs <$> getConfig
+ withConnection (\(ConnWrapper conn) -> do 
   putStrLn "connected to DB..."
   
   swapMVar mint $ Just 0
   
   len <- length <$> getSGFs dirs
   putStrLn $ printf "%d games to analyze." len
+  putMVar totalSize $! len
   
   files <- getSGFs dirs
   
   stmt <- prepare conn "INSERT INTO go_stat_data (winner, moves, path, b_name, w_name, b_rank, w_rank) VALUES (?,?,?,?,?,?,?)"
+  
+  startTime <- getCPUTime
   
   forM_ (zip files [(1::Int)..]) $ \(file, index) -> do
     gameInfo <- (fileToSGF >=> uncurry sgfToGameInfo) `fmap` Strict.readFile file
@@ -95,10 +98,7 @@ addFilesToDB mint sampleSize timeSample = do
         let (_, win, mvs, bName, wName, bRank, wRank) = gameInfoToDB gi
         execute stmt [toSql win, toSql mvs, toSql file, toSql bName, toSql wName, toSql bRank, toSql wRank]
         return ()
-        
-    when (index == 100) $ do
-      putMVar timeSample 100
-  
+          
     if index `mod` sampleSize == 0
       then do let perc = ((100 * index) `div` len)
               --putStrLn $ printf "done %d (%2d%%)" index perc
@@ -106,9 +106,18 @@ addFilesToDB mint sampleSize timeSample = do
               commit conn
       else return ()
 
+    when (index == 100) $ do
+      sampleTime <- getCPUTime
+      --print $ (sampleTime - startTime) `div` (10 ^ 9)
+      putMVar timeSample $! (fromInteger ((sampleTime - startTime) `div` (10 ^ (9 :: Int))))
+
+  
   commit conn)
-  liftIO $ swapMVar mint Nothing
-  liftIO $ putStrLn "closed connection to DB"
+ liftIO $ swapMVar mint Nothing
+ liftIO $ putStrLn "closed connection to DB"
+  
+ -- to avoid a deadlock when there are less than sampleSize games:
+ liftIO $ putMVar timeSample 100
   
 queryCountDB :: GoStatM Int
 queryCountDB = do
@@ -191,8 +200,8 @@ queryFindGameById gameId = do
     ((path:moves:_):_) -> Just (fromSql path, fromSql moves)
     _                  -> Nothing
 
-rebuildDB :: MVar (Maybe Int) -> Int -> MVar Int -> GoStatM ()
-rebuildDB mint sampleSize timeSample = do
+rebuildDB :: MVar (Maybe Int) -> Int -> MVar Int -> MVar Int -> GoStatM ()
+rebuildDB mint sampleSize timeSample totalSize = do
   liftIO $ putStrLn "Starting DB rebuilding..."
   
   deleteDB
@@ -201,5 +210,5 @@ rebuildDB mint sampleSize timeSample = do
   createDB
   liftIO $ putStrLn "Created DB."
   
-  addFilesToDB mint sampleSize timeSample 
+  addFilesToDB mint sampleSize timeSample totalSize
   liftIO $ putStrLn "DB rebuilding done!"

@@ -95,11 +95,11 @@ writeConfig config path = writeFile path $ showConfiguration config
 --  Default config file  --
 ---------------------------
 
-sqliteDir :: IO FilePath
-sqliteDir = getDataFileName "db/games.db"
+sqliteDir :: FilePath
+sqliteDir = "games.db"
 
 defaultConfig :: Configuration
-defaultConfig = Configuration { dbServer = PostgreSQL
+defaultConfig = Configuration { dbServer = Sqlite3 sqliteDir -- PostgreSQL
                               , gameDirs = []
                               }
 
@@ -114,21 +114,3 @@ runGoStatM = flip runReaderT
 
 getConfig :: GoStatM Configuration
 getConfig = ask
-
-------------------------------
---  Make the path relative  --
-------------------------------
-
---TODO 
--- use IO and find this directory dynamically, on the run
-
-{-
-absolutePathToGameDir :: FilePath
-absolutePathToGameDir = "/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/"
-
-makeRelative :: FilePath -> FilePath
-makeRelative = drop (length absolutePathToGameDir)
-
-makeAbsolute :: FilePath -> FilePath
-makeAbsolute s = absolutePathToGameDir ++ s
--}

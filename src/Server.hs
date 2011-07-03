@@ -10,7 +10,6 @@ import Pages
 import Lang
 import Configuration
 
-import Control.Arrow
 import Control.Concurrent
 import Control.Concurrent.MVar
 import Control.Monad
@@ -68,11 +67,11 @@ withConfig config action = liftIO $ runGoStatM config action
 gameBrowserC :: MVar Configuration -> ServerPart Response
 gameBrowserC mconfig = do 
   config <- liftIO $ readMVar mconfig
-  (count, currentStats, movesSoFar, lang) <- fetchStats config  
+  (_, currentStats, movesSoFar, lang) <- fetchStats config  
   limit <- (read `fmap` look "limit") `mplus` return 200
   games <- withConfig config $ queryGamesListDB movesSoFar limit
   
-  ok $ toResponse $ gameBrowserPage games count currentStats movesSoFar (onLineBuilders { language = lang })
+  ok $ toResponse $ gameBrowserPage games currentStats movesSoFar (onLineBuilders { language = lang })
 
 -----------------------------
 --  The game details page  --
@@ -81,7 +80,7 @@ gameBrowserC mconfig = do
 gameDetailsC :: MVar Configuration -> ServerPart Response
 gameDetailsC mconfig = do 
   config <- liftIO $ readMVar mconfig
-  (count, _currentStats, _movesSoFar, lang) <- fetchStats config
+  lang   <- fetchLang
 
   gameIdM <- ((Just . read) `fmap` look "id") `mplus` return Nothing
   
@@ -98,7 +97,7 @@ gameDetailsC mconfig = do
           case parseSGF contents of
             Left _ -> errorPage "Problem reading or parsing the given sgf"
             Right sgf -> 
-              ok $ toResponse $ gameDetailsPage count gameId sgf relPath
+              ok $ toResponse $ gameDetailsPage gameId sgf relPath
                                                 movesSoFar (onLineBuilders { language = lang })
 
 -- TODO
@@ -133,15 +132,17 @@ rebuildC mint mconfig = do
   liftIO $ putStrLn "Will rebuild the db..."
   
   timeSample <- liftIO $ newEmptyMVar
+  totalSize  <- liftIO $ newEmptyMVar
   let sampleSize = 100
       
-  liftIO $ forkIO $ (runGoStatM config (rebuildDB mint sampleSize timeSample))
+  liftIO $ forkIO $ (runGoStatM config (rebuildDB mint sampleSize timeSample totalSize))
   lang   <- fetchLang
   
   -- wait till the db has been dropped and created
   -- only after that start rendering the page
+  size   <- liftIO $ takeMVar totalSize
   sample <- liftIO $ takeMVar timeSample
-  ok $ toResponse $ rebuildingPage sampleSize sample (onLineBuilders { language = lang })
+  ok $ toResponse $ rebuildingPage sampleSize sample size (onLineBuilders { language = lang })
   
   --mainPageC mconfig
 
@@ -152,13 +153,12 @@ rebuildC mint mconfig = do
 configureC :: MVar Configuration -> ServerPart Response
 configureC mconfig = do
   config <- liftIO $ readMVar mconfig
-  count  <- withConfig config queryCountDB
   lang   <- fetchLang
-  ok     $  toResponse $ configForm count config (onLineBuilders { language = lang })
+  ok     $  toResponse $ configForm config (onLineBuilders { language = lang })
   
 changeConfigureC :: MVar Configuration -> ServerPart Response
 changeConfigureC mconfig = do
-  config      <- liftIO $ readMVar mconfig
+  --config      <- liftIO $ readMVar mconfig
   decodeBody  $  defaultBodyPolicy "/tmp" 0 1000 1000
   dbServerStr <- look "dbServer"
   sqlitePath  <- look "sqlitePath"
@@ -186,8 +186,8 @@ changeConfigureC mconfig = do
 ------------------
 
 sgfBrowserC :: MVar Configuration -> FilePath -> ServerPart Response
-sgfBrowserC mconfig path = do
-  config <- liftIO $ readMVar mconfig
+sgfBrowserC _mconfig path = do
+  --config <- liftIO $ readMVar mconfig
   file   <- liftIO $ readFile path
   ok $ toResponse file
 
