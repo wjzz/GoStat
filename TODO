@@ -6,7 +6,7 @@
 DONE:
   3. better rebuilding interface
   14. pokazywanie ile procent juz zostalo ukonczonych z danej operacji
-
+2. eidogo translation
 
 
 
@@ -21,13 +21,12 @@ WON'T DO SOON
   9. change the favicon
   13. sprawdzic co robimy z wygranymi przez czas
   17. pokazywanie dokladnego wyniku?
-
+  6. pokazuj pytanie o sciezke, tylko gdy sqlite jest wybrane
 
 TO DO
 
 PILNE
-6. pokazuj pytanie o sciezke, tylko gdy sqlite jest wybrane
-2. eidogo translation
+
 0. add missing jquery-ui files in cabal
 10. zmienic biblioteke do przechodzenia rekurencyjnego katalogow na taka, ktora dziala pod windows
 11. wygenerowac statyczne binarki dla windows i linux

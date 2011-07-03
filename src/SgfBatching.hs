@@ -4,6 +4,7 @@
 -}
 module SgfBatching where
 
+import Data.Char
 import Data.SGF.Types
 import Data.SGF.Parsing
 import Transformations
@@ -11,14 +12,32 @@ import Transformations
 import Control.Monad
 import System.FilePath.Find hiding (fileName)
 
+import System.Directory
+import System.FilePath
 --import System.IO.Strict as Strict
+
+-- | The same as getFileNames, but doesn't use any extra libraries
+findSgfRecur :: FilePath -> IO [FilePath]
+findSgfRecur topDir = do
+  contents <- (map (topDir </>) . filter (`notElem` [".",".."])) `fmap` getDirectoryContents topDir
+  files <- filterM goodFile contents
+  dirs  <- filterM doesDirectoryExist contents
+  rec   <- concat `fmap` mapM findSgfRecur dirs
+
+  return (files ++ rec) where
+    goodFile f = do
+      b <- doesFileExist f
+      return (b && ".sgf" == (map toLower (takeExtension f)))
+
+
 
 -- | Returns a lazy list of all files in a given directory (and in it's subdirectories)
 getFileNames :: FilePath -> IO [FilePath]
 getFileNames topDir = find always (extension ==? ".sgf") topDir
 
 getSGFs :: [FilePath] -> IO [FilePath]
-getSGFs dirs = concat `fmap` mapM getFileNames dirs
+getSGFs dirs = concat `fmap` mapM findSgfRecur dirs
+--getSGFs dirs = concat `fmap` mapM getFileNames dirs
 
 fileToSGF :: String -> Maybe (FilePath, SGF)
 fileToSGF input = do

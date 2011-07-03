@@ -64,6 +64,8 @@ Executable GoStat
   Main-is:    	      Main.hs
   Build-depends:      base >= 3 && < 5,
                       filemanip == 0.3.*,
+                      directory == 1.1.0.0,
+                      filepath == 1.2.0.0,
                       strict == 0.3.*,
                       HDBC == 2.2.*,
                       HDBC-postgresql == 2.2.*,
