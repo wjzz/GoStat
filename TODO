@@ -1,36 +1,48 @@
-Display:
-
 [DONE] 0. Sprawdzic wyswietlanie planszy w przegladarkach innych niz chromium (problem z granicami)
 [DONE] 2. Properly display PASSes
 [DONE] 2. Add move back button
 [DONE] 6. fix the error stuff
 [DONE] Abstract away the DB and allow for using Sqlite3.
+DONE:
+  3. better rebuilding interface
+  14. pokazywanie ile procent juz zostalo ukonczonych z danej operacji
 
-1. Detect captured stones?
-2. have a way of filtering moves that were very rare
-3. enable convenient management of games db via javascript
-4. Improve Haddock comments
 
-0. add missing jquery-ui files in cabal
-1. pass error (jeden pasuje drugi gra)
-2. eidogo translation
-3. better rebuilding interface
-4. check if directories given by the user exist
-5. find tmp dir using a os call, not by "/"
+
+
+WON'T DO SOON
+  1. Detect captured stones?
+  2. have a way of filtering moves that were very rare    
+  3. enable convenient management of games db via javascript      
+  4. Improve Haddock comments
+  5. find tmp dir using a os call, not by "/"
+  7. zrobic zeby folder do sqlite wybieralo sie przez okienko dialogowe z js
+  8. ustalic, czy uzywamy makeMoverBrowserUrl [] czy moveBrowserMain
+  9. change the favicon
+  13. sprawdzic co robimy z wygranymi przez czas
+  17. pokazywanie dokladnego wyniku?
+
+
+TO DO
+
+PILNE
 6. pokazuj pytanie o sciezke, tylko gdy sqlite jest wybrane
-7. zrobic zeby folder do sqlite wybieralo sie przez okienko dialogowe z js
-8. ustalic, czy uzywamy makeMoverBrowserUrl [] czy moveBrowserMain
-9. change the favicon
+2. eidogo translation
+0. add missing jquery-ui files in cabal
 10. zmienic biblioteke do przechodzenia rekurencyjnego katalogow na taka, ktora dziala pod windows
 11. wygenerowac statyczne binarki dla windows i linux
+
+WAZNE
 12. dopisac testy bazy danych
-13. sprawdzic co robimy z wygranymi przez czas
-14. pokazywanie ile procent juz zostalo ukonczonych z danej operacji
 15. wymusic konfiguracje na czystej maszynie
 16. ustalic jak ma wygladac poczatkowy plik konfiguracyjny
-17. pokazywanie dokladnego wyniku?
 18. check if database exists before querying it. if it doesn't ask the user to configure and rebuild the db
+
+JAK SIE UDA
+1.  pass error (jeden pasuje drugi gra)
+4.  check if directories given by the user exist
 19. niech przebudowa bedzie dostepna od razu z poziomu formularza konfiguracyjnego!
+20. ustalic zeby tylko sqlite3 bylo wymagane?
 
 Bugi:
 
