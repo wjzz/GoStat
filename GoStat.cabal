@@ -14,11 +14,6 @@ Cabal-version:       >=1.6
 Tested-with:         GHC == 7.0.2
 Extra-source-files:  README
                      Makefile
-
-Data-files:          CONFIG
-                     test/example.sgf
-                     test/example2.sgf
-                     db/games.db
                      public/*.js
                      public/style.css
                      public/img/*.gif
@@ -28,27 +23,21 @@ Data-files:          CONFIG
                      public/eidogo/player/images/*.png
                      public/eidogo/player/js/*.js
                      public/eidogo/player/js/all.compressed.js
+                     public/jquery-ui/*
 
+Data-files:          CONFIG
+                     test/example.sgf
+                     test/example2.sgf
+                     db/games.db
+                     
+                     
+                     
 
 
 Source-repository head
   type:      git
   location:  git://github.com/wjzz/GoStat.git
 
-
-                    --doc/release-notes/*.txt
---data-dir:           src/data
---data-files:         Agda.css
-
-
---Extra-source-files: README
---                    doc/release-notes/*.txt
--- data-dir:           src/data
--- data-files:         Agda.css
---                     emacs-mode/*.el
---                     EpicInclude/AgdaPrelude.e
---                     EpicInclude/stdagda.c
---                     EpicInclude/stdagda.h
 
 library
   ghc-options: -Wall -fno-warn-unused-do-bind
@@ -59,7 +48,8 @@ library
 
 Executable GoStat
 
-  GHC-Options: -W -Wall -threaded
+  GHC-Options: -W -Wall -threaded 
+---optl-static -fforce-recomp -static
   Hs-source-dirs: src 
   Main-is:    	      Main.hs
   Build-depends:      base >= 3 && < 5,
