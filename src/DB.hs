@@ -5,6 +5,7 @@
 -}
 module DB ( createDB 
           , deleteDB
+          , existsDB
           , addFilesToDB
           , queryCountDB
           , queryStatsDB
@@ -33,13 +34,14 @@ import Configuration
 withConnection :: (ConnWrapper -> IO a) -> GoStatM a
 withConnection dbAction = do
   db   <- dbServer <$> getConfig
-  conn <- (case db of
-              PostgreSQL     -> liftIO $ ConnWrapper <$> connectPostgreSQL ""
-              Sqlite3 dbPath -> liftIO $ ConnWrapper <$> connectSqlite3 dbPath)
+  liftIO $ handleSqlError $ do
+    conn <- case db of
+              PostgreSQL     -> ConnWrapper <$> connectPostgreSQL ""
+              Sqlite3 dbPath -> ConnWrapper <$> connectSqlite3 dbPath
           
-  result <- liftIO $ dbAction conn
-  liftIO $ disconnect conn
-  return result
+    result <- dbAction conn
+    disconnect conn
+    return result
 
 createTableQuery :: String -> String 
 createTableQuery gameId = 
@@ -51,6 +53,16 @@ createTableQuery gameId =
     w_name = "w_name VARCHAR(30) NOT NULL"
     b_rank = "b_rank VARCHAR(10)"
     w_rank = "w_rank VARCHAR(10)"
+
+existsDB :: GoStatM Bool
+existsDB = do
+  config <- getConfig
+  liftIO $ catch (runGoStatM config (query >> return True))
+                 (const $ return False)
+  
+  where
+    query = queryCountDB
+    
 
 createDB :: GoStatM ()
 createDB = do
@@ -66,10 +78,11 @@ createDB = do
 
 deleteDB :: GoStatM ()
 deleteDB = withConnection $ \(ConnWrapper conn) -> do
-    catch (handleSqlError (do
+  catch (handleSqlError (do
               run conn "DROP TABLE go_stat_data" []
               commit conn))
       (const (return ()))
+
 
 addFilesToDB :: MVar (Maybe Int) -> Int -> MVar Int -> MVar Int -> GoStatM ()
 addFilesToDB mint sampleSize timeSample totalSize = do

@@ -40,6 +40,7 @@ router config mint = msum [ dir "movebrowser" $ moveBrowserC config
                                                    changeConfigureC config
                           , dir "configure"   $ configureC config
                           , dir "status"      $ statusC mint
+                          , dir "dbcheck"     $ dbCheckC config
                           , mainPageC config
                           ]
          
@@ -205,6 +206,17 @@ statusC mint = do
   case mn of
     Nothing -> ok $ toResponse $ "free"
     Just n  -> ok $ toResponse $ show n
+
+------------------------------------------------------------
+--  Checking if the db exists and table has been created  --
+------------------------------------------------------------
+
+dbCheckC :: MVar Configuration -> ServerPart Response
+dbCheckC mconfig = do
+  config <- liftIO $ readMVar mconfig
+  
+  exists <- withConfig config existsDB
+  ok $ toResponse $ show exists
 
 ---------------------------
 --  A fetching shortcut  --

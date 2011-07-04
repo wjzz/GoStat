@@ -104,6 +104,7 @@ globalHeader urlBuilder makeUrl = dI "menu" (linksMenu +++ flagsMenu) where
 mainPage :: UrlBuilders -> Html
 mainPage urlBuilder = pHeader +++ pBody where
   lang    = language urlBuilder
+  lName   = L.langName lang
   pHeader = htmlHeader urlBuilder
 
   makeFlag langStr = anchor ! [href (mainPageUrl urlBuilder langStr) ] 
@@ -112,15 +113,17 @@ mainPage urlBuilder = pHeader +++ pBody where
   pBody = body $ concatHtml [ welcome 
                             , flags
                             , hr
-                            , anchor ! [href (moveBrowserMakeUrl urlBuilder (L.langName lang) [])] << L.goToMovesBrowser lang
+                            , anchor ! [htmlAttr "href" mvBrowserJS] << L.goToMovesBrowser lang
                             , br , br
-                            , anchor ! [href (configureUrl urlBuilder (L.langName lang))] << L.config lang
+                            , anchor ! [href (configureUrl urlBuilder lName)] << L.config lang
                             , br , br
                             , anchor ! [htmlAttr "href" rebuildJS] << L.rebuild lang
                             ]
           
-  rebuildJS = primHtml $ printf "javascript:rebuildConfirm('%s','%s')" (L.confirm lang) (rebuildUrl urlBuilder (L.langName lang)) 
-  --rebuild =  (rebuildUrl urlBuilder (L.langName lang))
+  moveBrowserUrl = moveBrowserMakeUrl urlBuilder lName []
+  rebldUrl       = rebuildUrl urlBuilder lName
+  rebuildJS      = primHtml $ printf "javascript:rebuildConfirm('%s','%s')" (L.confirm lang) rebldUrl
+  mvBrowserJS    = primHtml $ printf "javascript:checkDB('%s','%s', '%s')" (L.noDB lang) moveBrowserUrl rebldUrl
   
   flags = (concatHtml $ intersperse (primHtml " ") $ map makeFlag allLanguages)
   

@@ -23,12 +23,6 @@ Extra-source-files:  README
                      public/eidogo/player/images/*.png
                      public/eidogo/player/js/*.js
                      public/eidogo/player/js/all.compressed.js
-
-
-Data-files:          CONFIG
-                     test/example.sgf
-                     test/example2.sgf
-                     db/games.db
                      public/jquery-ui/development-bundle/ui/jquery.ui.autocomplete.js
                      public/jquery-ui/js/jquery-ui-1.8.14.custom.min.js
                      public/jquery-ui/js/jquery-1.5.1.min.js
@@ -193,6 +187,11 @@ Data-files:          CONFIG
                      public/jquery-ui/css/ui-lightness/images/ui-bg_highlight-soft_100_eeeeee_1x100.png
                      public/jquery-ui/css/ui-lightness/images/ui-bg_diagonals-thick_20_666666_40x40.png
                      public/jquery-ui/css/ui-lightness/jquery-ui-1.8.14.custom.css
+
+
+Data-files:          CONFIG
+                     test/example.sgf
+                     test/example2.sgf
 
 Source-repository head
   type:      git

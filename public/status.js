@@ -27,3 +27,4 @@ function updateStatus(sampleSize, timeSample, totalSize){
             }
         });  
 }
+

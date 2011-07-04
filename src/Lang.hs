@@ -55,6 +55,7 @@ data Messages = Messages { langName             :: Language
                          , sgfDirectories       :: String
                          , submitChanges        :: String
                          , confirm              :: String
+                         , noDB                 :: String
                          }
 
 eng :: Messages
@@ -105,6 +106,7 @@ eng = Messages { langName             = "eng"
                , sgfDirectories       = "Directories with SGF files you want to analyze (one path each row):"
                , submitChanges        = "Submit changes"
                , confirm              = "Do you really want to rebuild the db?"
+               , noDB                 = "You need to create a database first. Do it now?"
                }
 
 pl :: Messages
@@ -155,6 +157,9 @@ pl =  Messages { langName             = "pl"
                , sgfDirectories       = "Katalogi z plikami .sgf (jeden katalog na wiersz) "
                , submitChanges        = "Zapisz ustawienia"
                , confirm              = "Czy na pewno przebudować bazę danych?"
+               , noDB                 = "Należy utworzyć bazę danych i przetworzyć zadaną kolekcję gier.\
+                                         \Czy chcesz wykonać to teraz?"
+                                                                                
                }
       
 allLanguages :: [Language]
