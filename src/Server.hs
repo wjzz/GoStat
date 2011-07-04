@@ -130,7 +130,7 @@ moveBrowserC mconfig = do
 rebuildC :: MVar (Maybe Int) -> MVar Configuration -> ServerPart Response
 rebuildC mint mconfig = do 
   config <- liftIO $ readMVar mconfig
-  liftIO $ putStrLn "Will rebuild the db..."
+  --liftIO $ putStrLn "Will rebuild the db..."
   
   timeSample <- liftIO $ newEmptyMVar
   totalSize  <- liftIO $ newEmptyMVar

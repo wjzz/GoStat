@@ -1,4 +1,2 @@
---a default configuration file
-
-dbserver:sqlite3;games.db;
---gamedirs:/home/wjzz/games
+dbserver:sqlite3;games3.db;
+gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011;

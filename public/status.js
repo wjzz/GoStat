@@ -14,7 +14,8 @@ function updateStatus(sampleSize, timeSample, totalSize){
                 var timeLeft  = parseInt (((100 - n) * totalTime) / (100 * 1000));
 
                 $("#progressbar").progressbar( "option", "value", n);
-                $("#percent").html("<h1>" + data + "%</h1><h1>" + timeSample + " ms</h1><h1>" + timeLeft + " s</h1>");
+                $("#percent").html(data + "%");
+                $("#timeLeft").html(timeLeft + " s");
 
                 if (n < 100){
                     updateStatus(sampleSize, timeSample, totalSize);

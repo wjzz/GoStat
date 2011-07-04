@@ -19,8 +19,8 @@ main = do
         return defaultConfig
       Right c -> return c
       
-  putStrLn "Current configuration:"
-  print config
+--  putStrLn "Current configuration:"
+--  print config
   
   runGoStatM config server
     

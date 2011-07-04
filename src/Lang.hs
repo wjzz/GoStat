@@ -56,6 +56,8 @@ data Messages = Messages { langName             :: Language
                          , submitChanges        :: String
                          , confirm              :: String
                          , noDB                 :: String
+                         , gamesToProcess       :: String
+                         , timeLeft             :: String
                          }
 
 eng :: Messages
@@ -107,6 +109,8 @@ eng = Messages { langName             = "eng"
                , submitChanges        = "Submit changes"
                , confirm              = "Do you really want to rebuild the db?"
                , noDB                 = "You need to create a database first. Do it now?"
+               , gamesToProcess       = "Total number of games to process:"
+               , timeLeft             = "Time left:"
                }
 
 pl :: Messages
@@ -157,9 +161,10 @@ pl =  Messages { langName             = "pl"
                , sgfDirectories       = "Katalogi z plikami .sgf (jeden katalog na wiersz) "
                , submitChanges        = "Zapisz ustawienia"
                , confirm              = "Czy na pewno przebudować bazę danych?"
-               , noDB                 = "Należy utworzyć bazę danych i przetworzyć zadaną kolekcję gier.\
+               , noDB                 = "Należy utworzyć bazę danych i przetworzyć zadaną kolekcję gier. \
                                          \Czy chcesz wykonać to teraz?"
-                                                                                
+               , gamesToProcess       = "Znaleziono gier: "
+               , timeLeft             = "Pozostało: "
                }
       
 allLanguages :: [Language]

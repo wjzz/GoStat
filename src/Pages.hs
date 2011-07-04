@@ -137,11 +137,18 @@ mainPage urlBuilder = pHeader +++ pBody where
 
 rebuildingPage :: Int -> Int -> Int -> UrlBuilders -> Html
 rebuildingPage sampleSize timeSample totalSize urlBuilder = pHeader +++ pBody where
+  lang       = language urlBuilder
   pHeader    = htmlHeader urlBuilder
-  pBody      = body ! [strAttr "onLoad" statusFunc ] $ dI "progress" << concatHtml [ dI "progressbar" noHtml
-                                                                                   , dI "percent" noHtml
-                                                                                   ]
+  pBody      = body ! [strAttr "onLoad" statusFunc ] << 
+                 concatHtml [ gamesCount
+                            , progress
+                            , timeLeft
+                            ]
+                 
   statusFunc = printf "checkStatus(%d, %d, %d)" sampleSize timeSample totalSize
+  gamesCount = h1 $ primHtml $ (L.gamesToProcess lang) ++ show totalSize
+  progress   = dI "progress" (h1 (thespan ! [identifier "percent"] << noHtml) +++ dI "progressbar" << noHtml)
+  timeLeft   = h1 ((L.timeLeft lang) +++ thespan ! [identifier "timeLeft"] << noHtml)
   
 ------------------------------
 --  The games browser page  --
@@ -165,7 +172,7 @@ gameBrowserPage gameInfos (allGames, bWin, wWin) movesSoFar urlBuilder = pHeader
                           ]
   blacksTurn = length movesSoFar `mod` 4 == 0          
   percentage = (100 * current) `div` allGames where
-    current = if blacksTurn then bWin else wWin
+     current = if blacksTurn then bWin else wWin
     
   currentPosition              = anchor ! [ href mBrowserUrl] << primHtml (L.showCurrentPosition lang) where
     mBrowserUrl = moveBrowserMakeUrl urlBuilder (L.langName lang) movesSoFar

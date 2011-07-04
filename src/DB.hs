@@ -88,12 +88,12 @@ addFilesToDB :: MVar (Maybe Int) -> Int -> MVar Int -> MVar Int -> GoStatM ()
 addFilesToDB mint sampleSize timeSample totalSize = do
  dirs <- gameDirs <$> getConfig
  withConnection (\(ConnWrapper conn) -> do 
-  putStrLn "connected to DB..."
+  --putStrLn "connected to DB..."
   
   swapMVar mint $ Just 0
   
   len <- length <$> getSGFs dirs
-  putStrLn $ printf "%d games to analyze." len
+  --putStrLn $ printf "%d games to analyze." len
   putMVar totalSize $! len
   
   files <- getSGFs dirs
@@ -127,7 +127,7 @@ addFilesToDB mint sampleSize timeSample totalSize = do
   
   commit conn)
  liftIO $ swapMVar mint Nothing
- liftIO $ putStrLn "closed connection to DB"
+ --liftIO $ putStrLn "closed connection to DB"
   
  -- to avoid a deadlock when there are less than sampleSize games:
  liftIO $ putMVar timeSample 100
@@ -215,13 +215,13 @@ queryFindGameById gameId = do
 
 rebuildDB :: MVar (Maybe Int) -> Int -> MVar Int -> MVar Int -> GoStatM ()
 rebuildDB mint sampleSize timeSample totalSize = do
-  liftIO $ putStrLn "Starting DB rebuilding..."
+  --liftIO $ putStrLn "Starting DB rebuilding..."
   
   deleteDB
-  liftIO $ putStrLn "Deleted DB."
+  --liftIO $ putStrLn "Deleted DB."
   
   createDB
-  liftIO $ putStrLn "Created DB."
+  --liftIO $ putStrLn "Created DB."
   
   addFilesToDB mint sampleSize timeSample totalSize
-  liftIO $ putStrLn "DB rebuilding done!"
+  --liftIO $ putStrLn "DB rebuilding done!"
