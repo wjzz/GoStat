@@ -43,18 +43,18 @@ data Messages = Messages { langName             :: Language
                          , welcome              :: String
                          , config               :: String
                          , rebuild              :: String                           
-                         , startPage :: String
-                         , number :: String
-                         , blackRank :: String
-                         , whiteRank :: String
-                         , winner :: String
-                         , link :: String
-                         , configurationForm :: String
-                         , databaseLabel :: String
-                         , sqlite3Location :: String
-                         , sgfDirectories :: String
-                         , submitChanges :: String
-                         , confirm :: String
+                         , startPage            :: String
+                         , number               :: String
+                         , blackRank            :: String
+                         , whiteRank            :: String
+                         , winner               :: String
+                         , link                 :: String
+                         , configurationForm    :: String
+                         , databaseLabel        :: String
+                         , sqlite3Location      :: String
+                         , sgfDirectories       :: String
+                         , submitChanges        :: String
+                         , confirm              :: String
                          }
 
 eng :: Messages
@@ -90,21 +90,21 @@ eng = Messages { langName             = "eng"
                , chanceOfWinning      = "Winning probability of the current player: "
                , noOfShownGames       = "Number of listed games: "
                , matchingGamesList    = "List of matching games"
-               , welcome = "Welcome to GoStat"
-               , rebuild = "Rebuild the database"
-               , config = "Configure the application (game dirs and database)"
-               , startPage = "Start page"
-               , number = "no"
-               , blackRank = "black rank"
-               , whiteRank = "white rank"
-               , winner = "winner"
-               , link = "link"
-               , configurationForm = "Configuration form"
-               , databaseLabel = "Database that you want to use:"        
-               , sqlite3Location = "Location of the sqlite3 database (*.db)"
-               , sgfDirectories = "Directories with SGF files you want to analyze (one path each row):"
-               , submitChanges = "Submit changes"
-               , confirm = "Do you really want to rebuild the db?"
+               , welcome              = "Welcome to GoStat"
+               , rebuild              = "Rebuild the database"
+               , config               = "Configure the application (game dirs and database)"
+               , startPage            = "Start page"
+               , number               = "no"
+               , blackRank            = "black rank"
+               , whiteRank            = "white rank"
+               , winner               = "winner"
+               , link                 = "link"
+               , configurationForm    = "Configuration form"
+               , databaseLabel        = "Database that you want to use:"        
+               , sqlite3Location      = "Location of the sqlite3 database (*.db)"
+               , sgfDirectories       = "Directories with SGF files you want to analyze (one path each row):"
+               , submitChanges        = "Submit changes"
+               , confirm              = "Do you really want to rebuild the db?"
                }
 
 pl :: Messages
@@ -137,24 +137,24 @@ pl =  Messages { langName             = "pl"
                , showInContext        = "Pokaż grę w kontekście"
                , showCurrentPosition  = "Pokaż bieżącą pozycję"
                , numberOfGames        = "Wystąpień bieżącej pozycji: "
-               , chanceOfWinning      = "Szansa wygranej dla bieżącego gracza: "
+               , chanceOfWinning      = "Szansa wygranej bieżącego gracza: "
                , noOfShownGames       = "Liczba wyświetlonych gier: "
                , matchingGamesList    = "Lista pasujących gier"
-               , welcome = "Witaj w programie GoStat"
-               , rebuild = "Przebudowa bazy danych"
-               , config = "Konfiguracja"
-               , startPage = "Strona startowa"
-               , number = "nr"
-               , blackRank = "rank. czarnego"
-               , whiteRank = "rank. białego"
-               , winner = "zwycięzca"
-               , link = "odnośnik"
-               , configurationForm = "Formularz konfiguracyjny"
-               , databaseLabel = "Wybierz bazę danych:"
-               , sqlite3Location = "(Dotyczy sqlite3) lokalizacja pliku z bazą danych (ścieżka względna do pliku *.db)"
-               , sgfDirectories = "Katalogi z plikami .sgf (jeden katalog na wiersz) "
-               , submitChanges = "Zapisz ustawienia"
-               , confirm = "Czy na pewno przebudować bazę danych?"
+               , welcome              = "Witaj w programie GoStat"
+               , rebuild              = "Przebudowa bazy danych"
+               , config               = "Konfiguracja"
+               , startPage            = "Strona startowa"
+               , number               = "nr"
+               , blackRank            = "rank. czarnego"
+               , whiteRank            = "rank. białego"
+               , winner               = "zwycięzca"
+               , link                 = "odnośnik"
+               , configurationForm    = "Formularz konfiguracyjny"
+               , databaseLabel        = "Wybierz bazę danych:"
+               , sqlite3Location      = "(Dotyczy sqlite3) lokalizacja pliku z bazą danych (ścieżka względna do pliku *.db)"
+               , sgfDirectories       = "Katalogi z plikami .sgf (jeden katalog na wiersz) "
+               , submitChanges        = "Zapisz ustawienia"
+               , confirm              = "Czy na pewno przebudować bazę danych?"
                }
       
 allLanguages :: [Language]

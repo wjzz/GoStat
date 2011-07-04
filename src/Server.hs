@@ -34,7 +34,7 @@ router config mint = msum [ dir "movebrowser" $ moveBrowserC config
                           , dir "games"       $ gameBrowserC config
                           , dir "game"        $ gameDetailsC config
                           , dir "public"      $ serveDirectory EnableBrowsing [] "public"
-                          , dir "sgf"         $ uriRest (sgfBrowserC config)
+                          , dir "sgf"         $ sgfBrowserC config
                           , dir "rebuild"     $ rebuildC mint config
                           , dir "configure"   $ do methodM POST 
                                                    changeConfigureC config
@@ -185,11 +185,11 @@ changeConfigureC mconfig = do
 --  SgfServing  --
 ------------------
 
-sgfBrowserC :: MVar Configuration -> FilePath -> ServerPart Response
-sgfBrowserC _mconfig path = do
-  --config <- liftIO $ readMVar mconfig
-  file   <- liftIO $ readFile path
-  ok $ toResponse file
+sgfBrowserC :: MVar Configuration -> ServerPart Response
+sgfBrowserC _mconfig = do
+  path <- look "path"
+  file <- liftIO $ readFile path
+  ok   $  toResponse file
 
 ----------------------------------
 --  A handler for AJAX queries  --
@@ -281,7 +281,7 @@ gameDetailsUrlMaker :: Language -> Int -> String
 gameDetailsUrlMaker lang idd = printf "/game?lang=%s&id=%d" lang idd
 
 sgfDownloadUrlMaker :: FilePath -> String
-sgfDownloadUrlMaker path = printf "/sgf%s" path
+sgfDownloadUrlMaker path = printf "/sgf?path=%s" path
 
 rebuildUrlMaker :: Language -> String
 rebuildUrlMaker lang = printf "/rebuild?lang=%s" lang
