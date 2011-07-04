@@ -109,8 +109,8 @@ eng = Messages { langName             = "eng"
                , submitChanges        = "Submit changes"
                , confirm              = "Do you really want to rebuild the db?"
                , noDB                 = "You need to create a database first. Do it now?"
-               , gamesToProcess       = "Total number of games to process:"
-               , timeLeft             = "Time left:"
+               , gamesToProcess       = "Total number of games to process: "
+               , timeLeft             = "Time left: "
                }
 
 pl :: Messages
