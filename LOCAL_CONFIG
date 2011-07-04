@@ -1,0 +1,2 @@
+dbserver:sqlite3;/home/wjzz/games5.db;
+gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/1;
