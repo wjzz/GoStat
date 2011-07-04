@@ -159,28 +159,20 @@ configureC mconfig = do
   
 changeConfigureC :: MVar Configuration -> ServerPart Response
 changeConfigureC mconfig = do
-  --config      <- liftIO $ readMVar mconfig
   decodeBody  $  defaultBodyPolicy "/tmp" 0 1000 1000
-  dbServerStr <- look "dbServer"
   sqlitePath  <- look "sqlitePath"
   sgfDirs     <- filter (/= '\r') `fmap` look "dirs"
-  
-  let db = case dbServerStr of
-             "postgresql" -> PostgreSQL
-             "sqlite3"    -> Sqlite3 sqlitePath
-  
+                   
+  let db = Sqlite3 sqlitePath
   let updatedConfig = Configuration db (filter (not . null) $ lines sgfDirs)
   
-  -- TODO
-  -- what should be done if sqlitePath is empty?
-  
   -- update the configuration
-  liftIO $ swapMVar mconfig updatedConfig
-  configPath <- liftIO $ configurationPath  
-  liftIO $ writeConfig updatedConfig configPath
+  liftIO $ do swapMVar mconfig updatedConfig
+              configPath <- configurationPath  
+              writeConfig updatedConfig configPath
   
-  --ok $ toResponse $ show updatedConfig
   mainPageC mconfig
+
 
 ------------------
 --  SgfServing  --
@@ -200,7 +192,6 @@ statusC :: MVar (Maybe Int) -> ServerPart Response
 statusC mint = do
   mn <- liftIO $ readMVar mint
   
-  --liftIO $ print mn
   liftIO $ threadDelay (50 * 1000)
 
   case mn of

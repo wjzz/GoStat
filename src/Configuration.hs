@@ -14,8 +14,8 @@ import Text.Printf
 --  Types defining possible options  --
 ---------------------------------------
 
-data DbServer = PostgreSQL 
-              | Sqlite3 FilePath -- path to the .db file
+data DbServer = Sqlite3 FilePath -- path to the .db file
+                -- PostgreSQL 
               deriving Show
                        
 data Configuration = Configuration { dbServer :: DbServer 
@@ -48,7 +48,7 @@ parseConfiguration contents = foldM extendConfig defaultConfig ls where
     | null rest              = Left "no color"
     | header == "dbserver" = 
       case values of
-        ["postgresql"]  -> Right $ config { dbServer = PostgreSQL }
+--      ["postgresql"]  -> Right $ config { dbServer = PostgreSQL }
         ["sqlite3",dir] -> Right $ config { dbServer = Sqlite3 dir }
         _               -> Left $ "wrong dbserver: " ++ show values
         
@@ -69,7 +69,7 @@ parseConfiguration contents = foldM extendConfig defaultConfig ls where
 --------------------------------------
 
 showDbServer :: DbServer -> String
-showDbServer PostgreSQL     = "postgresql;"
+--showDbServer PostgreSQL     = "postgresql;"
 showDbServer (Sqlite3 path) = printf "sqlite3;%s;" path
 
 showConfiguration :: Configuration -> String

@@ -256,12 +256,7 @@ configForm configuration urlBuilder = pHeader +++ pBody where
                             , cForm
                             ]
           
-  cForm = form ! [method "POST"] $ concatHtml [ primHtml dbLabel
-                                              , br
-                                              , dbSelectForm
-                                              , br
-                                              , br
-                                              , primHtml sqliteLabel
+  cForm = form ! [method "POST"] $ concatHtml [ primHtml sqliteLabel
                                               , br
                                               , sqlitePath
                                               , br
@@ -272,10 +267,34 @@ configForm configuration urlBuilder = pHeader +++ pBody where
                                               , br
                                               , submitButton
                                               ]
-  dbLabel      = L.databaseLabel lang
-  dbSelectForm = select ! [name "dbServer"] $ concatHtml $ map makeOption ["PostgreSQL", "SQLite3"] where
+  
+  sqliteLabel = L.sqlite3Location lang
+  sqlitePath  = primHtml $ printf "<textarea name=\"sqlitePath\" cols=\"100\" rows=\"1\">%s</textarea>" dbPath
+  
+  dbPath = 
+    case dbServer configuration of
+--      PostgreSQL -> ""
+      Sqlite3 p -> p
+    
+  
+  dirsLabel = L.sgfDirectories lang
+  dirsForm = primHtml $ printf "<textarea name=\"dirs\" cols=\"100\" rows=\"10\">%s</textarea>" (unlines (gameDirs configuration))
+  
+  submitButton = submit "action" (L.submitChanges lang)
+
+
+--dbLabel      = L.databaseLabel lang
+  --dbSelectForm = select ! [name "dbServer"] $ concatHtml $ map makeOption ["PostgreSQL", "SQLite3"] where
         
-                 
+{-                 
+
+          -- primHtml dbLabel
+          --                                     , br
+          --                                     , dbSelectForm
+          --                                     , br
+          --                                     , br
+          --                                     , 
+
   currentDb = 
     case dbServer configuration of
       PostgreSQL -> "postgresql"
@@ -284,21 +303,8 @@ configForm configuration urlBuilder = pHeader +++ pBody where
   makeOption dbName = option ! [value lowered] ! attrs $ primHtml dbName where
     lowered = map toLower dbName
     attrs   = if lowered == currentDb then [selected] else []
-  
+  -}
 
-  sqliteLabel = L.sqlite3Location lang
-  sqlitePath  = primHtml $ printf "<textarea name=\"sqlitePath\" cols=\"100\" rows=\"1\">%s</textarea>" dbPath
-  
-  dbPath = 
-    case dbServer configuration of
-      PostgreSQL -> ""
-      Sqlite3 p -> p
-    
-  
-  dirsLabel = L.sgfDirectories lang
-  dirsForm = primHtml $ printf "<textarea name=\"dirs\" cols=\"100\" rows=\"10\">%s</textarea>" (unlines (gameDirs configuration))
-  
-  submitButton = submit "action" (L.submitChanges lang)
   
 
 -----------------------------

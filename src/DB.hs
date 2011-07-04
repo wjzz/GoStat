@@ -23,7 +23,7 @@ import Control.Monad
 import Control.Monad.Reader
 import Data.Maybe
 import Database.HDBC
-import Database.HDBC.PostgreSQL (connectPostgreSQL)
+--import Database.HDBC.PostgreSQL (connectPostgreSQL)
 import Database.HDBC.Sqlite3    (connectSqlite3)
 import System.CPUTime
 import System.IO.Strict as Strict
@@ -36,7 +36,8 @@ withConnection dbAction = do
   db   <- dbServer <$> getConfig
   liftIO $ handleSqlError $ do
     conn <- case db of
-              PostgreSQL     -> ConnWrapper <$> connectPostgreSQL ""
+              --PostgreSQL     -> error "PostgreSQL not available." 
+                                --ConnWrapper <$> connectPostgreSQL ""
               Sqlite3 dbPath -> ConnWrapper <$> connectSqlite3 dbPath
           
     result <- dbAction conn
@@ -69,7 +70,7 @@ createDB = do
   db <- dbServer <$> getConfig
   
   let createTable = case db of
-        PostgreSQL-> createTableQuery "SERIAL"
+        --PostgreSQL-> createTableQuery "SERIAL"
         Sqlite3 _ -> createTableQuery "INTEGER"
 
   withConnection $ \(ConnWrapper conn) -> do

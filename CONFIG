@@ -1,2 +1,2 @@
-dbserver:sqlite3;games3.db;
+dbserver:sqlite3;games.db;
 gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data/2011/1;
