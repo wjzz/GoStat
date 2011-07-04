@@ -1,5 +1,5 @@
 Name:                GoStat
-Version:             1.0
+Version:             1.1
 Synopsis:            A Haskell program for analysing Go games and calculating statistics.
 Description:         
  GoStat is a Haskell program for analysing large collections of Go games (currently only on the 9x9 board). 
