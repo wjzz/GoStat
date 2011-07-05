@@ -1,14 +1,26 @@
 \documentclass[10pt,leqno]{article}
 \usepackage[polish]{babel}
+%\usepackage[OT4]{polski}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \frenchspacing
 %\usepackage{indentfirst}
 \usepackage{listings}
 \usepackage{framed}
-\usepackage[textwidth=14cm,textheight=24cm]{geometry}
+\usepackage[textwidth=16cm,textheight=24cm]{geometry}
 \usepackage{graphicx}
 %\graphicspath{{img\\}}
+
+\setlength\fboxsep{0pt}
+\setlength\fboxrule{0.5pt}
+
+\newcommand{\myimage}[3]{
+  \begin{figure}[h!]
+    \centering
+      \fbox{\includegraphics[scale=#1]{#2}}
+  \caption{#3}
+  \end{figure}
+}
 
 \title{\LARGE Licencjacki projekt programistyczny 2011 \\ 
        \ \\
@@ -21,7 +33,7 @@
 \author{Wojciech Jedynak}
 \date{Wrocław, \today}
 
-\newtheorem{rys}{Rysunek}
+% \newtheorem{rys}{Rysunek}
 
 \begin{document}
 
@@ -82,11 +94,7 @@ należy otworzyć przeglądarkę internetową i wskazać adres \\
 \\
 Powinna wówczas załadować się strona startowa:
 
-\begin{rys}
-\begin{center}
-\includegraphics[scale=0.4]{start.png}
-\end{center}
-\end{rys}
+\myimage{0.4}{start.png}{Strona startowa}
 
 \subsection{Kończenie pracy}
 Aby zakończyć działanie programu należy zamknąć okno terminala bądź wysłać sygnał zakończenia (Control-C pod Linuks, Control-Z pod Windows).
@@ -101,11 +109,7 @@ Ukaże się wówczas następujący formularz:
 
 \newpage
 
-\begin{rys}
-\begin{center}
-\includegraphics[scale=0.4]{formularz.png}
-\end{center}
-\end{rys}
+\myimage{0.4}{formularz.png}{Formularz}
 
 Składa się on z dwóch pól tekstowych. 
 
@@ -128,12 +132,12 @@ Aby utworzyć (przebudować) bazę danych i wypełnić ją danymi, należy:
 Ponieważ przebudowa istniejącej bazy danych zaczyna się się od skasowania poprzedniej tabeli, użytkownik zostanie
 poproszony o potwierdzenie swego zamiaru:
 
-<potwierdzenie>
+\myimage{1.0}{potwierdzenie.png}{Potwierdzenie}
 
 Po kliknięciu <OK> należy poczekać aż program wykona operację przebudowania do końca. 
 Aby można było śledzić w czasie rzeczywistym postęp prac wyświetlona zostanie aktualizowana na bieżąco strona informacyjna:
 
-<strona informacyjna>
+\myimage{0.4}{status.png}{Status}
 
 Gdy wszystkie operacje zostaną wykonane, użytkownik zostanie automatycznie przekierowany do strony głównej (<Rysunek 1>).
 
@@ -141,6 +145,23 @@ Gdy wszystkie operacje zostaną wykonane, użytkownik zostanie automatycznie prz
 Nim wybierzemy <przeglądarka ruchów> należy skonfigurować program i utworzyć (ew. przebudować) bazę danych.
 
 \subsection{Przeglądarka ruchów}
+P
+
+\myimage{0.4}{moveBrowserMain.png}{Przeglądarka ruchów}
+
+\myimage{0.4}{moveBrowserMoveOver.png}{Podświetlone wiersze}
+
+\subsection{Lista gier}
+L
+
+\myimage{0.4}{gameList.png}{Lista gier}
+
+\subsection{Analiza gry}
+A
+
+\myimage{0.4}{gameDetailsMain.png}{Start}
+
+\myimage{0.4}{gameDetails.png}{Detale}
 
 \section{Rozwiązania przykładowych problemów}
 
