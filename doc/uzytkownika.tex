@@ -118,7 +118,7 @@ Aby skonfigurować program, należy go: uruchomić (patrz rozdział: <Rozpoczęc
 
 Ukaże się wówczas następujący formularz:
 
-\myimage{0.4}{formularz.png}{Formularz}
+\myimage{0.4}{formularz.png}{Formularz konfiguracyjny}
 
 Składa się on z dwóch pól tekstowych. 
 
@@ -143,12 +143,12 @@ Aby utworzyć (przebudować) bazę danych i wypełnić ją danymi, należy:
 Ponieważ przebudowa istniejącej bazy danych zaczyna się się od skasowania poprzedniej tabeli, użytkownik zostanie
 poproszony o potwierdzenie swego zamiaru:
 
-\myimage{1.0}{potwierdzenie.png}{Potwierdzenie}
+\myimage{1.0}{potwierdzenie.png}{Potwierdzenie utworzenia bazy danych}
 
 Po kliknięciu <OK> należy poczekać aż program wykona operację przebudowania do końca. 
 Aby można było śledzić w czasie rzeczywistym postęp prac wyświetlona zostanie aktualizowana na bieżąco strona informacyjna:
 
-\myimage{0.4}{status.png}{Status}
+\myimage{0.4}{status.png}{Bieżący stan operacji przebudowywania bazy danych}
 
 Gdy wszystkie operacje zostaną wykonane, użytkownik zostanie automatycznie przekierowany do strony głównej (<Rysunek 1>).
 
@@ -159,31 +159,71 @@ Nim wybierzemy <przeglądarka ruchów> należy skonfigurować program i utworzy�
 
 \subsection{Przeglądarka ruchów}
 
-Przeglądaka ruchów służy do analizowania danych statystycznych dotyczących ruchów wybieranych przez zawodników na początku partii (\emph{podczas otwarcia}).
+Przeglądarka ruchów służy do analizowania danych statystycznych dotyczących ruchów 
+wybieranych przez graczy na początku partii (\emph{podczas otwarcia}).
 
-Podstawowe, ogólne dane są wyświetlane na głównym ekranie:
+Ogólne informacje (dane statystyczne) są wyświetlane na głównym ekranie:
 
-\myimage{0.47}{moveBrowserMain.png}{Przeglądarka ruchów}
+\myimage{0.47}{moveBrowserMain.png}{Przeglądarka ruchów -- stan początkowy}
 
-Gdy ...
+Odnośniki w nagłówku strony służą do nawigacji do strony głównej oraz do ekranu widocznego na <rysunku 5>. 
+Dodatkowo istnieje możliwość przełączania między polską i angielską wersją językową (poprzez kliknięcie na odp. flagach).
 
-\myimage{0.47}{moveBrowserMoveOver.png}{Podświetlone wiersze}
+Poniżej znajduje się informacja o łącznej liczbie gier o których program posiada informacje. Następne dwa wiersze pokazują
+prawdopodobieństwo wygranej bieżącego gracza (w pokazanej sytuacji) oraz liczbę wystąpień bieżącej pozycji w bazie danych.
+
+Odnośnik <Lista pasujących gier> prowadzi do ekranu opisanego w następnym podrozdziale <Lista gier>, gdzie wypisane będą
+przykładowe gry z bazy danych, w których \underline{wystąpiła pozycja bieżąca}.
+
+Po lewej głównej części strony znajduje się plansza ilustrująca bieżącą pozycje (na <rysunku 5> jest to sytuacja początkowa, 
+na <rysunku 6> zostały wykonane 3 zagrania). Znakami 'x' oznaczone zostały ruchy, które zostały wykonane w chociaż jednej z
+gier z kolekcji analizowanej przez program. 
+
+Pozostały obszar zajmują dwie tabele, w których wyliczono ww. zagrania oraz podano informacje, które mają pozwolić na ocenę
+ruchu (np. czy daje on dużą szansę wygranej).
+
+Kliknięcie na dowolny 'x' na planszy bądź na algebraiczne oznaczenie ruchu (kolumna \emph{Ruch}) przenosi użytkownika do
+analizy sytuacji, w których to właśnie ten ruch został zagrany (por. <rysunek 6> i jego opis).
+
+Kliknięcie na odnośnik z kolumny \emph{Łącznie gier} prowadzi do ekranu opisanego w następnym podrozdziale <Lista gier>, 
+gdzie wypisane będą przykładowe gry z bazy danych, w których \\ 
+\underline{wystąpiła pozycja powstająca po zagraniu ruchu, którego dotyczy dany wiersz tabeli}.
+
+\myimage{0.47}{moveBrowserMoveOver.png}{Przeglądarka ruchów -- podświetlone wiersze}
+
+<Rysunek 6> pokazuje sytuację, w której zagrano już 3 ruchy. Gdy zagrany jest choć jeden ruch, pokazywane są dwa dodatkowe odnośniki:
+\emph{Cofnij ostatni ruch} oraz \emph{Od nowa}. Pierwszy z nich cofa przebieg partii o jedno zagranie, drugi wraca na sam początek (pusta plansza).
+
+Jeśli użytkownik ustawi kursor nad jednym ze znaków 'x', wówczas podświetlane są dane dotyczącego ruchu, któremu dany 'x' odpowiada.
+Na <rysunku 6> widzimy sytuację, która powstałaby, gdyby użytkownik ustawił kursor w obszarze oznaczonym przez czerwoną gwiazdkę.
 
 \newpage
 
-Dalej, ...
-
 \subsection{Lista gier}
-L
+Lista gier pozwala znaleźć gry w których pojawiła się wybrała pozycja. Udostępnianie dane o grach to nazwy graczy, ich rankingi oraz wynik partii.
+Dodatkowo, kliknięcie odnośnika z kolumny \emph{odnośnik} prowadzi do strony <Analiza gry> opisanej w następnym podrozdziale. Odnośnik 
+\emph{Pokaż bieżącą pozycję} prowadzi do <Przeglądarki ruchów> dla bieżącej pozycji.
 
 \myimage{0.47}{gameList.png}{Lista gier}
 
 \subsection{Analiza gry}
-A
+Analiza gry to podstrona na której można znaleźć szczegołowe informacje na temat jednej wybranej partii.
 
-\myimage{0.47}{gameDetailsMain.png}{Start}
+Dostępne opcje to:
+1) informacje o zawodnikach, wyniku oraz dacie rozegrania partii
+2) odnośnik do źródłowego pliku .sgf
+3) ilustracja pozycji końcowej w danej grze
+4) osadzona w stronę przeglądarka gier \emph{eidogo}
 
-\myimage{0.47}{gameDetails.png}{Detale}
+\myimage{0.47}{gameDetailsMain.png}{Analiza gry -- sytuacja początkowa}
+
+\subsubsection{Przeglądarka eidogo}
+  Eidogo to przeglądarka zapisów w formacie .sgf, dzięki której można w wygodny sposób zapoznać się z przebiegiem całej partii. 
+  Na <rysunku 8> widzimy sytuację bezpośrednio po wczytaniu strony, na <rysunku 9> zaś czerwonymi strzałkami oznaczono przyciski,
+  której pozwalają (odpowiednio, od lewej do prawej) wrócić na początek gry, cofnąć jeden ruch, zobaczyć następny ruch,
+  przejść do końcowej sytuacji.
+   
+\myimage{0.47}{gameDetails.png}{Analiza gry -- sytuacja po kilku ruchach}
 
 % \section{Rozwiązania przykładowych problemów}
 
