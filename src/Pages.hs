@@ -252,7 +252,6 @@ configForm configuration urlBuilder = pHeader +++ pBody where
   
   pBody = body $ concatHtml [ globalHeader urlBuilder (configureUrl urlBuilder)
                             , h1 << L.configurationForm lang
-                            , hr
                             , cForm
                             ]
           
