@@ -17,10 +17,14 @@
 \newcommand{\myimage}[3]{
   \begin{figure}[h!]
     \centering
-      \fbox{\includegraphics[scale=#1]{#2}}
+      \includegraphics[scale=#1]{#2}
   \caption{#3}
   \end{figure}
 }
+
+\usepackage{float}
+\floatstyle{boxed} 
+\restylefloat{figure}
 
 \title{\LARGE Licencjacki projekt programistyczny 2011 \\ 
        \ \\
@@ -57,6 +61,8 @@ By używać programu konieczne jest posiadanie około 20 Mb miejsca na dysku ora
 W razie konieczności kompilacji programu należy posiadać połączenie z Internetem oraz udostępnić około 500 Mb dla kompilatora GHC (o ile nie 
 został on już wcześniej zainstalowany).
 
+\newpage
+
 \section{Instalacja i usuwanie programu}
 Program jest dystrybuowany w dwu wersjach: w postaci binarnej oraz jako kod źródłowy.
 
@@ -81,6 +87,8 @@ Jeśli instalacja przebiegnie pomyślnie program będzie dostępny po wydaniu po
 W celu usunięcia programu należy udać się do katalogu .cabal (domyślnie znajduje się on w katalogu domowym użytkownika) i usunuąć wszystkie
 podfoldery, które w nazwie mają frazę <GoStat>. Ewentualnie skasować należy także wszystkie utworzone za pomocą programu bazy danych (pliki *.db).
 
+\newpage
+
 \section{Uruchamianie i zamykanie programu}
 
 \subsection{Rozpoczęcie pracy}
@@ -102,12 +110,13 @@ Aby zakończyć działanie programu należy zamknąć okno terminala bądź wys�
 UWAGA. Po wykonaniu tej czynności nie będzie można używać interfejsu WWW -- otrzymamy komunikat ``serwer nie odpowiada''. Aby przywrócić działanie programu
 wystarczy go ponownie uruchomić.
 
+
+\newpage
+
 \section{Konfiguracja programu}
 Aby skonfigurować program, należy go: uruchomić (patrz rozdział: <Rozpoczęcie pracy>) i kliknąć odnośnik <Konfiguracja> widoczny na <Rysunku 1>.
 
 Ukaże się wówczas następujący formularz:
-
-\newpage
 
 \myimage{0.4}{formularz.png}{Formularz}
 
@@ -123,6 +132,8 @@ programu GoStat. W każdym wierszy pola tekstowego można podać osobną ścież
 
 Aby zapisać zmiany w konfiguracji, należy kliknąć <Zapisz ustawienia>. Wówczas automatycznie wrócimy do strony startowej (<Rysunek 1>). 
 Aby wykonane zmiany były widoczne w przeglądarce ruchów, należy następnie wybrać <Przebudowa bazy danych>. Opcja ta jest opisana poniżej.
+
+\newpage
 
 \section{Utworzenie i wypełnienie bazy danych}
 Aby utworzyć (przebudować) bazę danych i wypełnić ją danymi, należy: 
@@ -141,28 +152,39 @@ Aby można było śledzić w czasie rzeczywistym postęp prac wyświetlona zosta
 
 Gdy wszystkie operacje zostaną wykonane, użytkownik zostanie automatycznie przekierowany do strony głównej (<Rysunek 1>).
 
+\newpage
+
 \section{Praca z programem}
 Nim wybierzemy <przeglądarka ruchów> należy skonfigurować program i utworzyć (ew. przebudować) bazę danych.
 
 \subsection{Przeglądarka ruchów}
-P
 
-\myimage{0.4}{moveBrowserMain.png}{Przeglądarka ruchów}
+Przeglądaka ruchów służy do analizowania danych statystycznych dotyczących ruchów wybieranych przez zawodników na początku partii (\emph{podczas otwarcia}).
 
-\myimage{0.4}{moveBrowserMoveOver.png}{Podświetlone wiersze}
+Podstawowe, ogólne dane są wyświetlane na głównym ekranie:
+
+\myimage{0.47}{moveBrowserMain.png}{Przeglądarka ruchów}
+
+Gdy ...
+
+\myimage{0.47}{moveBrowserMoveOver.png}{Podświetlone wiersze}
+
+\newpage
+
+Dalej, ...
 
 \subsection{Lista gier}
 L
 
-\myimage{0.4}{gameList.png}{Lista gier}
+\myimage{0.47}{gameList.png}{Lista gier}
 
 \subsection{Analiza gry}
 A
 
-\myimage{0.4}{gameDetailsMain.png}{Start}
+\myimage{0.47}{gameDetailsMain.png}{Start}
 
-\myimage{0.4}{gameDetails.png}{Detale}
+\myimage{0.47}{gameDetails.png}{Detale}
 
-\section{Rozwiązania przykładowych problemów}
+% \section{Rozwiązania przykładowych problemów}
 
 \end{document}
