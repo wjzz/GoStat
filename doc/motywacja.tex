@@ -1,56 +1,225 @@
-Licencjacki projekt programistyczny 2011
+\documentclass[11pt,leqno]{article}
+\usepackage[polish]{babel}
+%\usepackage[OT4]{polski}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\frenchspacing
+%\usepackage{indentfirst}
+\usepackage{listings}
+\usepackage{framed}
+\usepackage[textwidth=16cm,textheight=24cm]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+%\graphicspath{{img\\}}
 
-Wojciech Jedynak
+\usepackage{subfig}
+\setlength\fboxsep{0pt}
+\setlength\fboxrule{0.5pt}
 
-Program do analizy du¿ych kolekcji zapisów partii go
+\newcommand{\myimage}[3]{
+  \begin{figure}[h!]
+    \centering
+      \includegraphics[scale=#1]{#2}
+  \caption{#3}
+  \end{figure}
+}
 
-Motywacja dla projektu
-
-I Wprowadzenie do gry go*
-
-	Go jest strategiczn¹ gr¹ planszow¹ pochodzenia chiñskiego. Nale¿y zarówno do jednych z nastarszych gier znanych ludzkoœci (niektórzy oceniej¹ jej historiê na oko³o 4 tysi¹ce lat), jak i do najtrudniejszych i najbardziej z³o¿onych. Liczba mo¿liwych gier jest szacowana na nawet 10750, a œrednio w ka¿dej sytuacji gracz ma do wyboru oko³o 200 mo¿liwoœci. Bardzo trudno napisaæ program komputerowy, który gra³by dobrze w go. 
-	Go jest gr¹ dla dwóch graczy. Rogrywka toczy siê na kwadratowej planszy przeciêtej 19 liniami poziomymi i 19 liniami pionowymi tworz¹cymi 361 przeciêæ. Aby u³atwiæ naukê gry  pocz¹tkuj¹cym, u¿ywa siê równie¿ mniejszych plansz, o rozmiarach 9x9 oraz 13x13. 
-		Na samym pocz¹tku rozgrywki plansza jest pusta, nastêpnie gracze naprzemiennie k³ad¹ na wolnych przeciêciach swoje pionki, zwane tutaj kamieniami. Gracz, który zaczyna ca³¹ partiê u¿ywa kamieni czarnych, jego przeciwnik ma kamienie bia³e.
-	Gra cieszy siê ogromn¹ popularnoœci¹ w Azji wschodniej, w go graj¹ tam setki milionów osób. W Japonii, Chinach, Korei Po³udniowej i na Tajwanie istniej¹ organizacje graczy zawodowych, którzy stanowi¹ œwiatow¹ czo³ówkê konkuruj¹c¹ w presti¿owych turniejach o wysokie nagrody pieniê¿ne. Ich poczynaniami fascynuj¹ siê pasjonaci go z ca³ego œwiata. Wielu zawodowców zamiast na rywalizacji koncentruje siê na nauczaniu i odwiedz¹j¹ turnieje na ca³ym œwiecie, gdzie analizuj¹ partie amatorów, rozgrywaj¹ gry szkoleniowe i prowadz¹ wyk³ady. Wielu zawodowców  wydaje ksi¹¿ki z zadaniami treningowymi oraz poradniki i leksykony otwaræ czy przyk³adów zagrañ o zaskakuj¹cej skutecznoœci. Tylko niewielka czeœæ z nich jest t³umaczona na jêzyk angielski, ale kilka wybitnych pozycji jest dostêpnych jedynie po angielsku, gdy¿ opracowali je... zachodni amatorzy!
-
-	Co trzeba zrobiæ, by zostaæ zawodowcem? Przede wszystkim zacz¹æ naukê gry w bardzo m³odym wieku (oko³o 5-8 lat), bardzo du¿o æwiczyæ (najlepiej pod okiem nauczyciela-zawodowca) i odnieœæ sukces w organizowanym raz do roku egzaminie, co jest wyczynem ekstremalnie trudnym. By podejœæ bowiem do tego egzaminu nale¿y przejœæ przez kwalifikacje, nastêpnie rozegraæ grê z ka¿dym z oko³o 30 innych kandydatów i na koniec uplasowaæ siê w najlepszej trójce. Tylko trzy osoby rocznie zasilaj¹ grono zawodowców...
-	Czy tylko Azjaci mog¹ uzyskaæ licencje zawodow¹? Niekoniecznie, choæ wyj¹tki s¹ bardzo nieliczne. Do tej pory uda³o to siê miêdzy innymi Rosjanom (Alexander Dinershtein, Svetlana Shiksina), Rumunowi (Catalin Tarjanu) i Amerykaninowi (Micheal ...). Leszek So³dan (50 lat), który jest czternastokrotnym mistrzem Polski w go, spêdzi³ wiele lat w Japonii trenuj¹c z elit¹ japoñskich kandydatów na zawodowców (jap. insei), jednak nie uda³o mu siê zdaæ egzaminu. Byæ mo¿e sztuka ta uda siê w przysz³oœci Mateuszowi Surmie, który jest aktualnym mistrzem Europy do lat 16 (po raz drugi z rzêdu) i jest obecnie na drugiej pozycji w polskiej klasyfikacji turniejowej (tu¿ za Leszkiem So³danem).
-
-Wiêcej informacji o go mo¿na znaleŸæ na stronie http://go.art.pl
+\usepackage{float}
+\floatstyle{boxed} 
+\usepackage{wrapfig}
 
 
+\title{\LARGE Licencjacki projekt programistyczny 2011 \\ 
+       \ \\
+       Program do wykonywania obliczeÅ„ statystycznych zwiÄ…zanych z grÄ… go \\ 
+       \ \\
+       Motywacja dla projektu }
 
-II Analiza statystyczna otwaræ
+% TODO autor wieksza czcionka
 
-Mój dobry kolega i wieloletni popularyzator go we Wroc³awiu, £ukasz Fajfrowski opowiedzia³ mi, ¿e znalaz³ w sieci kolekcjê kilkuset zapisów parti granych przez zawodowców na planszy 9x9 i postanowi³ przygotowaæ opracowanie najczêstszych i najskuteczniejszych zagrañ w pocz¹tkowej fazie gry. Poniewa¿ w ka¿dej parti pocz¹tkowe ustawienie jest identyczne i gra jest w pe³ni deterministyczna, posiadanie (i przeanalizowanie) takiej bazy wiedzy pozwoli³oby na:
-1.Podniesienie w³asnego poziomu gry poprzez wykorzystanie wiedzy i doœwiadczenia graczy zawodowych
-2.Odkrycie, czy pewne zagrania s¹ znacznie lepsze od innych, czy jest to jedynie kwestia indywidualnych preferencji
+\author{Wojciech Jedynak}
+\date{WrocÅ‚aw, \today}
 
-Waga problemu
+% \newtheorem{rys}{Rysunek}
 
-	W szczególnoœci moglibyœmy siê choæ trochê przybli¿yæ do odpowiedzi na jedno z kluczowych pytañ: czy w go czarny (czyli pierwszy gracz) ma strategiê wygrywaj¹c¹? Jeœli tak, to które ruchy daj¹ pewn¹ wygran¹? Od 2007 roku znamy czêœciow¹ odpowiedŸ dla gry w warcaby1. Trudno oceniæ kiedy uda siê ludzkoœci wyznaczyæ odpowiedz dla gry w szachy. W przypadku go sytuacja wygl¹da tak, ¿e przeanalizowano w pe³ni grê na planszy 4x4, zaœ dla planszy 5x5 wykazano przy pomocy analizy komputerowej, ¿e czarny zaczynaj¹c od zagrania w œrodek wygrywa2. Mo¿emy oceniaæ, ¿e przy nieustaj¹cym rozwoju sprzêtu i postêpach w pracy nad algorytmami przeszukuj¹cymi drzewo gry uda siê w przysz³oœci uzyskaæ analogiczne wyniki dla planszy 9x9. Na dzieñ dzisiejszy, wiêkszoœæ graczy zawodowych sugeruje, ¿e tak¿e dla tej planszy najlepsze jest zagranie w sam œrodek. Jak zostanie wykazane w dalszej czêœci pracy, jest to równie¿ najczêœciej wybierany ruch przez programy komputerowe.
+\begin{document}
 
-	Nale¿y jednak zwróciæ uwagê, ¿e z praktycznego punktu widzenia, plansza 9x9 jest tylko narzêdziem treningowym w porównaniu z czterokrotnie wiêksz¹ (pod wzglêdem liczby przeciêæ), oficjaln¹ plansz¹ 19x19. Ró¿nice w grze na obu planszach nie s¹ jedynie kosmetyczne i iloœciowe. Strategia gry na du¿ej planszy jest niemal zupe³nie inna ni¿ na planszy ma³ej. Przyk³adowo:
-Rozpoczêcie w œrodek na planszy ma³ej to ruch, który ma wp³yw na ca³¹ planszê. Analogiczne zagranie na planszy 19x19 nie ma takiego efektu, gdy¿ œrodek jest bardzo odleg³y od rogów, gdzie naj³atwiej rozpocz¹æ budowanie pozycji. Dla du¿ej planszy zagranie takie jest uwa¿ane za strategiê na specjalne okazje.
-Na du¿ej planszy najskuteczniejszym planem jest niekiedy poœwiêcenie du¿ej liczby kamieni, aby uzyskaæ przewagê w innym miejscu. Na mniejszych planszach manewr taki czêsto koñczy siê przegran¹, gdy¿ strata jest zbyt du¿a.
+\maketitle 
 
-	Bior¹c pod uwagê, ¿e znacznie trudniej jest oceniæ jakoœæ ruchu na planszy 19x19, jesteœmy w stanie zrozumieæ, dlaczego nie ma do tej pory programów, które mog³yby siê mierzyæ z zawodowcam, ba! nawet z dobrymi amatorami, podczas gdy w przypadku planszy 9x9 najlepsze sztuczne inteligencje radz¹ sobie przyzwoicie w grach z ludŸmi (na poziomie amatorskim).
+\thispagestyle{empty}
+\tableofcontents
 
-III Problemy z rêczn¹ obróbk¹ kolekcji gier
+\newpage
 
-	Podczas rêcznego tworzenia swojego opracowania, £ukasz dopisywa³ kolejne warianty do jednego pliku SGF, który mia³ zawieraæ kilkanaœcie ruchów z ka¿dej parti z dostêpnego archiwum, i aktualizowa³ na bie¿¹co dane statystyczne. By³o to bardzo czasoch³onne, ¿mudne i wymaga³o du¿ej koncentracji. Jednym z powodów tego by³ fakt, i¿ nale¿a³o w pamiêci dokonywaæ normalizacji ruchów, aby wzi¹æ pod uwagê symetrie. 
 
-Na planszy 9x9 mamy do dyspozycji 81 wolnych przeciêæ, ale z matematycznego punktu widzenia, zagrania w dowolny naró¿nik (A9, J9, A1, J1) s¹ równowa¿ne z dok³adnoœci do obrotu lub symetrii. Jedynie ruch w sam œrodek jest pod tym wzglêdem unikatowy. Aby statystyka by³a poprawna, dwa symetryczne zagrania nale¿y liczyæ jako dwa wyst¹pienia tego samego ruchu! Najmniej podatnym na b³êdy rozwi¹zaniem wydaje siê wybranie pewnego zbioru ruchów, które s¹ parami ró¿ne tak¿e po uwzglêdnieniu przekszta³ceñ geometrycznych. Przyk³adowy taki zbiór oznaczono na ilustracji obok. Jak widaæ, ma on 15 elementów. Normalizacja ruchy polega wiêc na znalezieniu równowa¿nego ruchu, który nale¿y do tych 15 wyró¿nionych. Niedogodnoœæ, która siê z tym wi¹¿e polega na tym, ¿e jeœli znormalizujemy pierwszy ruch danej partii, musimy w ten sam sposób przekszta³ciæ wszystkie nastêpne ruchy z tej samej gry. 
-Przyk³adowo, jeœli na czarnego F4 bia³y odpowiedzia³ A6, to nie wystarczy jedynie przekszta³ciæ
-F4 na F6 - musimy tak¿e zmieniæ A6 na A4.
+\section{Wprowadzenie do gry go}
 
-Widzimy, ¿e ca³y proces jest nieco zbyt skompikowany3, a ca³a operacja zbyt ¿mudna, by wykonywaæ j¹ rêcznie dla wiêcej ni¿ kilkunastu gier (statystyczna gra na planszy 9x9 trwa oko³o 50 ruchów), a interesowaæ nas mog¹ tak¿e kolekcje sk³adaj¹ce siê z dziesi¹tek tysiêcy partii.
+\subsection{Historia i zasady}
 
-Powy¿sza analiza pokazuje, ¿e mamy tutaj znakomit¹ okazjê na automatyzacjê ca³ego procesu za pomoc¹ programu komputerowego. 
+Go jest strategicznÄ… grÄ… planszowÄ… pochodzenia chiÅ„skiego. NaleÅ¼y zarÃ³wno do jednych z nastarszych gier znanych 
+ludzkoÅ›ci (niektÃ³rzy oceniejÄ… jej historiÄ™ na okoÅ‚o 4 tysiÄ…ce lat), jak i do najtrudniejszych i najbardziej zÅ‚oÅ¼onych.
+Liczba moÅ¼liwych gier jest szacowana na nawet $ 10^{750} $, a Å›rednio w kaÅ¼dej sytuacji gracz ma do wyboru okoÅ‚o 200 moÅ¼liwoÅ›ci.
+Bardzo trudno napisaÄ‡ program komputerowy, ktÃ³ry graÅ‚by dobrze w go. 
 
-IV Dlaczego Haskell?
+Go jest grÄ… dla dwÃ³ch graczy. Rogrywka toczy siÄ™ na kwadratowej planszy przeciÄ™tej 19 liniami poziomymi i 19 liniami pionowymi 
+tworzÄ…cymi 361 przeciÄ™Ä‡. Aby uÅ‚atwiÄ‡ naukÄ™ gry  poczÄ…tkujÄ…cym, uÅ¼ywa siÄ™ rÃ³wnieÅ¼ mniejszych plansz, o rozmiarach 9x9 oraz 13x13. 
 
-Zwróæmy uwagê, ¿e jednym z kluczowych modu³ów programu do opisanej wy¿ej analizy bêdzie modu³ przekszta³ceñ geometrycznych i funkcja normalizuj¹ca dany ruch, a nastêpnie ca³¹ grê. B³¹d logiczny w tym module grozi, ¿e nasze wyniki bêd¹ po prostu niepoprawne czy sprzeczne. Dobrze by³oby wiêc u¿yæ narzêdzia, które pozwoli nam na operowanie na mo¿liwie wysokim poziomie abstracji oraz testowanie funkcji nie tylko dla konkretnych danych, ale na okreœlanie w³asnoœci na których nam zale¿y. Dodatkowo, potrzebne bêdzie wsparcie dla bazy danych, serwera HTTP i GUI, gdy¿ program musi byæ przetwarzaæ du¿e iloœci danych i musi przezentowaæ wyniki w przystêpny dla u¿ytkownika sposób. Haskell jako jêzyk funkcyjny (a wiêc dobrze wspieraj¹cy abstracje, modularnoœæ i poprawnoœæ) o otwartym kodzie, posiadaj¹cy wydajn¹ implementacje (GHC) i dos³ownie tysi¹ce dostêpnych modu³ów (bibliotek) do przeró¿nych zadañ zebranych w serwisie Hackage, wydaje siê rozwi¹zaniem optymalnym.
+Na samym poczÄ…tku rozgrywki plansza jest pusta, nastÄ™pnie gracze naprzemiennie kÅ‚adÄ… na wolnych przeciÄ™ciach swoje pionki, 
+zwane tutaj kamieniami. Gracz, ktÃ³ry zaczyna caÅ‚Ä… partiÄ™ uÅ¼ywa kamieni czarnych, jego przeciwnik ma kamienie biaÅ‚e.
 
-Szczegó³owa analiza mocnych stron jêzyka i tego jak przyczyni³y siê one do powstania projektu znajduje siê w dokumentacji programisty.
+\begin{figure}[h!]
+  \centering
+  \subfloat[Tradycyjny japoÅ„ski zestaw do gry w Go: kamienie (czÄ™sto wykonywane z muszli), plansza i pojemniki na kamienie.]
+   {\includegraphics[width=0.4\textwidth]{619px-FloorGoban.JPG}}
+  \hspace{0.5cm}                
+  \subfloat[Plansza o oficjalnych rozmiarach (19 x 19)]{\includegraphics[width=0.4\textwidth]{19.png}}
+  %\caption{Pictures of animals}
+  
+  \subfloat[Plansza poÅ›rednia miÄ™dzy 9x9 a 19x19: rozmiar 13x13]
+   {\includegraphics[width=0.4\textwidth]{13.png}}
+  \hspace{0.5cm}                
+  \subfloat[Najmniejsza plansza uÅ¼ywana w praktyce (9x9)]{\includegraphics[width=0.4\textwidth]{9.png}}
+  %\caption{Pictures of animals}
+\end{figure}
 
+\subsection{PopularnoÅ›Ä‡ gry }
+
+Gra cieszy siÄ™ ogromnÄ… popularnoÅ›ciÄ… w Azji wschodniej, w go grajÄ… tam setki milionÃ³w osÃ³b. Na zachodzie gra jest mniej znana, 
+ale w bardzo wielu krajach istniejÄ… stowarzyszenia, ktÃ³re zrzeszajÄ… miÅ‚oÅ›nikÃ³w gry. 
+
+W Polsce od ?? roku istnieje Polskie Stowarzyszenie
+Go (adres), rozgrywane sÄ… Mistrzostwa Polski Kobiet, Par, JuniorÃ³w... Istnieje kilkanaÅ›cie klubÃ³w, w ktÃ³rych regularnie odbywajÄ…
+siÄ™ spotkania goistyczne -- we WrocÅ‚awiu funkcjonujÄ… dwa kluby: odnoÅ›niki! Na liÅ›cie rankingowej przewaÅ¼nie znajduje siÄ™ okoÅ‚o 300 do 400 
+nazwisk z caÅ‚ego kraju. Aktualnym mistrzem Polski jest ..., zaÅ› na rozgrywanych rokrocznie w Japonii mistrzostwach Å›wiata amatorÃ³w 
+reprezentowaÅ‚ PolskÄ™ w 2011 roku student Uniwersytetu WrocÅ‚awskiego Kamil Chwedyna. 
+Kamil zajÄ…Å‚ rewelacyjne 13 miejsce i otrzymaÅ‚ nagrodÄ™ specjalnÄ… za 
+``swobodÄ™ i lekkoÅ›Ä‡ stylu'' od gÅ‚ownego sÄ™dziego zawodÃ³w, ktÃ³rym byÅ‚ sam Masaki Takemiya. 
+Takemiya to legendarny japoÅ„ski gracz zawodowy; odnosiÅ‚ w latach ?? ogromne sukcesy, a jego styl
+gry byÅ‚ tak odmienny od tego co uchodziÅ‚o wÃ³wczas za kanon, Å¼e jego metodÄ™ nazywano ``Kosmicznym go''.
+
+\subsection{Organizacje graczy zawodowych}
+W Japonii, Chinach, Korei PoÅ‚udniowej i na Tajwanie istniejÄ… organizacje graczy zawodowych, ktÃ³rzy stanowiÄ… Å›wiatowÄ… czoÅ‚Ã³wkÄ™ konkurujÄ…cÄ… w 
+prestiÅ¼owych turniejach o wysokie nagrody pieniÄ™Å¼ne. Ich poczynaniami fascynujÄ… siÄ™ pasjonaci go z caÅ‚ego Å›wiata. Wielu
+ zawodowcÃ³w zamiast na rywalizacji koncentruje siÄ™ na nauczaniu i odwiedzÄ…jÄ… turnieje na caÅ‚ym Å›wiecie, gdzie analizujÄ… 
+partie amatorÃ³w, rozgrywajÄ… gry szkoleniowe i prowadzÄ… wykÅ‚ady. Wielu zawodowcÃ³w  wydaje ksiÄ…Å¼ki z zadaniami treningowymi
+ oraz poradniki i leksykony otwarÄ‡ czy przykÅ‚adÃ³w zagraÅ„ o zaskakujÄ…cej skutecznoÅ›ci. Tylko niewielka czeÅ›Ä‡ z nich jest 
+tÅ‚umaczona na jÄ™zyk angielski, ale kilka wybitnych pozycji jest dostÄ™pnych jedynie po angielsku, gdyÅ¼ opracowali je... zachodni amatorzy!
+
+Co trzeba zrobiÄ‡, by zostaÄ‡ zawodowcem? Przede wszystkim zaczÄ…Ä‡ naukÄ™ gry w bardzo mÅ‚odym wieku (okoÅ‚o 5-8 lat), 
+bardzo duÅ¼o Ä‡wiczyÄ‡ (najlepiej pod okiem nauczyciela-zawodowca) i odnieÅ›Ä‡ sukces w organizowanym raz do roku egzaminie, 
+co jest wyczynem ekstremalnie trudnym. By podejÅ›Ä‡ bowiem do tego egzaminu naleÅ¼y przejÅ›Ä‡ przez kwalifikacje, nastÄ™pnie 
+rozegraÄ‡ grÄ™ z kaÅ¼dym z okoÅ‚o 30 innych kandydatÃ³w i na koniec uplasowaÄ‡ siÄ™ w najlepszej trÃ³jce. Tylko trzy osoby rocznie 
+zasilajÄ… grono zawodowcÃ³w...
+
+Czy tylko Azjaci mogÄ… uzyskaÄ‡ licencje zawodowÄ…? Niekoniecznie, choÄ‡ wyjÄ…tki sÄ… bardzo nieliczne. Do tej pory udaÅ‚o
+to siÄ™ miÄ™dzy innymi Rosjanom (Alexander Dinershtein, Svetlana Shiksina), Rumunowi (Catalin Tarjanu) i Amerykaninowi 
+(Micheal ...). 
+
+\subsubsection{Polskie akcenty}
+
+Leszek SoÅ‚dan (50 lat), ktÃ³ry jest czternastokrotnym mistrzem Polski w go, spÄ™dziÅ‚ wiele lat w Japonii 
+trenujÄ…c z elitÄ… japoÅ„skich kandydatÃ³w na zawodowcÃ³w (jap. insei), jednak nie udaÅ‚o mu siÄ™ zdaÄ‡ egzaminu. ByÄ‡ moÅ¼e sztuka 
+ta uda siÄ™ w przyszÅ‚oÅ›ci Mateuszowi Surmie, ktÃ³ry jest aktualnym mistrzem Europy do lat 16 (po raz drugi z rzÄ™du) i jest 
+obecnie na drugiej pozycji w polskiej klasyfikacji turniejowej (tuÅ¼ za Leszkiem SoÅ‚danem).
+
+\subsection{Dalsze informacje}
+
+WiÄ™cej informacji o go moÅ¼na znaleÅºÄ‡ na stronie http://go.art.pl
+
+\section{Analiza statystyczna otwarÄ‡}
+
+\subsection{Wprowadzenie}
+
+MÃ³j dobry kolega i wieloletni popularyzator go we WrocÅ‚awiu, Åukasz Fajfrowski opowiedziaÅ‚ mi, Å¼e znalazÅ‚ w sieci kolekcjÄ™ 
+kilkuset zapisÃ³w parti granych przez zawodowcÃ³w na planszy 9x9 i postanowiÅ‚ przygotowaÄ‡ opracowanie najczÄ™stszych i 
+najskuteczniejszych zagraÅ„ w poczÄ…tkowej fazie gry. PoniewaÅ¼ w kaÅ¼dej parti poczÄ…tkowe ustawienie jest identyczne i gra
+jest w peÅ‚ni deterministyczna, posiadanie (i przeanalizowanie) takiej bazy wiedzy pozwoliÅ‚oby na:
+
+\begin{enumerate}
+\item Podniesienie wÅ‚asnego poziomu gry poprzez wykorzystanie wiedzy i doÅ›wiadczenia graczy zawodowych
+\item Odkrycie, czy pewne zagrania sÄ… znacznie lepsze od innych, czy jest to jedynie kwestia indywidualnych preferencji
+\end{enumerate}
+
+\subsection{Waga problemu}
+
+W szczegÃ³lnoÅ›ci moglibyÅ›my siÄ™ choÄ‡ trochÄ™ przybliÅ¼yÄ‡ do odpowiedzi na jedno z kluczowych pytaÅ„: czy w go czarny
+ (czyli pierwszy gracz) ma strategiÄ™ wygrywajÄ…cÄ…? JeÅ›li tak, to ktÃ³re ruchy dajÄ… pewnÄ… wygranÄ…? Od 2007 roku znamy czÄ™Å›ciowÄ…
+ odpowiedÅº dla gry w warcaby \footnote{Schaeffer, Jonathan (2007-07-19). "Checkers Is Solved". Science.}.
+ Trudno oceniÄ‡ kiedy uda siÄ™ ludzkoÅ›ci wyznaczyÄ‡ odpowiedz dla gry w szachy. W przypadku go 
+sytuacja wyglÄ…da tak, Å¼e przeanalizowano w peÅ‚ni grÄ™ na planszy 4x4, zaÅ› dla planszy 5x5 wykazano przy pomocy analizy komputerowej,
+ Å¼e czarny zaczynajÄ…c od zagrania w Å›rodek wygrywa \footnote{http://erikvanderwerf.tengen.nl/5x5/5x5solved.html}. 
+MoÅ¼emy oceniaÄ‡, Å¼e przy nieustajÄ…cym rozwoju sprzÄ™tu i postÄ™pach w pracy nad
+ algorytmami przeszukujÄ…cymi drzewo gry uda siÄ™ w przyszÅ‚oÅ›ci uzyskaÄ‡ analogiczne wyniki dla planszy 9x9. Na dzieÅ„ dzisiejszy,
+ wiÄ™kszoÅ›Ä‡ graczy zawodowych sugeruje, Å¼e takÅ¼e dla tej planszy najlepsze jest zagranie w sam Å›rodek. Jak zostanie wykazane w 
+dalszej czÄ™Å›ci pracy, jest to rÃ³wnieÅ¼ najczÄ™Å›ciej wybierany ruch przez programy komputerowe.
+
+NaleÅ¼y jednak zwrÃ³ciÄ‡ uwagÄ™, Å¼e z praktycznego punktu widzenia, plansza 9x9 jest tylko narzÄ™dziem treningowym w 
+porÃ³wnaniu z czterokrotnie wiÄ™kszÄ… (pod wzglÄ™dem liczby przeciÄ™Ä‡), oficjalnÄ… planszÄ… 19x19. RÃ³Å¼nice w grze na obu planszach
+ nie sÄ… jedynie kosmetyczne i iloÅ›ciowe. Strategia gry na duÅ¼ej planszy jest niemal zupeÅ‚nie inna niÅ¼ na planszy maÅ‚ej. PrzykÅ‚adowo:
+RozpoczÄ™cie w Å›rodek na planszy maÅ‚ej to ruch, ktÃ³ry ma wpÅ‚yw na caÅ‚Ä… planszÄ™. Analogiczne zagranie na planszy 19x19 nie ma takiego 
+efektu, gdyÅ¼ Å›rodek jest bardzo odlegÅ‚y od rogÃ³w, gdzie najÅ‚atwiej rozpoczÄ…Ä‡ budowanie pozycji. Dla duÅ¼ej planszy zagranie takie jest
+ uwaÅ¼ane za strategiÄ™ na specjalne okazje.
+Na duÅ¼ej planszy najskuteczniejszym planem jest niekiedy poÅ›wiÄ™cenie duÅ¼ej liczby kamieni, aby uzyskaÄ‡ przewagÄ™ w innym miejscu.
+ Na mniejszych planszach manewr taki czÄ™sto koÅ„czy siÄ™ przegranÄ…, gdyÅ¼ strata jest zbyt duÅ¼a.
+
+BiorÄ…c pod uwagÄ™, Å¼e znacznie trudniej jest oceniÄ‡ jakoÅ›Ä‡ ruchu na planszy 19x19, jesteÅ›my w stanie zrozumieÄ‡, dlaczego 
+nie ma do tej pory programÃ³w, ktÃ³re mogÅ‚yby siÄ™ mierzyÄ‡ z zawodowcam, ba! nawet z dobrymi amatorami, podczas gdy w przypadku 
+planszy 9x9 najlepsze sztuczne inteligencje radzÄ… sobie przyzwoicie w grach z ludÅºmi (na poziomie amatorskim).
+
+\section{Problemy z rÄ™cznÄ… obrÃ³bkÄ… kolekcji gier}
+
+Podczas rÄ™cznego tworzenia swojego opracowania, Åukasz dopisywaÅ‚ kolejne warianty do jednego pliku SGF, ktÃ³ry miaÅ‚ 
+zawieraÄ‡ kilkanaÅ›cie ruchÃ³w z kaÅ¼dej parti z dostÄ™pnego archiwum, i aktualizowaÅ‚ na bieÅ¼Ä…co dane statystyczne. ByÅ‚o to bardzo 
+czasochÅ‚onne, Å¼mudne i wymagaÅ‚o duÅ¼ej koncentracji. Jednym z powodÃ³w tego byÅ‚ fakt, iÅ¼ naleÅ¼aÅ‚o w pamiÄ™ci dokonywaÄ‡ normalizacji
+ ruchÃ³w, aby wziÄ…Ä‡ pod uwagÄ™ symetrie. 
+
+\begin{wrapfigure}{l}{0.3\textwidth}
+  \vspace{-20pt}
+  \begin{center}
+    \includegraphics[width=0.28\textwidth]{symetria.png}
+  \end{center}
+  \vspace{-20pt}
+  \caption{15 moÅ¼liwych sposobÃ³w na rozpoczÄ™cie gry, z dokÅ‚adnoÅ›ciÄ… do symetrii \\i obrotÃ³w}
+  \vspace{-10pt}
+\end{wrapfigure}
+
+Na planszy 9x9 mamy do dyspozycji 81 wolnych przeciÄ™Ä‡, ale z matematycznego punktu widzenia, zagrania w dowolny narÃ³Å¼nik 
+(A9, J9, A1, J1) sÄ… rÃ³wnowaÅ¼ne z dokÅ‚adnoÅ›ci do obrotu lub symetrii. Jedynie ruch w sam Å›rodek jest pod tym wzglÄ™dem unikatowy. 
+Aby statystyka byÅ‚a poprawna, dwa symetryczne zagrania naleÅ¼y liczyÄ‡ jako dwa wystÄ…pienia tego samego ruchu! Najmniej podatnym
+ na bÅ‚Ä™dy rozwiÄ…zaniem wydaje siÄ™ wybranie pewnego zbioru ruchÃ³w, ktÃ³re sÄ… parami rÃ³Å¼ne takÅ¼e po uwzglÄ™dnieniu przeksztaÅ‚ceÅ„ 
+geometrycznych. PrzykÅ‚adowy taki zbiÃ³r oznaczono na ilustracji obok. Jak widaÄ‡, ma on 15 elementÃ³w. Normalizacja ruchy polega
+ wiÄ™c na znalezieniu rÃ³wnowaÅ¼nego ruchu, ktÃ³ry naleÅ¼y do tych 15 wyrÃ³Å¼nionych. NiedogodnoÅ›Ä‡, ktÃ³ra siÄ™ z tym wiÄ…Å¼e polega na 
+tym, Å¼e jeÅ›li znormalizujemy pierwszy ruch danej partii, musimy w ten sam sposÃ³b przeksztaÅ‚ciÄ‡ wszystkie nastÄ™pne ruchy z tej samej gry. 
+PrzykÅ‚adowo, jeÅ›li na czarnego F4 biaÅ‚y odpowiedziaÅ‚ A6, to nie wystarczy jedynie przeksztaÅ‚ciÄ‡
+F4 na F6 - musimy takÅ¼e zmieniÄ‡ A6 na A4.
+
+Widzimy, Å¼e caÅ‚y proces jest nieco zbyt skompikowany \footnote{SzczegÃ³Å‚owa analiza, lista potrzebnych przeksztaÅ‚ceÅ„, 
+opis ich wÅ‚asnoÅ›ci itp. znajduje siÄ™ w dokumentacji programisty.}, a caÅ‚a operacja zbyt Å¼mudna, by wykonywaÄ‡ jÄ… rÄ™cznie dla wiÄ™cej niÅ¼ 
+kilkunastu gier (statystyczna gra na planszy 9x9 trwa okoÅ‚o 50 ruchÃ³w), a interesowaÄ‡ nas mogÄ… takÅ¼e kolekcje skÅ‚adajÄ…ce siÄ™
+ z dziesiÄ…tek tysiÄ™cy partii.
+
+PowyÅ¼sza analiza pokazuje, Å¼e mamy tutaj znakomitÄ… okazjÄ™ na automatyzacjÄ™ caÅ‚ego procesu za pomocÄ… programu komputerowego. 
+
+\section{WybÃ³r technologii i narzÄ™dzi}
+
+\subsection{Analiza techniczna zagadnienia}
+ZwrÃ³Ä‡my uwagÄ™, Å¼e jednym z kluczowych moduÅ‚Ã³w programu do opisanej wyÅ¼ej analizy bÄ™dzie moduÅ‚ przeksztaÅ‚ceÅ„ geometrycznych i
+ funkcja normalizujÄ…ca dany ruch, a nastÄ™pnie caÅ‚Ä… grÄ™. BÅ‚Ä…d logiczny w tym module grozi, Å¼e nasze wyniki bÄ™dÄ… po prostu 
+niepoprawne czy sprzeczne. Dobrze byÅ‚oby wiÄ™c uÅ¼yÄ‡ narzÄ™dzia, ktÃ³re pozwoli nam na operowanie na moÅ¼liwie wysokim poziomie
+ abstracji oraz testowanie funkcji nie tylko dla konkretnych danych, ale na okreÅ›lanie wÅ‚asnoÅ›ci na ktÃ³rych nam zaleÅ¼y. 
+Dodatkowo, potrzebne bÄ™dzie wsparcie dla bazy danych, serwera HTTP i GUI, gdyÅ¼ program musi byÄ‡ przetwarzaÄ‡ duÅ¼e iloÅ›ci danych
+ i musi przezentowaÄ‡ wyniki w przystÄ™pny dla uÅ¼ytkownika sposÃ³b. 
+
+\subsection{Haskell}
+Haskell jako jÄ™zyk funkcyjny (a wiÄ™c dobrze wspierajÄ…cy abstracje,
+ modularnoÅ›Ä‡ i poprawnoÅ›Ä‡) o otwartym kodzie, posiadajÄ…cy wydajnÄ… implementacje (GHC) i dosÅ‚ownie tysiÄ…ce dostÄ™pnych moduÅ‚Ã³w
+ (bibliotek) do przerÃ³Å¼nych zadaÅ„ zebranych w serwisie Hackage, wydaje siÄ™ rozwiÄ…zaniem optymalnym.
+
+SzczegÃ³Å‚owa analiza mocnych stron jÄ™zyka i tego jak przyczyniÅ‚y siÄ™ one do powstania projektu znajduje siÄ™ w dokumentacji programisty.
+
+\section{OdnoÅ›niki}
+Ilustracje wykorzystane w niniejszym dokumencie pochodzÄ… ze stron \url{http://jeudego.info/?Goban} oraz 
+\url{http://en.wikipedia.org/wiki/Go\_(game)}.
+
+
+\end{document}
