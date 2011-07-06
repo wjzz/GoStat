@@ -9,6 +9,7 @@
 \usepackage{framed}
 \usepackage[textwidth=16cm,textheight=24cm]{geometry}
 \usepackage{graphicx}
+\usepackage{hyperref}
 %\graphicspath{{img\\}}
 
 \setlength\fboxsep{0pt}
@@ -68,24 +69,46 @@ Program jest dystrybuowany w dwu wersjach: w postaci binarnej oraz jako kod źr�
 
 \subsection{Postać binarna}
 Należy: 
-1) pobrać plik <GoStat-binary-os.tar.gz> (gdzie os to 'linux' bądź 'windows')
-2) rozpakować archiwum do wybranego katalogu
-3) przejść do ów folderu
-4) uruchomić (najlepiej z poziomu terminala) plik GoStat (GoStat.exe w przypadku Windows)
+\begin{enumerate}
+\item pobrać plik \emph{GoStat-binary-os.tar.gz} (gdzie os to 'linux' bądź 'windows')
+\item rozpakować archiwum do wybranego katalogu
+\item przejść do ów folderu
+\item uruchomić (najlepiej z poziomu terminala) plik GoStat (GoStat.exe w przypadku Windows)
+\end{enumerate}
 
 W celu usunięcia programu wystarczy usunąć wymieniony wcześniej katalog oraz ew. wszystkie utworzone za jego pomocą bazy danych (pliki *.db).
 
 \subsection{Kod źródłowy}
-Należy:
-1) rozpakować plik <GoStat-source.tar.gz>
-2) przejść do katalogu GoStat
-3) z poziomu terminala wydać polecenie <cabal install>
-4) poczekać aż narzędzie cabal-install pobierze i zainstaluje wszystkie brakujące pakiety modułów Haskellowych (może to zająć do kilkunastu minut).
+Przed instalacją należy upewnić się, że zainstalowane są:
+
+\begin{enumerate}
+\item Kompilator GHC (Glasgow Haskell Compiler), \\ dostępny pod adresem  \url{http://www.haskell.org/ghc/}
+\item Pakiet narzędzi i modułów Haskell Platform, \\ dostępny pod adresem \url{http://hackage.haskell.org/platform/}
+\item Baza danych SQLite 3, \\ dostępna pod adresem \url{http://www.sqlite.org/}
+\end{enumerate}
+
+\noindent Dodatkowo, w przypadku instalacji pod Windows należy:
+
+\begin{enumerate}
+\item Pobrać i zainstalować narzędzie MinGW (\url{http://www.mingw.org/}), \\ (bezpośredni link \url{http://sourceforge.net/projects/mingw/files/})
+\item Wykonać instrukcje ze strony \url{https://github.com/jgoerzen/hdbc/wiki/FrequentlyAskedQuestions}
+\item Poniższe polecenia wykonywać w programie <MinGW Shell> (a nie np. PowerShell czy CMD)
+\end{enumerate}
+
+
+\noindent Aby zainstalować program GoStat ze źródeł należy:
+
+\begin{enumerate}
+\item rozpakować plik \emph{GoStat-source.tar.gz}
+\item przejść do katalogu GoStat
+\item z poziomu terminala wydać polecenie <cabal install>
+\item poczekać aż narzędzie cabal-install pobierze i zainstaluje wszystkie brakujące pakiety modułów Haskellowych (może to zająć do kilkunastu minut).
+\end{enumerate}
 
 Jeśli instalacja przebiegnie pomyślnie program będzie dostępny po wydaniu polecenia <GoStat> (<GoStat.exe> dla Windows).
 
 W celu usunięcia programu należy udać się do katalogu .cabal (domyślnie znajduje się on w katalogu domowym użytkownika) i usunuąć wszystkie
-podfoldery, które w nazwie mają frazę <GoStat>. Ewentualnie skasować należy także wszystkie utworzone za pomocą programu bazy danych (pliki *.db).
+podfoldery, które w nazwie mają frazę \emph{GoStat}. Ewentualnie skasować należy także wszystkie utworzone za pomocą programu bazy danych (pliki *.db).
 
 \newpage
 
@@ -114,7 +137,8 @@ wystarczy go ponownie uruchomić.
 \newpage
 
 \section{Konfiguracja programu}
-Aby skonfigurować program, należy go: uruchomić (patrz rozdział: <Rozpoczęcie pracy>) i kliknąć odnośnik <Konfiguracja> widoczny na <Rysunku 1>.
+Aby skonfigurować program, należy go: uruchomić (patrz rozdział: \emph{Rozpoczęcie pracy}) i kliknąć odnośnik \emph{Konfiguracja} 
+widoczny na \emph{Rysunku 4}.
 
 Ukaże się wówczas następujący formularz:
 
@@ -130,32 +154,32 @@ W drugim polu należy podać pełne (tj. bezwględne) scieżki do katalogów zaw
 programu GoStat. W każdym wierszy pola tekstowego można podać osobną ścieżkę. \\
 \textbf{Ważne:} nie trzeba podawać każdego katalogu osobno, gdyż program szuka gier we \textbf{wszystkich podkatalogach} podanych folderów.
 
-Aby zapisać zmiany w konfiguracji, należy kliknąć <Zapisz ustawienia>. Wówczas automatycznie wrócimy do strony startowej (<Rysunek 1>). 
-Aby wykonane zmiany były widoczne w przeglądarce ruchów, należy następnie wybrać <Przebudowa bazy danych>. Opcja ta jest opisana poniżej.
+Aby zapisać zmiany w konfiguracji, należy kliknąć \emph{Zapisz ustawienia}. Wówczas automatycznie wrócimy do strony startowej (\emph{Rysunek 1}). 
+Aby wykonane zmiany były widoczne w przeglądarce ruchów, należy następnie wybrać \emph{Przebudowa bazy danych}. Opcja ta jest opisana poniżej.
 
 \newpage
 
 \section{Utworzenie i wypełnienie bazy danych}
 Aby utworzyć (przebudować) bazę danych i wypełnić ją danymi, należy: 
-  uruchomić program (patrz rozdział: <Rozpoczęcie pracy>)
-  kliknąć odnośnik <Przebudowa bazy danych> widoczny na <Rysunku 1>.
+  uruchomić program (patrz rozdział: \emph{Rozpoczęcie pracy})
+  kliknąć odnośnik \emph{Przebudowa bazy danych} widoczny na \emph{Rysunku 1}.
 
 Ponieważ przebudowa istniejącej bazy danych zaczyna się się od skasowania poprzedniej tabeli, użytkownik zostanie
 poproszony o potwierdzenie swego zamiaru:
 
 \myimage{1.0}{potwierdzenie.png}{Potwierdzenie utworzenia bazy danych}
 
-Po kliknięciu <OK> należy poczekać aż program wykona operację przebudowania do końca. 
+Po kliknięciu \emph{OK} należy poczekać aż program wykona operację przebudowania do końca. 
 Aby można było śledzić w czasie rzeczywistym postęp prac wyświetlona zostanie aktualizowana na bieżąco strona informacyjna:
 
 \myimage{0.4}{status.png}{Bieżący stan operacji przebudowywania bazy danych}
 
-Gdy wszystkie operacje zostaną wykonane, użytkownik zostanie automatycznie przekierowany do strony głównej (<Rysunek 1>).
+Gdy wszystkie operacje zostaną wykonane, użytkownik zostanie automatycznie przekierowany do strony głównej (\emph{Rysunek 1}).
 
 \newpage
 
 \section{Praca z programem}
-Nim wybierzemy <przeglądarka ruchów> należy skonfigurować program i utworzyć (ew. przebudować) bazę danych.
+Nim wybierzemy \emph{Przeglądarka ruchów} należy skonfigurować program i utworzyć bazę danych.
 
 \subsection{Przeglądarka ruchów}
 
@@ -166,43 +190,55 @@ Ogólne informacje (dane statystyczne) są wyświetlane na głównym ekranie:
 
 \myimage{0.47}{moveBrowserMain.png}{Przeglądarka ruchów -- stan początkowy}
 
-Odnośniki w nagłówku strony służą do nawigacji do strony głównej oraz do ekranu widocznego na <rysunku 5>. 
+\noindent Odnośniki w nagłówku strony służą do nawigacji do strony głównej oraz do ekranu widocznego na \emph{rysunku 5}. 
 Dodatkowo istnieje możliwość przełączania między polską i angielską wersją językową (poprzez kliknięcie na odp. flagach).
 
-Poniżej znajduje się informacja o łącznej liczbie gier o których program posiada informacje. Następne dwa wiersze pokazują
+\vspace{0.5em}
+
+\noindent Poniżej znajduje się informacja o łącznej liczbie gier o których program posiada informacje. Następne dwa wiersze pokazują
 prawdopodobieństwo wygranej bieżącego gracza (w pokazanej sytuacji) oraz liczbę wystąpień bieżącej pozycji w bazie danych.
 
-Odnośnik <Lista pasujących gier> prowadzi do ekranu opisanego w następnym podrozdziale <Lista gier>, gdzie wypisane będą
+\vspace{0.5em}
+
+\noindent Odnośnik \emph{Lista pasujących gier} prowadzi do ekranu opisanego w następnym podrozdziale \emph{Lista gier}, gdzie wypisane będą
 przykładowe gry z bazy danych, w których \underline{wystąpiła pozycja bieżąca}.
 
-Po lewej głównej części strony znajduje się plansza ilustrująca bieżącą pozycje (na <rysunku 5> jest to sytuacja początkowa, 
-na <rysunku 6> zostały wykonane 3 zagrania). Znakami 'x' oznaczone zostały ruchy, które zostały wykonane w chociaż jednej z
+\vspace{0.5em}
+
+\noindent Po lewej głównej części strony znajduje się plansza ilustrująca bieżącą pozycje (na \emph{rysunku 5} jest to sytuacja początkowa, 
+na \emph{rysunku 6} zostały wykonane 3 zagrania). Znakami 'x' oznaczone zostały ruchy, które zostały wykonane w chociaż jednej z
 gier z kolekcji analizowanej przez program. 
 
-Pozostały obszar zajmują dwie tabele, w których wyliczono ww. zagrania oraz podano informacje, które mają pozwolić na ocenę
+\vspace{0.5em}
+
+\noindent Pozostały obszar zajmują dwie tabele, w których wyliczono ww. zagrania oraz podano informacje, które mają pozwolić na ocenę
 ruchu (np. czy daje on dużą szansę wygranej).
 
-Kliknięcie na dowolny 'x' na planszy bądź na algebraiczne oznaczenie ruchu (kolumna \emph{Ruch}) przenosi użytkownika do
-analizy sytuacji, w których to właśnie ten ruch został zagrany (por. <rysunek 6> i jego opis).
+\vspace{0.5em}
 
-Kliknięcie na odnośnik z kolumny \emph{Łącznie gier} prowadzi do ekranu opisanego w następnym podrozdziale <Lista gier>, 
+\noindent Kliknięcie na dowolny \emph{x} na planszy bądź na algebraiczne oznaczenie ruchu (kolumna \emph{Ruch}) przenosi użytkownika do
+analizy sytuacji, w których to właśnie ten ruch został zagrany (por. \emph{rysunek 6} i jego opis).
+
+\vspace{0.5em}
+
+\noindent Kliknięcie na odnośnik z kolumny \emph{Łącznie gier} prowadzi do ekranu opisanego w podrozdziale \emph{Lista gier}, 
 gdzie wypisane będą przykładowe gry z bazy danych, w których \\ 
 \underline{wystąpiła pozycja powstająca po zagraniu ruchu, którego dotyczy dany wiersz tabeli}.
 
 \myimage{0.47}{moveBrowserMoveOver.png}{Przeglądarka ruchów -- podświetlone wiersze}
 
-<Rysunek 6> pokazuje sytuację, w której zagrano już 3 ruchy. Gdy zagrany jest choć jeden ruch, pokazywane są dwa dodatkowe odnośniki:
+\emph{Rysunek 6} pokazuje sytuację, w której zagrano już 3 ruchy. Gdy zagrany jest choć jeden ruch, pokazywane są dwa dodatkowe odnośniki:
 \emph{Cofnij ostatni ruch} oraz \emph{Od nowa}. Pierwszy z nich cofa przebieg partii o jedno zagranie, drugi wraca na sam początek (pusta plansza).
 
-Jeśli użytkownik ustawi kursor nad jednym ze znaków 'x', wówczas podświetlane są dane dotyczącego ruchu, któremu dany 'x' odpowiada.
-Na <rysunku 6> widzimy sytuację, która powstałaby, gdyby użytkownik ustawił kursor w obszarze oznaczonym przez czerwoną gwiazdkę.
+Jeśli użytkownik ustawi kursor nad jednym ze znaków \emph{x}, wówczas podświetlane są dane dotyczącego ruchu, któremu dany \emph{x} odpowiada.
+Na \emph{rysunku 6} widzimy sytuację, która powstałaby, gdyby użytkownik ustawił kursor w obszarze oznaczonym przez czerwoną gwiazdkę.
 
 \newpage
 
 \subsection{Lista gier}
 Lista gier pozwala znaleźć gry w których pojawiła się wybrała pozycja. Udostępnianie dane o grach to nazwy graczy, ich rankingi oraz wynik partii.
-Dodatkowo, kliknięcie odnośnika z kolumny \emph{odnośnik} prowadzi do strony <Analiza gry> opisanej w następnym podrozdziale. Odnośnik 
-\emph{Pokaż bieżącą pozycję} prowadzi do <Przeglądarki ruchów> dla bieżącej pozycji.
+Dodatkowo, kliknięcie odnośnika z kolumny \emph{odnośnik} prowadzi do strony \emph{Analiza gry} opisanej w następnym podrozdziale. Odnośnik 
+\emph{Pokaż bieżącą pozycję} prowadzi do \emph{Przeglądarki ruchów} dla bieżącej pozycji.
 
 \myimage{0.47}{gameList.png}{Lista gier}
 
@@ -210,16 +246,18 @@ Dodatkowo, kliknięcie odnośnika z kolumny \emph{odnośnik} prowadzi do strony 
 Analiza gry to podstrona na której można znaleźć szczegołowe informacje na temat jednej wybranej partii.
 
 Dostępne opcje to:
-1) informacje o zawodnikach, wyniku oraz dacie rozegrania partii
-2) odnośnik do źródłowego pliku .sgf
-3) ilustracja pozycji końcowej w danej grze
-4) osadzona w stronę przeglądarka gier \emph{eidogo}
+\begin{enumerate}
+\item informacje o zawodnikach, wyniku oraz dacie rozegrania partii
+\item odnośnik do źródłowego pliku .sgf
+\item ilustracja pozycji końcowej w danej grze
+\item osadzona w stronę przeglądarka gier \emph{eidogo}
+\end{enumerate}
 
 \myimage{0.47}{gameDetailsMain.png}{Analiza gry -- sytuacja początkowa}
 
 \subsubsection{Przeglądarka eidogo}
   Eidogo to przeglądarka zapisów w formacie .sgf, dzięki której można w wygodny sposób zapoznać się z przebiegiem całej partii. 
-  Na <rysunku 8> widzimy sytuację bezpośrednio po wczytaniu strony, na <rysunku 9> zaś czerwonymi strzałkami oznaczono przyciski,
+  Na \emph{rysunku 8} widzimy sytuację bezpośrednio po wczytaniu strony, na \emph{rysunku 9} zaś czerwonymi strzałkami oznaczono przyciski,
   której pozwalają (odpowiednio, od lewej do prawej) wrócić na początek gry, cofnąć jeden ruch, zobaczyć następny ruch,
   przejść do końcowej sytuacji.
    
