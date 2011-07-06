@@ -1,0 +1,56 @@
+Licencjacki projekt programistyczny 2011
+
+Wojciech Jedynak
+
+Program do analizy du¿ych kolekcji zapisów partii go
+
+Motywacja dla projektu
+
+I Wprowadzenie do gry go*
+
+	Go jest strategiczn¹ gr¹ planszow¹ pochodzenia chiñskiego. Nale¿y zarówno do jednych z nastarszych gier znanych ludzkoœci (niektórzy oceniej¹ jej historiê na oko³o 4 tysi¹ce lat), jak i do najtrudniejszych i najbardziej z³o¿onych. Liczba mo¿liwych gier jest szacowana na nawet 10750, a œrednio w ka¿dej sytuacji gracz ma do wyboru oko³o 200 mo¿liwoœci. Bardzo trudno napisaæ program komputerowy, który gra³by dobrze w go. 
+	Go jest gr¹ dla dwóch graczy. Rogrywka toczy siê na kwadratowej planszy przeciêtej 19 liniami poziomymi i 19 liniami pionowymi tworz¹cymi 361 przeciêæ. Aby u³atwiæ naukê gry  pocz¹tkuj¹cym, u¿ywa siê równie¿ mniejszych plansz, o rozmiarach 9x9 oraz 13x13. 
+		Na samym pocz¹tku rozgrywki plansza jest pusta, nastêpnie gracze naprzemiennie k³ad¹ na wolnych przeciêciach swoje pionki, zwane tutaj kamieniami. Gracz, który zaczyna ca³¹ partiê u¿ywa kamieni czarnych, jego przeciwnik ma kamienie bia³e.
+	Gra cieszy siê ogromn¹ popularnoœci¹ w Azji wschodniej, w go graj¹ tam setki milionów osób. W Japonii, Chinach, Korei Po³udniowej i na Tajwanie istniej¹ organizacje graczy zawodowych, którzy stanowi¹ œwiatow¹ czo³ówkê konkuruj¹c¹ w presti¿owych turniejach o wysokie nagrody pieniê¿ne. Ich poczynaniami fascynuj¹ siê pasjonaci go z ca³ego œwiata. Wielu zawodowców zamiast na rywalizacji koncentruje siê na nauczaniu i odwiedz¹j¹ turnieje na ca³ym œwiecie, gdzie analizuj¹ partie amatorów, rozgrywaj¹ gry szkoleniowe i prowadz¹ wyk³ady. Wielu zawodowców  wydaje ksi¹¿ki z zadaniami treningowymi oraz poradniki i leksykony otwaræ czy przyk³adów zagrañ o zaskakuj¹cej skutecznoœci. Tylko niewielka czeœæ z nich jest t³umaczona na jêzyk angielski, ale kilka wybitnych pozycji jest dostêpnych jedynie po angielsku, gdy¿ opracowali je... zachodni amatorzy!
+
+	Co trzeba zrobiæ, by zostaæ zawodowcem? Przede wszystkim zacz¹æ naukê gry w bardzo m³odym wieku (oko³o 5-8 lat), bardzo du¿o æwiczyæ (najlepiej pod okiem nauczyciela-zawodowca) i odnieœæ sukces w organizowanym raz do roku egzaminie, co jest wyczynem ekstremalnie trudnym. By podejœæ bowiem do tego egzaminu nale¿y przejœæ przez kwalifikacje, nastêpnie rozegraæ grê z ka¿dym z oko³o 30 innych kandydatów i na koniec uplasowaæ siê w najlepszej trójce. Tylko trzy osoby rocznie zasilaj¹ grono zawodowców...
+	Czy tylko Azjaci mog¹ uzyskaæ licencje zawodow¹? Niekoniecznie, choæ wyj¹tki s¹ bardzo nieliczne. Do tej pory uda³o to siê miêdzy innymi Rosjanom (Alexander Dinershtein, Svetlana Shiksina), Rumunowi (Catalin Tarjanu) i Amerykaninowi (Micheal ...). Leszek So³dan (50 lat), który jest czternastokrotnym mistrzem Polski w go, spêdzi³ wiele lat w Japonii trenuj¹c z elit¹ japoñskich kandydatów na zawodowców (jap. insei), jednak nie uda³o mu siê zdaæ egzaminu. Byæ mo¿e sztuka ta uda siê w przysz³oœci Mateuszowi Surmie, który jest aktualnym mistrzem Europy do lat 16 (po raz drugi z rzêdu) i jest obecnie na drugiej pozycji w polskiej klasyfikacji turniejowej (tu¿ za Leszkiem So³danem).
+
+Wiêcej informacji o go mo¿na znaleŸæ na stronie http://go.art.pl
+
+
+
+II Analiza statystyczna otwaræ
+
+Mój dobry kolega i wieloletni popularyzator go we Wroc³awiu, £ukasz Fajfrowski opowiedzia³ mi, ¿e znalaz³ w sieci kolekcjê kilkuset zapisów parti granych przez zawodowców na planszy 9x9 i postanowi³ przygotowaæ opracowanie najczêstszych i najskuteczniejszych zagrañ w pocz¹tkowej fazie gry. Poniewa¿ w ka¿dej parti pocz¹tkowe ustawienie jest identyczne i gra jest w pe³ni deterministyczna, posiadanie (i przeanalizowanie) takiej bazy wiedzy pozwoli³oby na:
+1.Podniesienie w³asnego poziomu gry poprzez wykorzystanie wiedzy i doœwiadczenia graczy zawodowych
+2.Odkrycie, czy pewne zagrania s¹ znacznie lepsze od innych, czy jest to jedynie kwestia indywidualnych preferencji
+
+Waga problemu
+
+	W szczególnoœci moglibyœmy siê choæ trochê przybli¿yæ do odpowiedzi na jedno z kluczowych pytañ: czy w go czarny (czyli pierwszy gracz) ma strategiê wygrywaj¹c¹? Jeœli tak, to które ruchy daj¹ pewn¹ wygran¹? Od 2007 roku znamy czêœciow¹ odpowiedŸ dla gry w warcaby1. Trudno oceniæ kiedy uda siê ludzkoœci wyznaczyæ odpowiedz dla gry w szachy. W przypadku go sytuacja wygl¹da tak, ¿e przeanalizowano w pe³ni grê na planszy 4x4, zaœ dla planszy 5x5 wykazano przy pomocy analizy komputerowej, ¿e czarny zaczynaj¹c od zagrania w œrodek wygrywa2. Mo¿emy oceniaæ, ¿e przy nieustaj¹cym rozwoju sprzêtu i postêpach w pracy nad algorytmami przeszukuj¹cymi drzewo gry uda siê w przysz³oœci uzyskaæ analogiczne wyniki dla planszy 9x9. Na dzieñ dzisiejszy, wiêkszoœæ graczy zawodowych sugeruje, ¿e tak¿e dla tej planszy najlepsze jest zagranie w sam œrodek. Jak zostanie wykazane w dalszej czêœci pracy, jest to równie¿ najczêœciej wybierany ruch przez programy komputerowe.
+
+	Nale¿y jednak zwróciæ uwagê, ¿e z praktycznego punktu widzenia, plansza 9x9 jest tylko narzêdziem treningowym w porównaniu z czterokrotnie wiêksz¹ (pod wzglêdem liczby przeciêæ), oficjaln¹ plansz¹ 19x19. Ró¿nice w grze na obu planszach nie s¹ jedynie kosmetyczne i iloœciowe. Strategia gry na du¿ej planszy jest niemal zupe³nie inna ni¿ na planszy ma³ej. Przyk³adowo:
+Rozpoczêcie w œrodek na planszy ma³ej to ruch, który ma wp³yw na ca³¹ planszê. Analogiczne zagranie na planszy 19x19 nie ma takiego efektu, gdy¿ œrodek jest bardzo odleg³y od rogów, gdzie naj³atwiej rozpocz¹æ budowanie pozycji. Dla du¿ej planszy zagranie takie jest uwa¿ane za strategiê na specjalne okazje.
+Na du¿ej planszy najskuteczniejszym planem jest niekiedy poœwiêcenie du¿ej liczby kamieni, aby uzyskaæ przewagê w innym miejscu. Na mniejszych planszach manewr taki czêsto koñczy siê przegran¹, gdy¿ strata jest zbyt du¿a.
+
+	Bior¹c pod uwagê, ¿e znacznie trudniej jest oceniæ jakoœæ ruchu na planszy 19x19, jesteœmy w stanie zrozumieæ, dlaczego nie ma do tej pory programów, które mog³yby siê mierzyæ z zawodowcam, ba! nawet z dobrymi amatorami, podczas gdy w przypadku planszy 9x9 najlepsze sztuczne inteligencje radz¹ sobie przyzwoicie w grach z ludŸmi (na poziomie amatorskim).
+
+III Problemy z rêczn¹ obróbk¹ kolekcji gier
+
+	Podczas rêcznego tworzenia swojego opracowania, £ukasz dopisywa³ kolejne warianty do jednego pliku SGF, który mia³ zawieraæ kilkanaœcie ruchów z ka¿dej parti z dostêpnego archiwum, i aktualizowa³ na bie¿¹co dane statystyczne. By³o to bardzo czasoch³onne, ¿mudne i wymaga³o du¿ej koncentracji. Jednym z powodów tego by³ fakt, i¿ nale¿a³o w pamiêci dokonywaæ normalizacji ruchów, aby wzi¹æ pod uwagê symetrie. 
+
+Na planszy 9x9 mamy do dyspozycji 81 wolnych przeciêæ, ale z matematycznego punktu widzenia, zagrania w dowolny naró¿nik (A9, J9, A1, J1) s¹ równowa¿ne z dok³adnoœci do obrotu lub symetrii. Jedynie ruch w sam œrodek jest pod tym wzglêdem unikatowy. Aby statystyka by³a poprawna, dwa symetryczne zagrania nale¿y liczyæ jako dwa wyst¹pienia tego samego ruchu! Najmniej podatnym na b³êdy rozwi¹zaniem wydaje siê wybranie pewnego zbioru ruchów, które s¹ parami ró¿ne tak¿e po uwzglêdnieniu przekszta³ceñ geometrycznych. Przyk³adowy taki zbiór oznaczono na ilustracji obok. Jak widaæ, ma on 15 elementów. Normalizacja ruchy polega wiêc na znalezieniu równowa¿nego ruchu, który nale¿y do tych 15 wyró¿nionych. Niedogodnoœæ, która siê z tym wi¹¿e polega na tym, ¿e jeœli znormalizujemy pierwszy ruch danej partii, musimy w ten sam sposób przekszta³ciæ wszystkie nastêpne ruchy z tej samej gry. 
+Przyk³adowo, jeœli na czarnego F4 bia³y odpowiedzia³ A6, to nie wystarczy jedynie przekszta³ciæ
+F4 na F6 - musimy tak¿e zmieniæ A6 na A4.
+
+Widzimy, ¿e ca³y proces jest nieco zbyt skompikowany3, a ca³a operacja zbyt ¿mudna, by wykonywaæ j¹ rêcznie dla wiêcej ni¿ kilkunastu gier (statystyczna gra na planszy 9x9 trwa oko³o 50 ruchów), a interesowaæ nas mog¹ tak¿e kolekcje sk³adaj¹ce siê z dziesi¹tek tysiêcy partii.
+
+Powy¿sza analiza pokazuje, ¿e mamy tutaj znakomit¹ okazjê na automatyzacjê ca³ego procesu za pomoc¹ programu komputerowego. 
+
+IV Dlaczego Haskell?
+
+Zwróæmy uwagê, ¿e jednym z kluczowych modu³ów programu do opisanej wy¿ej analizy bêdzie modu³ przekszta³ceñ geometrycznych i funkcja normalizuj¹ca dany ruch, a nastêpnie ca³¹ grê. B³¹d logiczny w tym module grozi, ¿e nasze wyniki bêd¹ po prostu niepoprawne czy sprzeczne. Dobrze by³oby wiêc u¿yæ narzêdzia, które pozwoli nam na operowanie na mo¿liwie wysokim poziomie abstracji oraz testowanie funkcji nie tylko dla konkretnych danych, ale na okreœlanie w³asnoœci na których nam zale¿y. Dodatkowo, potrzebne bêdzie wsparcie dla bazy danych, serwera HTTP i GUI, gdy¿ program musi byæ przetwarzaæ du¿e iloœci danych i musi przezentowaæ wyniki w przystêpny dla u¿ytkownika sposób. Haskell jako jêzyk funkcyjny (a wiêc dobrze wspieraj¹cy abstracje, modularnoœæ i poprawnoœæ) o otwartym kodzie, posiadaj¹cy wydajn¹ implementacje (GHC) i dos³ownie tysi¹ce dostêpnych modu³ów (bibliotek) do przeró¿nych zadañ zebranych w serwisie Hackage, wydaje siê rozwi¹zaniem optymalnym.
+
+Szczegó³owa analiza mocnych stron jêzyka i tego jak przyczyni³y siê one do powstania projektu znajduje siê w dokumentacji programisty.
+
