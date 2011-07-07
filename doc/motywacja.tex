@@ -57,11 +57,11 @@
 \subsection{Charakterystyka i zasady}
 
 Go jest strategiczną grą planszową pochodzenia chińskiego. Należy zarówno do jednych z nastarszych gier znanych 
-ludzkości (niektórzy ocenieją jej historię na około 4 tysiące lat), jak i do najtrudniejszych i najbardziej złożonych.
+ludzkości (niektórzy oceniają jej historię na około 4 tysiące lat), jak i do najtrudniejszych i najbardziej złożonych.
 Liczba możliwych gier jest szacowana na nawet $ 10^{750} $, a średnio w każdej sytuacji gracz ma do wyboru około 200 możliwości.
 % Bardzo trudno napisać program komputerowy, który grałby dobrze w go. 
 
-Go jest grą dla dwóch graczy. Rogrywka toczy się na kwadratowej planszy przeciętej 19 liniami poziomymi i 19 liniami pionowymi 
+Go jest grą dla dwóch graczy. Rozgrywka toczy się na kwadratowej planszy przeciętej 19 liniami poziomymi i 19 liniami pionowymi 
 tworzącymi 361 przecięć. Aby ułatwić naukę gry  początkującym, używa się również mniejszych plansz, 
 o rozmiarach 9x9 oraz 13x13 (por. ilustracje poniżej).
 
@@ -101,7 +101,7 @@ Istnieje kilkanaście klubów, w których regularnie odbywają się spotkania go
 Aktualnym mistrzem Polski jest Leszek Sołdan, zaś na rozgrywanych rokrocznie w Japonii Mistrzostwach Świata Amatorów 
 reprezentował Polskę w 2011 roku Kamil Chwedyna (aktualny wicemistrz Polski) \cite{kamil1}. 
 Kamil zajął rewelacyjne 13 miejsce \cite{kamil2} i otrzymał nagrodę specjalną za 
-``swobodę i lekkość stylu'' od głownego sędziego zawodów, którym był sam Masaki Takemiya. 
+``swobodę i lekkość stylu'' od głównego sędziego zawodów, którym był sam Masaki Takemiya. 
 Takemiya to legendarny japoński gracz zawodowy; odnosił w latach 1975-1990 ogromne sukcesy, a jego styl
 gry był tak odmienny od tego co uchodziło wówczas za kanon, że jego metodę nazywano ``Kosmicznym go''.
 
@@ -141,9 +141,9 @@ Więcej informacji o go można znaleźć na stronie \url{http://go.art.pl}.
 \subsection{Wprowadzenie}
 
 Mój dobry kolega i wieloletni popularyzator go we Wrocławiu, Łukasz Fajfrowski opowiedział mi, że znalazł w sieci kolekcję 
-kilkuset zapisów parti granych przez zawodowców na planszy 9x9 
+kilkuset zapisów partii granych przez zawodowców na planszy 9x9 
 \\ i postanowił przygotować opracowanie najczęstszych oraz
-najskuteczniejszych zagrań w początkowej fazie gry. Ponieważ w każdej parti początkowe ustawienie jest identyczne i gra
+najskuteczniejszych zagrań w początkowej fazie gry. Ponieważ w każdej partii początkowe ustawienie jest identyczne i gra
 jest w pełni deterministyczna, posiadanie (i przeanalizowanie) takiej bazy wiedzy pozwoliłoby na:
 
 \begin{enumerate}
@@ -157,7 +157,7 @@ W szczególności moglibyśmy się choć trochę przybliżyć do odpowiedzi na j
 \subsection{Waga problemu}
 
 Zagadnienie \emph{rozwiązania gry} fascynuje badaczy sztucznej inteligencji od lat,
- a próby napisania programu, który grałby dobrze w szachy podjęli nawet Turing i Shanon \cite{ai}.
+ a próby napisania programu, który grałby dobrze w szachy podjęli nawet Turing i Shannon \cite{ai}.
 
 Od 2007 roku znamy częściową  odpowiedź dla gry w warcaby \cite{checkers}. Trudno ocenić kiedy uda (czy) się ludzkości wyznaczyć odpowiedź dla gry w szachy. 
 
@@ -167,7 +167,7 @@ zaś dla planszy 5x5 wykazano przy pomocy analizy komputerowej, że czarny zaczy
 \subsection{Przyszłość}
 
 Możemy oceniać, że przy nieustającym rozwoju sprzętu i postępach w pracy nad  algorytmami przeszukującymi drzewo
-gry uda się w przyszłości uzyskać analogiczne wyniki dla planszy 9x9. Osiągnięto niesamowity progress w dziedzinie 
+gry uda się w przyszłości uzyskać analogiczne wyniki dla planszy 9x9. Osiągnięto niesamowity progres w dziedzinie 
 programów grających w go na planszy 9x9. W czerwcu 2011 roku mecz rozgrywany
 między programem MyGoFriend a koreańskim zawodowcem Kim Young Sam zakończył się remisem 2:2 \cite{promatch}.
 
@@ -184,12 +184,12 @@ efektu, gdyż środek jest bardzo odległy od rogów, gdzie najłatwiej rozpocz�
 \end{itemize}
 
 Biorąc dodatkowo pod uwagę, że znacznie trudniej jest ocenić jakość ruchu na planszy 19x19, jesteśmy w stanie zrozumieć, dlaczego 
-nie ma do tej pory programów, które mogłyby się mierzyć z zawodowcam na dużej planszy, mimo sukcesów na planszy małej.
+nie ma do tej pory programów, które mogłyby się mierzyć z zawodowcami na dużej planszy, mimo sukcesów na planszy małej.
 
 \section{Problemy z ręczną obróbką kolekcji gier}
 
 Podczas ręcznego tworzenia swojego opracowania, Łukasz dopisywał kolejne warianty do jednego pliku SGF, który miał 
-zawierać kilkanaście ruchów z każdej parti z dostępnego archiwum, i aktualizował na bieżąco dane statystyczne. Było to bardzo 
+zawierać kilkanaście ruchów z każdej partii z dostępnego archiwum, i aktualizował na bieżąco dane statystyczne. Było to bardzo 
 czasochłonne, żmudne i wymagało dużej koncentracji. Jednym z powodów tego był fakt, iż należało w pamięci dokonywać \emph{normalizacji}
  ruchów, aby wziąć pod uwagę symetrie. 
 
@@ -203,7 +203,7 @@ czasochłonne, żmudne i wymagało dużej koncentracji. Jednym z powodów tego b
   \vspace{-10pt}
 \end{wrapfigure}
 
-Na planszy 9x9 mamy do dyspozycji 81 wolnych przecięć, ale z matematycznego punktu widzenia, zagrania w dowolny naróżnik 
+Na planszy 9x9 mamy do dyspozycji 81 wolnych przecięć, ale z matematycznego punktu widzenia, zagrania w dowolny narożnik 
 (A9, J9, A1, J1) są równoważne z dokładnością do obrotu lub symetrii. Jedynie ruch w sam środek jest pod tym względem unikatowy. 
 Aby statystyka była poprawna, dwa symetryczne zagrania należy liczyć jako dwa wystąpienia tego samego ruchu! \\ 
 Najmniej podatnym  na błędy rozwiązaniem wydaje się wybranie pewnego zbioru ruchów, które są parami różne także po uwzględnieniu przekształceń 
@@ -224,13 +224,13 @@ Powyższa analiza pokazuje, że mamy tutaj znakomitą okazję na automatyzację 
 Zwróćmy uwagę, że jednym z kluczowych modułów programu do opisanej wyżej analizy będzie moduł przekształceń geometrycznych i
  funkcja normalizująca dany ruch, a następnie całą grę. Błąd logiczny w tym module może spowodować, że nasze wyniki będą po prostu 
 niepoprawne czy sprzeczne. Dobrze byłoby więc użyć narzędzia, które pozwoli nam na operowanie na możliwie wysokim poziomie
- abstracji oraz testowanie funkcji nie tylko dla konkretnych danych, ale na określanie \emph{ogólnych własności} na których nam zależy. 
+ abstrakcji oraz testowanie funkcji nie tylko dla konkretnych danych, ale na określanie \emph{ogólnych własności} na których nam zależy. 
 
 Dodatkowo, potrzebne będzie wsparcie dla bazy danych i serwera HTTP, gdyż program musi być w stanie przetwarzać duże ilości danych
- i musi przezentować wyniki w przystępny dla użytkownika sposób (np. poprzez interfejs WWW).
+ i musi prezentować wyniki w przystępny dla użytkownika sposób (np. poprzez interfejs WWW).
 
 \subsection{Haskell}
-Haskell \cite{haskell} jako język funkcyjny (a więc dobrze wspierający abstracje,
+Haskell \cite{haskell} jako język funkcyjny (a więc dobrze wspierający abstrakcje,
  modularność i poprawność) o otwartym kodzie, posiadający wydajną implementacje (GHC \cite{ghc}) i dosłownie tysiące dostępnych modułów
  (bibliotek) do przeróżnych zadań zebranych w serwisie Hackage \cite{hackage}, wydaje się rozwiązaniem optymalnym.
 
@@ -263,15 +263,15 @@ Ilustracje wykorzystane w niniejszym dokumencie pochodzą ze stron \url{http://j
   \url{http://ranking.go.art.pl/kyudan/lista\_psg.htm}
 
 \bibitem{lmp}
-  \emph{Mistrzowstwa Polski}. \\
+  \emph{Mistrzostwa Polski}. \\
   \url{http://go.art.pl/mistrzostwa/lmp}
 
 \bibitem{kamil1} 
-  \emph{Wyjazd Kamila Chwedyny na Mistrzowstwa Świata Amatorów}. \\
+  \emph{Wyjazd Kamila Chwedyny na Mistrzostwa Świata Amatorów}. \\
   \url{http://wroclaw.gazeta.pl/wroclaw/1,35771,9658633,Wciagnelo_go_go_i_jedzie_na_mistrzostwa_do_Japonii.html}
 
 \bibitem{kamil2} 
-  \emph{Występ Kamila Chwedyny na Mistrzowstwa Świata Amatorów - wyniki}. \\
+  \emph{Występ Kamila Chwedyny na Mistrzostwa Świata Amatorów - wyniki}. \\
   \url{http://www.uni.wroc.pl/sukcesy-student%C3%B3w/mistrza-radosna-niekonwencjonalno%C5%9B%C4%87}
 
 \bibitem{gopros} 
