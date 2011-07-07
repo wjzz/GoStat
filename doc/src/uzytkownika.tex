@@ -26,6 +26,10 @@
   \end{figure}
 }
 
+\newcommand{\cmd}[1]{
+  \texttt{#1}
+}
+
 \usepackage{float}
 \floatstyle{boxed} 
 \restylefloat{figure}
@@ -78,7 +82,7 @@ Należy:
 \item pobrać plik \emph{GoStat-binary-os.tar.gz} (gdzie os to 'linux' bądź 'windows')
 \item rozpakować archiwum do wybranego katalogu
 \item przejść do ów folderu
-\item uruchomić (najlepiej z poziomu terminala) plik GoStat (GoStat.exe w przypadku Windows)
+\item uruchomić (najlepiej z poziomu terminala) plik \cmd{GoStat} (\cmd{GoStat.exe} w przypadku Windows)
 \end{enumerate}
 
 W celu usunięcia programu wystarczy usunąć wymieniony wcześniej katalog oraz ew. wszystkie utworzone za jego pomocą bazy danych (pliki *.db).
@@ -97,7 +101,7 @@ Przed instalacją należy upewnić się, że zainstalowane są:
 \begin{enumerate}
 \item Pobrać i zainstalować narzędzie MinGW (\url{http://www.mingw.org/}), \\ (bezpośredni link \url{http://sourceforge.net/projects/mingw/files/})
 \item Wykonać instrukcje ze strony \url{https://github.com/jgoerzen/hdbc/wiki/FrequentlyAskedQuestions}
-\item Poniższe polecenia wykonywać w programie <MinGW Shell> (a nie np. PowerShell czy CMD)
+\item Poniższe polecenia wykonywać w programie \cmd{MinGW Shell} (a nie np. PowerShell czy CMD)
 \end{enumerate}
 
 
@@ -106,11 +110,12 @@ Przed instalacją należy upewnić się, że zainstalowane są:
 \begin{enumerate}
 \item rozpakować plik \emph{GoStat-source.tar.gz}
 \item przejść do katalogu GoStat
-\item z poziomu terminala wydać polecenie <cabal install>
+\item z poziomu terminala wydać polecenie \cmd{cabal install}
 \item poczekać aż narzędzie cabal-install pobierze i zainstaluje wszystkie brakujące pakiety modułów Haskellowych (może to zająć do kilkunastu minut).
 \end{enumerate}
 
-Jeśli instalacja przebiegnie pomyślnie program będzie dostępny po wydaniu polecenia <GoStat> (<GoStat.exe> dla Windows).
+Jeśli instalacja przebiegnie pomyślnie program będzie dostępny po wydaniu polecenia \cmd{GoStat} \\
+(\cmd{GoStat.exe} dla Windows).
 
 W celu usunięcia programu należy udać się do katalogu .cabal (domyślnie znajduje się on w katalogu domowym użytkownika) i usunuąć wszystkie
 podfoldery, które w nazwie mają frazę \emph{GoStat}. Ewentualnie skasować należy także wszystkie utworzone za pomocą programu bazy danych (pliki *.db).
@@ -121,14 +126,15 @@ podfoldery, które w nazwie mają frazę \emph{GoStat}. Ewentualnie skasować na
 
 \subsection{Rozpoczęcie pracy}
 Aby rozpocząć pracę z programem należy wydać polecenie \\
-<GoStat> \\ 
+\cmd{GoStat} \\ 
 \\
-Gdy program odpowie \\
-<Listening on port 8000...> \\
-należy otworzyć przeglądarkę internetową i wskazać adres \\
-<http://localhost:8000> \\
+Po chwili program odpowie \\
+\cmd{Listening on port 8000...} \\
 \\
-Powinna wówczas załadować się strona startowa:
+Należy wówczas w przeglądarce internetowej wskazać adres \\
+\cmd{http://localhost:8000} \\
+\\
+Powinna wtedy załadować się strona startowa:
 
 \myimage{0.4}{start.png}{Strona startowa}
 
