@@ -259,8 +259,6 @@ oraz wszystkie pliki dodatkowe, niezbędne do uruchomienia programu (pliki .css,
 
 \section{Testy}
 
-\subsection{Metodologia testowania}
-
 \subsection{Biblioteki do testowania}
 
 Użyto następujących bibliotek do tworzenia i przeprowadzania testów:
@@ -326,7 +324,7 @@ Jeśli podamy właśność, która nie zachodzi to (o ile będziemy mieli szczę
 (0,0)
 \end{framed}
 
-Oznaczałoby to, że dla wartości (0,0) właśność nie jest spełniona.
+\noindent Oznaczałoby to, że dla wartości (0,0) właśność nie jest spełniona.
 
 \subsubsection{test-framework}
 
@@ -338,6 +336,29 @@ raportów z wykonanaych testów. Przykładowy raport znajduje się w podrozdzial
 na przykładzie projektu jak używać test-framework w praktyce.
 
 \subsection{Struktura testów}
+
+Hierarchia plików zawierających testy jest równoległa do hierarchii plików zawierających definicje 
+modułów, przy czym testy znajdują się w katalogu \cmd{test}, właściwie moduły zaś w katalogu \cmd{src}.
+Przykładowo, testy modułu \emph{Transformations} (który jest zdefiniowany w pliku \cmd{src/Transformations.hs})
+znajdują się w pliku \cmd{test/Transformations/Tests.hs} \\
+
+\noindent Wszystkie testy są grupowane razem w pliku \cmd{test/Tests.hs}, który (w skróconej wersji) przedstawiamy poniżej:
+
+\begin{framed}
+\noindent module Main where \\
+\\
+import Test.Framework (defaultMain, Test) \\
+\\
+import Data.SGF.Types.Tests \\
+import Data.SGF.Parsing.Tests \\ 
+import Transformations.Tests \\
+\\ 
+main :: IO () \\
+main = defaultMain tests \\
+\\ 
+tests :: [Test] \\
+tests = [ data\_sgf\_types\_tests, data\_sgf\_parsing\_tests, transformations\_tests ]
+\end{framed}
 
 \subsection{Uruchamianie testów i analiza wyników}
 
@@ -367,18 +388,20 @@ testy zostały wykonane pomyślnie.
 
 \section{Wykorzystane narzędzia pomocnicze}
 
-W niniejszej sekcji wymieniono i pokrótce opisano najważniejsze narzędzia, które pozwoliły ukończyć projekt.
+W niniejszej sekcji wymieniono i pokrótce opisano najważniejsze narzędzia, które pozwoliły ukończyć projekt,
+a nie są bezpośrednio związane z Haskellem.
 
 \subsection{Git i portal github}
-Git \cite{git} to system do kontroli wersji autorstwa Linuxa Torwardsa (TODO: sprawdzić pisownię). 
+Git \cite{git} to rozproszony system kontroli wersji, stworzony przez Linusa Torvaldsa. 
 
-Github \cite{github} to portal, który pozwala
-na przechowywanie kodu źródłowego (ogólnie: repozytoriów kodu zarządzanych przez git) i udostępnienie go innym programistom.
-Poprzez użycie tych zasobów rozwiązałem kwestię składowania projektu i mogłem swobodnie eksperymentować: nietrafione zmiany
+Github \cite{github} to portal, który pozwala na przechowywanie kodu źródłowego (ogólnie: repozytoriów kodu zarządzanych przez git)
+i udostępnienie go innym programistom.
+
+Poprzez użycie tych zasobów rozwiązano kwestię składowania projektu i możliwe było swobodne eksperymentowanie: nietrafione zmiany
 można było wycofać jednym poleceniem.
 
 \subsection{Latex}
-System \LaTeX pozwolił na utworzenie dokumentacji w formacie pdf, który jest standardem w informatyce.
+System \LaTeX pozwolił na utworzenie dokumentacji.
 
 \begin{thebibliography}{9}
 
@@ -435,11 +458,11 @@ System \LaTeX pozwolił na utworzenie dokumentacji w formacie pdf, który jest s
   \url{http://hackage.haskell.org/package/xhtml-3000.2.0.1}
 
 \bibitem{coq}
-  \emph{Coq -- system dowodzenia twierdzeń oparty na OCamlu}
+  \emph{Coq -- system dowodzenia twierdzeń oparty na OCamlu} \\
   \url{http://coq.inria.fr/}
 
 \bibitem{agda}
-  \emph{Agda -- system dowodzenia twierdzeń oparty na Haskellu}
+  \emph{Agda -- system dowodzenia twierdzeń oparty na Haskellu} \\
   \url{http://wiki.portal.chalmers.se/agda/pmwiki.php}
 
 \end{thebibliography}
