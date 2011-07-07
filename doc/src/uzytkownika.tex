@@ -10,7 +10,7 @@
 %\usepackage{indentfirst}
 \usepackage{listings}
 \usepackage{framed}
-\usepackage[textwidth=16cm,textheight=24cm]{geometry}
+\usepackage[textwidth=16cm,textheight=23cm]{geometry}
 \usepackage{graphicx}
 \usepackage{hyperref}
 %\graphicspath{{img\\}}
@@ -72,65 +72,68 @@
 \section{Wprowadzenie}
 
 \subsection{Cel dokumentacji}
-Zadaniem niniejszego podręcznika jest opisanie wszystkich aspektów dotyczących użytkowania programu GoStat od instalacji poprzez konfigurację
-i eksploatację do jego deinstalacji.
+Zadaniem niniejszego podręcznika jest opisanie wszystkich aspektów dotyczących użytkowania programu GoStat: instalacji, konfiguracji,
+eksploatacji, wreszcie deinstalacji.
 
 \section{Wymagania}
-Program najlepiej działa pod systemami linuksowymi. Instalacja dla systemów z rodziny Windows jest możliwa, ale wymaga większej liczby kroków. 
+Aplikacja działa zarówno pod Windows, jak i pod systemami linuksowymi.
 
-By używać programu konieczne jest posiadanie około 20 Mb miejsca na dysku oraz przeglądarki internetowej, która obsługuje JavaScript. 
-W razie konieczności kompilacji programu należy posiadać połączenie z Internetem oraz udostępnić około 500 Mb dla kompilatora GHC (o ile nie 
+By używać programu konieczne jest posiadanie około 20 Mb wolnego miejsca na dysku oraz przeglądarki internetowej, która obsługuje JavaScript. 
+
+W razie potrzeby kompilacji programu ze źródeł należy posiadać połączenie z Internetem oraz udostępnić około 500 Mb dla kompilatora GHC (o ile nie 
 został on już wcześniej zainstalowany).
 
 \newpage
 
 \section{Instalacja i usuwanie programu}
 Program jest dystrybuowany w dwu wersjach: w postaci binarnej oraz jako kod źródłowy. W razie potrzeby najnowszą wersję można 
-pobrać bezpośrednio z internowego archiwum kodu źródłowego: \\ 
+pobrać bezpośrednio z internowego archiwum: \\ 
 \url{https://github.com/wjzz/GoStat}.
 
 \subsection{Postać binarna}
-Należy: 
+Aby zainstalować aplikację z archiwum zawierającego gotowy plik wykonywalny należy: 
+
 \begin{enumerate}
-\item pobrać plik \emph{GoStat-binary-os.tar.gz} (gdzie os to 'linux' bądź 'windows')
-\item rozpakować archiwum do wybranego katalogu
-\item przejść do ów folderu
-\item uruchomić (najlepiej z poziomu terminala) plik \cmd{GoStat} (\cmd{GoStat.exe} w przypadku Windows)
+\item Pobrać plik \emph{GoStat-binary-os.tar.gz} (gdzie os to 'linux' bądź 'windows'),
+\item Rozpakować archiwum do wybranego katalogu,
+\item Przejść do ów folderu,
+\item Uruchomić plik \cmd{GoStat} (\cmd{GoStat.exe} w przypadku Windows).
 \end{enumerate}
 
-W celu usunięcia programu wystarczy usunąć wymieniony wcześniej katalog oraz ew. wszystkie utworzone za jego pomocą bazy danych (pliki *.db).
+W celu usunięcia programu wystarczy usunąć wymieniony wcześniej katalog oraz ew. wszystkie bazy danych (pliki *.db) utworzone za pomocą aplikacji
+GoStat.
 
 \subsection{Kod źródłowy}
-Przed instalacją należy upewnić się, że zainstalowane są:
+Przed instalacją ze źródeł należy upewnić się, że zainstalowane są:
 
 \begin{enumerate}
-\item Kompilator GHC (Glasgow Haskell Compiler), \\ dostępny pod adresem  \url{http://www.haskell.org/ghc/}
-\item Pakiet narzędzi i modułów Haskell Platform, \\ dostępny pod adresem \url{http://hackage.haskell.org/platform/}
-\item Baza danych SQLite 3, \\ dostępna pod adresem \url{http://www.sqlite.org/}
+\item Kompilator GHC, \\ (dostępny pod adresem  \url{http://www.haskell.org/ghc/})
+\item Pakiet narzędzi i modułów Haskell Platform, \\ (dostępny pod adresem \url{http://hackage.haskell.org/platform/})
+\item Baza danych SQLite 3. \\ (dostępna pod adresem \url{http://www.sqlite.org/})
 \end{enumerate}
 
-\noindent Dodatkowo, w przypadku instalacji pod Windows należy:
+\noindent Dodatkowo w przypadku instalacji pod Windows należy:
 
 \begin{enumerate}
-\item Pobrać i zainstalować narzędzie MinGW (\url{http://www.mingw.org/}), \\ (bezpośredni link \url{http://sourceforge.net/projects/mingw/files/})
-\item Wykonać instrukcje ze strony \url{https://github.com/jgoerzen/hdbc/wiki/FrequentlyAskedQuestions}
-\item Poniższe polecenia wykonywać w programie \cmd{MinGW Shell} (a nie np. PowerShell czy CMD)
+\item Pobrać i zainstalować narzędzie MinGW, (\url{http://www.mingw.org/}), \\ (bezpośredni link \url{http://sourceforge.net/projects/mingw/files/})
+\item Wykonać instrukcje ze strony \url{https://github.com/jgoerzen/hdbc/wiki/FrequentlyAskedQuestions},
+\item Dalsze instrukcje wykonywać w programie \cmd{MinGW Shell} (a nie np. PowerShell czy CMD).
 \end{enumerate}
 
 
 \noindent Aby zainstalować program GoStat ze źródeł należy:
 
 \begin{enumerate}
-\item rozpakować plik \emph{GoStat-source.tar.gz}
-\item przejść do katalogu GoStat
-\item z poziomu terminala wydać polecenie \cmd{cabal install}
-\item poczekać aż narzędzie cabal-install pobierze i zainstaluje wszystkie brakujące pakiety modułów Haskellowych (może to zająć do kilkunastu minut).
+\item Rozpakować plik \emph{GoStat-source.tar.gz},
+\item Przejść do katalogu GoStat,
+\item Z poziomu terminala wydać polecenie \cmd{cabal install},
+\item Poczekać aż narzędzie cabal-install pobierze i zainstaluje wszystkie brakujące pakiety modułów Haskellowych (może to zająć do kilkunastu minut).
 \end{enumerate}
 
 Jeśli instalacja przebiegnie pomyślnie program będzie dostępny po wydaniu polecenia \cmd{GoStat} \\
 (\cmd{GoStat.exe} dla Windows).
 
-W celu usunięcia programu należy udać się do katalogu .cabal (domyślnie znajduje się on w katalogu domowym użytkownika) i usunuąć wszystkie
+W celu usunięcia programu należy udać się do katalogu .cabal (domyślnie znajduje się on w katalogu domowym użytkownika) i usunąć wszystkie
 podfoldery, które w nazwie mają frazę \emph{GoStat}. Ewentualnie skasować należy także wszystkie utworzone za pomocą programu bazy danych (pliki *.db).
 
 \newpage
@@ -138,14 +141,11 @@ podfoldery, które w nazwie mają frazę \emph{GoStat}. Ewentualnie skasować na
 \section{Uruchamianie i zamykanie programu}
 
 \subsection{Rozpoczęcie pracy}
-Aby rozpocząć pracę z programem należy wydać polecenie \\
-\cmd{GoStat} \\ 
+Aby rozpocząć pracę z programem należy wydać polecenie \cmd{GoStat} \\ 
 \\
-Po chwili program odpowie \\
-\cmd{Listening on port 8000...} \\
+Po chwili program odpowie \cmd{Listening on port 8000...} \\
 \\
-Należy wówczas w przeglądarce internetowej wskazać adres \\
-\cmd{http://localhost:8000} \\
+Należy wówczas w przeglądarce internetowej wskazać adres \cmd{http://localhost:8000} \\
 \\
 Powinna wtedy załadować się strona startowa:
 
@@ -161,7 +161,7 @@ wystarczy go ponownie uruchomić.
 \newpage
 
 \section{Konfiguracja programu}
-Aby skonfigurować program, należy go: uruchomić (patrz rozdział: \emph{Rozpoczęcie pracy}) i kliknąć odnośnik \emph{Konfiguracja} 
+Aby skonfigurować program należy go uruchomić (patrz rozdział: \emph{Rozpoczęcie pracy}) i kliknąć odnośnik \emph{Konfiguracja} 
 widoczny na \emph{Rysunku 4}.
 
 Ukaże się wówczas następujący formularz:
@@ -170,11 +170,10 @@ Ukaże się wówczas następujący formularz:
 
 Składa się on z dwóch pól tekstowych. 
 
-W pierwszym z nich należy podać lokalizację pliku bazy danych o rozszerzeniu .db, którego GoStat użyje do zebrania informacji o podanych zapisach gier go.
-Plik nie musi istnieć fizycznie na dysku -- zostanie on utworzony w razie potrzeby -- ale jeśli podany zostanie katalog, to wymagane jest, aby został on
-wcześniej utworzony.
+W pierwszym z nich należy podać lokalizację pliku bazy danych (o rozszerzeniu *.db), którego GoStat użyje do zebrania informacji o podanych zapisach gier go.
+Plik nie musi istnieć fizycznie na dysku -- zostanie on utworzony w razie potrzeby -- ale podana struktura katalogów musi zostać wcześniej utworzona.
 
-W drugim polu należy podać pełne (tj. bezwględne) scieżki do katalogów zawierających pliki .sgf z zapisami gier, które chcemy analizować przy pomocy
+W drugim polu należy podać scieżki do katalogów zawierających pliki .sgf z zapisami gier, które chcemy analizować przy pomocy
 programu GoStat. W każdym wierszy pola tekstowego można podać osobną ścieżkę. \\
 \textbf{Ważne:} nie trzeba podawać każdego katalogu osobno, gdyż program szuka gier we \textbf{wszystkich podkatalogach} podanych folderów.
 
@@ -184,17 +183,19 @@ Aby wykonane zmiany były widoczne w przeglądarce ruchów, należy następnie w
 \newpage
 
 \section{Utworzenie i wypełnienie bazy danych}
-Aby utworzyć (przebudować) bazę danych i wypełnić ją danymi, należy: 
-  uruchomić program (patrz rozdział: \emph{Rozpoczęcie pracy})
-  kliknąć odnośnik \emph{Przebudowa bazy danych} widoczny na \emph{Rysunku 1}.
+Aby utworzyć (przebudować) bazę danych i wypełnić ją danymi należy: 
+\begin{enumerate}
+\item Uruchomić program (patrz rozdział: \emph{Rozpoczęcie pracy}),
+\item Kliknąć odnośnik \emph{Przebudowa bazy danych} widoczny na \emph{Rysunku 1}.
+\end{enumerate}
 
-Ponieważ przebudowa istniejącej bazy danych zaczyna się się od skasowania poprzedniej tabeli, użytkownik zostanie
+Ponieważ przebudowa istniejącej bazy danych zaczyna się od skasowania poprzedniej tabeli, użytkownik zostanie
 poproszony o potwierdzenie swego zamiaru:
 
 \myimage{1.0}{potwierdzenie.png}{Potwierdzenie utworzenia bazy danych}
 
 Po kliknięciu \emph{OK} należy poczekać aż program wykona operację przebudowania do końca. 
-Aby można było śledzić w czasie rzeczywistym postęp prac wyświetlona zostanie aktualizowana na bieżąco strona informacyjna:
+Aby można było śledzić postęp prac wyświetlona zostanie aktualizowana na bieżąco strona informacyjna:
 
 \myimage{0.4}{status.png}{Bieżący stan operacji przebudowywania bazy danych}
 
@@ -214,7 +215,7 @@ Ogólne informacje (dane statystyczne) są wyświetlane na głównym ekranie:
 
 \myimage{0.47}{moveBrowserMain.png}{Przeglądarka ruchów -- stan początkowy}
 
-\noindent Odnośniki w nagłówku strony służą do nawigacji do strony głównej oraz do ekranu widocznego na \emph{rysunku 5}. 
+\noindent Odnośniki w nagłówku służą do nawigacji do strony głównej oraz do ekranu widocznego na \emph{rysunku 5}. 
 Dodatkowo istnieje możliwość przełączania między polską i angielską wersją językową (poprzez kliknięcie na odp. flagach).
 
 \vspace{0.5em}
@@ -224,13 +225,13 @@ prawdopodobieństwo wygranej bieżącego gracza (w pokazanej sytuacji) oraz licz
 
 \vspace{0.5em}
 
-\noindent Odnośnik \emph{Lista pasujących gier} prowadzi do ekranu opisanego w następnym podrozdziale \emph{Lista gier}, gdzie wypisane będą
-przykładowe gry z bazy danych, w których \underline{wystąpiła pozycja bieżąca}.
+\noindent Odnośnik \emph{Lista pasujących gier} prowadzi do ekranu opisanego w podrozdziale \emph{Lista gier}, gdzie wymienione będą
+przykładowe gry z bazy danych, w których wystąpiła \underline{pozycja bieżąca}.
 
 \vspace{0.5em}
 
-\noindent Po lewej głównej części strony znajduje się plansza ilustrująca bieżącą pozycje (na \emph{rysunku 5} jest to sytuacja początkowa, 
-na \emph{rysunku 6} zostały wykonane 3 zagrania). Znakami 'x' oznaczone zostały ruchy, które zostały wykonane w chociaż jednej z
+\noindent Po lewej stronie głównej części witryny znajduje się plansza ilustrująca bieżącą pozycje (na \emph{rysunku 5} jest to sytuacja początkowa, 
+na \emph{rysunku 6} zostały wykonane 3 zagrania). Znakami \emph{x} oznaczone zostały ruchy, które zostały wykonane w chociaż jednej z
 gier z kolekcji analizowanej przez program. 
 
 \vspace{0.5em}
@@ -246,8 +247,8 @@ analizy sytuacji, w których to właśnie ten ruch został zagrany (por. \emph{r
 \vspace{0.5em}
 
 \noindent Kliknięcie na odnośnik z kolumny \emph{Łącznie gier} prowadzi do ekranu opisanego w podrozdziale \emph{Lista gier}, 
-gdzie wypisane będą przykładowe gry z bazy danych, w których \\ 
-\underline{wystąpiła pozycja powstająca po zagraniu ruchu, którego dotyczy dany wiersz tabeli}.
+gdzie wypisane będą przykładowe gry z bazy danych, w których wystąpiła \underline{pozycja powstająca} 
+\underline{po zagraniu ruchu, którego dotyczy dany wiersz tabeli}.
 
 \myimage{0.47}{moveBrowserMoveOver.png}{Przeglądarka ruchów -- podświetlone wiersze}
 
@@ -260,21 +261,21 @@ Na \emph{rysunku 6} widzimy sytuację, która powstałaby, gdyby użytkownik ust
 \newpage
 
 \subsection{Lista gier}
-Lista gier pozwala znaleźć gry w których pojawiła się wybrała pozycja. Udostępnianie dane o grach to nazwy graczy, ich rankingi oraz wynik partii.
+Lista gier pozwala znaleźć gry w których pojawiła się wybrała pozycja. Udostępniane dane o grach to: nazwy graczy, ich rankingi oraz wynik partii.
 Dodatkowo, kliknięcie odnośnika z kolumny \emph{odnośnik} prowadzi do strony \emph{Analiza gry} opisanej w następnym podrozdziale. Odnośnik 
 \emph{Pokaż bieżącą pozycję} prowadzi do \emph{Przeglądarki ruchów} dla bieżącej pozycji.
 
 \myimage{0.47}{gameList.png}{Lista gier}
 
 \subsection{Analiza gry}
-Analiza gry to podstrona na której można znaleźć szczegołowe informacje na temat jednej wybranej partii.
+Analiza gry to podstrona na której można znaleźć szczegołowe informacje na temat wybranej partii.
 
 Dostępne opcje to:
 \begin{enumerate}
-\item informacje o zawodnikach, wyniku oraz dacie rozegrania partii
-\item odnośnik do źródłowego pliku .sgf
-\item ilustracja pozycji końcowej w danej grze
-\item osadzona w stronę przeglądarka gier \emph{eidogo}
+\item Informacje o zawodnikach, wyniku oraz dacie rozegrania partii,
+\item Odnośnik do źródłowego pliku .sgf,
+\item Ilustracja pozycji końcowej w danej grze,
+\item Osadzona w stronę przeglądarka gier \emph{Eidogo}.
 \end{enumerate}
 
 \myimage{0.47}{gameDetailsMain.png}{Analiza gry -- sytuacja początkowa}
