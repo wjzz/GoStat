@@ -1,10 +1,7 @@
-#COMPILER=ghc
-#OPTIONS=--make -W -Wall -O2 -isrc -odir bin -hidir bin
 APP=GoStat
 TEST=$(APP)Tests
 
 all:
-# 	$(COMPILER) $(OPTIONS) -o dist/$(APP).exe src/Main.hs
 	cabal configure && cabal build
 
 run:	all
@@ -13,5 +10,10 @@ run:	all
 test:	all
 	./dist/build/$(TEST)/$(TEST) --maximum-generated-tests=5000
 
-#docs:
-##cd src && haddock -o ../docs/ -h -t $(APP) Main.hs && cd ..
+release: all
+	 cp dist/build/GoStat/GoStat .
+	 tar -a -c GoStat public/* CONFIG README doc/*.pdf -f dist/GoStat-binary-linux.tar.gz
+	 rm GoStat
+
+install:
+	cabal install
