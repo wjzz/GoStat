@@ -52,7 +52,8 @@ były w stanie (w razie potrzeby) na wykorzystanie opisanych tu rozwiązań w sw
 \section{Organizacja projektu}
 
 \subsection{Ogólny opis}
-Program został napisany niemal w całości w Haskellu. Po uruchomieniu pliku \cmd{GoStat} wewnętrzny serwer HTTP nasłuchuje na porcie 8000, 
+Program został napisany niemal w całości w Haskellu \cite{haskell}. 
+Po uruchomieniu pliku \cmd{GoStat} wewnętrzny serwer HTTP nasłuchuje na porcie 8000, 
 a komunikacja z użytkownikiem odbywa się za pomocą interfejsu WWW. 
 Lista katalogów, w których znajduje się kolekcja plików SGF, zapisywana jest do pliku konfiguracyjnego,
 wstępnie przetworzone (\emph{znormalizowane}) gry są przechowywane w bazie danych. Dialog z użytkownikiem może odbywać się w języku
@@ -62,8 +63,8 @@ polskim bądź angielskim.
 
 W programie potrzebujemy przechowywać dwie informacje: jakiej bazy danych używa (chce używać) użytkownik i gdzie znajduje się jego
 kolekcja zapisów partii go, które chciałby analizować naszym programem. Do przechowywania ww. danych używamy bardzo prostego, 
-autorskiego formatu. Funkcje związane z wczytywanien, analizą leksykalną oraz zapisywaniem znajdują się w module Configuration 
-(w pliku src/Configuration.hs).
+autorskiego formatu. Funkcje związane z wczytywanien, analizą leksykalną oraz zapisywaniem znajdują się w module \emph{Configuration}
+(w pliku \cmd{src/Configuration.hs}).
 
 \subsubsection{Opis formatu pliku CONFIG}
 
@@ -81,7 +82,7 @@ Przykładowy plik konfiguracyjny:
 \begin{framed}
 \noindent \--\-- new config \\
 \--\--dbserver:postgresql; \\ 
-dbserver:sqlite3;/home/wojtekdb/games.db; \\
+dbserver:sqlite3;/home/wojtek/db/games.db; \\
 gamedirs:/home/wojtek/data/;
 \end{framed}
 
@@ -92,12 +93,16 @@ gamedirs:/home/wojtek/data/;
 
 \subsection{Baza danych}
 
-Program pozwala na użycie baz Sqlite3 oraz PostgreSQL. Możliwa jest zmiana decyzji co do tego, która z nich jest używana; 
-wymagane jest wówczas przebudowanie zawartości, gdyż protokół komunikacyjny bazy PostgreSQL nie jest kompatybilny z protokołem
-bazy Sqlite3. Ani użytkownik ani programista nie muszą zajmować się ręczną administracją bazy danych: służy do tego odpowiedni
-moduł (DB w pliku src/DB.hs). 
+% Program pozwala na użycie baz Sqlite3 oraz PostgreSQL. 
+% Możliwa jest zmiana decyzji co do tego, która z nich jest używana; 
+% wymagane jest wówczas przebudowanie zawartości, 
+% gdyż protokół komunikacyjny bazy PostgreSQL nie jest kompatybilny z protokołem
+% bazy Sqlite3. 
 
-Używana jest jedna tabela o nazwie go\_stat\_data.
+Program używa bazy danych Sqlite3 \cite{sqlite3}. Programista nie musi zajmować
+ się ręczną administracją bazy danych: służy do tego moduł \emph{DB} w pliku \cmd{src/DB.hs}. 
+
+Używana jest jedna tabela o nazwie \cmd{go\_stat\_data}.
 
 \subsubsection{Tabela go\_stat\_data}
 
@@ -109,7 +114,7 @@ Używana jest jedna tabela o nazwie go\_stat\_data.
  id      & PRIMARY KEY  & nie & unikatowy identyfikator gry       \\ \hline
  winner  & CHAR         & nie & zwycięzca gry ('b' lub 'w')       \\ \hline
  moves   & VARCHAR(700) & nie & znormalizowany przebieg rozgrywki \\ \hline
- path    & VARCHAR(255) & nie & względna scieżka do gry           \\ \hline
+ path    & VARCHAR(255) & nie & bezwględna scieżka do gry         \\ \hline
  b\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) czarnego     \\ \hline
  w\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) białego      \\ \hline
  b\_rank & VARCHAR(10)  & tak & ranking czarnego                  \\ \hline
@@ -139,12 +144,12 @@ isWithHandicap :: SGF -> Bool \\
 getBlack, getWhite, getBlackRank, getWhiteRank, date :: SGF -> String
 \end{framed}
 
-Moduły Data.Sgf.Types i Data.SGF.Parsing zawierają deklaracje typów służących do 
+Moduły \emph{Data.Sgf.Types} i \emph{Data.SGF.Parsing} zawierają deklaracje typów służących do 
 przechowywania informacji o danej partii (m.in. wynik, dane graczy, lista ruchów) oraz funkcje, które
 pozwalają dane te wyświetlać i analizować. 
 
 \subsubsection{Transformations}
-Przekształcenia matematyczne i normalizacja ruchów
+Przekształcenia matematyczne i normalizacja ruchów.
 
 \begin{framed}
 \noindent normalizeMoves :: [Move] -> [Move] \\
@@ -169,16 +174,19 @@ findTriangle :: Move -> Triangle
 \end{framed}
 
 \subsubsection{SgfBatching}
-Konwersja plików SGF do formatu, który będzie łatwo zapisać w bazie danych
+Konwersja plików SGF do formatu, który będzie łatwo zapisać w bazie danych.
 
 \subsubsection{Lang}
-Komunikaty w języku polskim i angielskim
+Komunikaty w języku polskim i angielskim.
 
 \subsubsection{Configuration}
 Obsługa pliku CONFIG.
 
 \subsubsection{Pages}
 Tworzenie szablonów stron WWW.
+
+\cite{jquery}
+\cite{jqueryui}
 
 \subsubsection{DB}
 Zarządzanie bazą danych.
@@ -200,30 +208,39 @@ Serwer HTTP.
 \subsubsection{Main}
 Punkt startowy aplikacji.
 
-% \subsubsection{Offline}
-
-
-
 \subsection{Pozostałe pliki}
 Pliki css, javascript, obrazki
 
 \section{Kompilacja i testowanie}
 
 \section{Wykorzystane biblioteki i narzędzia pomocnicze}
+
 \subsection{Biblioteki, pakiety, moduły}
+
 \subsubsection{Śledzenie zależności (Cabal)}
+\cite{cabal}
+
 \subsubsection{Serwer HTTP (Happstack)}
+\cite{happstack}
+
 \subsubsection{Testowanie (HUnit, QuickCheck, test-framework)}
+
 \subsubsection{Zarządzanie bazą danych (HDBC, HDBC-postresql, HDBC-sqlite3)}
+
 \subsubsection{Analiza leksykalna (Parsec)}
+
 \subsubsection{Generowanie html (xhtml 3000)}
+\cite{xhtml}
+
 \subsubsection{Pozostałe (filemanip, strict, mtl)}
 
 \subsection{Narzędzia}
 W niniejszej sekcji wymieniono i pokrótce opisano najważniejsze narzędzia, które pozwoliły ukończyć projekt.
 
-\subsubsection{Git i portal http://github.com}
-Git to system do kontroli wersji autorstwa Linuxa Torwardsa (TODO: sprawdzić pisownię). Github to portal, który pozwala
+\subsubsection{Git i portal github}
+Git \cite{git} to system do kontroli wersji autorstwa Linuxa Torwardsa (TODO: sprawdzić pisownię). 
+
+Github \cite{github} to portal, który pozwala
 na przechowywanie kodu źródłowego (ogólnie: repozytoriów kodu zarządzanych przez git) i udostępnienie go innym programistom.
 Poprzez użycie tych zasobów rozwiązałem kwestię składowania projektu i mogłem swobodnie eksperymentować: nietrafione zmiany
 można było wycofać jednym poleceniem.
