@@ -31,4 +31,4 @@ Testy znajdują się w katalogu test.
 
 Spakowany kod źródłowy oraz pliki binarne z programem znajdują się w katalogu dist.
 
-Przykładowa kolekcja gier, pobrana z serwisa http://gokgs.com, znajduje się w katalogu data.
+Przykładowa kolekcja gier, pobrana z serwisa http://gokgs.com, znajduje się w katalogu example_games.
