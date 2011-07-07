@@ -2,6 +2,24 @@
 GoStat
 ======
 
+=======
+English
+======= 
+
 A program for generating statistical data about a collection of go games. 
 
 Written in Haskell, powered by GHC, Cabal, QuickCheck, HUnit, test-framework.
+
+======
+Polski
+======
+
+Program do wykonywania obliczeń statystycznych związanych z grą go.
+
+Napisany przez Wojciecha Jedynaka w ramach Licencjackiego Projektu Programistycznego
+w Instytucie Informatyki Uniwersytetu Wrocławskiego w semestrze letnim 2011.
+
+Dokumentacja znajduje się w katalogu doc i składa się z trzech dokumentów:
+* wprowadzenia do projektu (motywacja.pdf)
+* podręcznika użytkownika (użytkownik.pdf)
+* dokumentu technicznego dla inżynierów oprogramowania (programisty.pdf)
