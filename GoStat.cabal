@@ -16,6 +16,7 @@ Extra-source-files:  README
                      Makefile
                      sqlite3.dll
                      StronaStartowa.url
+                     example_games/1/*.sgf
                      doc/*.pdf
                      public/*.js
                      public/style.css
