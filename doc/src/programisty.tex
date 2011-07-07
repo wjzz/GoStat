@@ -148,6 +148,8 @@ Moduły \emph{Data.Sgf.Types} i \emph{Data.SGF.Parsing} zawierają deklaracje ty
 przechowywania informacji o danej partii (m.in. wynik, dane graczy, lista ruchów) oraz funkcje, które
 pozwalają dane te wyświetlać i analizować. 
 
+\subsubsection{Analiza leksykalna (Parsec)}
+
 \subsubsection{Transformations}
 Przekształcenia matematyczne i normalizacja ruchów.
 
@@ -184,12 +186,16 @@ Obsługa pliku CONFIG.
 
 \subsubsection{Pages}
 Tworzenie szablonów stron WWW.
+\subsubsection{Generowanie html (xhtml 3000)}
+\cite{xhtml}
 
 \cite{jquery}
 \cite{jqueryui}
 
 \subsubsection{DB}
 Zarządzanie bazą danych.
+
+\subsubsection{Zarządzanie bazą danych (HDBC, HDBC-sqlite3)}
 
 \begin{framed}
 \noindent createDB :: GoStatM () \\
@@ -205,39 +211,57 @@ queryFindGameById :: Int -> GoStatM (Maybe (String, FilePath))
 \subsubsection{Server}
 Serwer HTTP. 
 
+Serwer HTTP (Happstack)
+\cite{happstack}
+
 \subsubsection{Main}
 Punkt startowy aplikacji.
 
 \subsection{Pozostałe pliki}
 Pliki css, javascript, obrazki
 
-\section{Kompilacja i testowanie}
+\section{Kompilacja}
 
-\section{Wykorzystane biblioteki i narzędzia pomocnicze}
+W głownym katalogu znajduje się plik \cmd{GoStat.cabal}. Pozwala on na wykorzystanie do kompilacji 
+narzędzia Cabal \cite{cabal}, dzięki czemu:
 
-\subsection{Biblioteki, pakiety, moduły}
+\begin{enumerate}
+\item Nie musimy sami dbać o to, aby zainstalowane zostały odpowiednie wersje pakietów z serwisu
+  Hackage \cite{hackage}.
+\item Cały projekt możemy skonfigurować i skompilować jednym poleceniem (\cmd{cabal configure \&\& cabal build}).
+\item Program można zainstalować jednym poleceniem (\cmd{cabal install}).
+\item Jednym poleceniem możemy utworzyć archiwum zawierające wszystkie pliki wykorzystywane w projekcie (\cmd{cabal sdist}).
+\item Wszystkie pliki tworzone podczas komplilacji (*.o, *.hi) są umieszczane w katalogu \cmd{dist} -- pozwala
+  to na utrzymanie ładu w strukturze katalogów należących do projektu.
+\end{enumerate}
 
-\subsubsection{Śledzenie zależności (Cabal)}
-\cite{cabal}
+\noindent Dodatkowo, aby zautomatyzować i uprościć pewne często wykonywane czynności, utworzono plik \cmd{Makefile}, który
+pozwala na wydanie następujących poleceń:
 
-\subsubsection{Serwer HTTP (Happstack)}
-\cite{happstack}
+\begin{itemize}
+
+\item \cmd{make} -- Kompilacja projektu, zbudowanie programu wynikowego
+\item \cmd{make run} -- Uruchomienie programu
+\item \cmd{make test} -- Wykonanie wszystkich testów
+\item \cmd{make install} -- Instalacja programu ze źródeł
+\item \cmd{make windows-release} -- Utworzenie pliku \cmd{dist/GoStat-binary-windows.tar.gz}
+\item \cmd{make linux-release}   -- Utworzenie pliku \cmd{dist/GoStat-binary-linux.tar.gz}
+\end{itemize}
+
+\noindent Archiwa utworzone poprzez \cmd{make \{windows, linux\}-release} zawierają dokumentację, plik wykonywalny \cmd{GoStat}
+oraz wszystkie pliki dodatkowe, niezbędne do uruchomienia programu (pliki .css, .js, obrazki itp). \\
+
+\noindent Dokumentacja tworzona jest przy pomocy programu \cmd{pdflatex}.
+
+\section{Testy}
 
 \subsubsection{Testowanie (HUnit, QuickCheck, test-framework)}
 
-\subsubsection{Zarządzanie bazą danych (HDBC, HDBC-postresql, HDBC-sqlite3)}
+\section{Wykorzystane narzędzia pomocnicze}
 
-\subsubsection{Analiza leksykalna (Parsec)}
-
-\subsubsection{Generowanie html (xhtml 3000)}
-\cite{xhtml}
-
-\subsubsection{Pozostałe (filemanip, strict, mtl)}
-
-\subsection{Narzędzia}
 W niniejszej sekcji wymieniono i pokrótce opisano najważniejsze narzędzia, które pozwoliły ukończyć projekt.
 
-\subsubsection{Git i portal github}
+\subsection{Git i portal github}
 Git \cite{git} to system do kontroli wersji autorstwa Linuxa Torwardsa (TODO: sprawdzić pisownię). 
 
 Github \cite{github} to portal, który pozwala
@@ -245,18 +269,8 @@ na przechowywanie kodu źródłowego (ogólnie: repozytoriów kodu zarządzanych
 Poprzez użycie tych zasobów rozwiązałem kwestię składowania projektu i mogłem swobodnie eksperymentować: nietrafione zmiany
 można było wycofać jednym poleceniem.
 
-\subsubsection{Latex}
+\subsection{Latex}
 System \LaTeX pozwolił na utworzenie dokumentacji w formacie pdf, który jest standardem w informatyce.
-
-%% 2.0. Organizacja projektu
-%% 2.0.0. Cykl życia aplikacji
-%% 2.0.1. Struktura modułów
-%% 2.0.2. Baza danych
-%% 2.0.3. Automatycznie generowana dokumentacja (API)
-%% 2.1. Kompilacja i testowanie projektu - konkretne polecenia
-%% 2.2. Omowienie modulow
-%% 2.2.1. Data.SGF
-%% 2.2.2. Transformations (opis funkcji i niezmiennikow)
 
 \begin{thebibliography}{9}
 
