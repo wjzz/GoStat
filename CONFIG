@@ -1,2 +1,2 @@
 dbserver:sqlite3;games.db;
-gamedirs:/home/wjzz/Dropbox/Programy/Haskell/GoStat/data;
+gamedirs:example_games;
