@@ -23,3 +23,11 @@ Dokumentacja znajduje się w katalogu doc i składa się z trzech dokumentów:
 * wprowadzenia do projektu (motywacja.pdf)
 * podręcznika użytkownika (użytkownik.pdf)
 * dokumentu technicznego dla inżynierów oprogramowania (programisty.pdf)
+
+Kod źródłowy znajduje się w katalogu src.
+
+Testy znajdują się w katalogu test.
+
+Spakowany kod źródłowy oraz pliki binarne z programem znajdują się w katalogu dist.
+
+Przykładowa kolekcja gier, pobrana z serwisa http://gokgs.com, znajduje się w katalogu data.
