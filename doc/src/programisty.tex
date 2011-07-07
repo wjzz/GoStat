@@ -220,6 +220,8 @@ Punkt startowy aplikacji.
 \subsection{Pozostałe pliki}
 Pliki css, javascript, obrazki
 
+\newpage
+
 \section{Kompilacja}
 
 W głownym katalogu znajduje się plik \cmd{GoStat.cabal}. Pozwala on na wykorzystanie do kompilacji 
@@ -253,9 +255,115 @@ oraz wszystkie pliki dodatkowe, niezbędne do uruchomienia programu (pliki .css,
 
 \noindent Dokumentacja tworzona jest przy pomocy programu \cmd{pdflatex}.
 
+\newpage
+
 \section{Testy}
 
-\subsubsection{Testowanie (HUnit, QuickCheck, test-framework)}
+\subsection{Metodologia testowania}
+
+\subsection{Biblioteki do testowania}
+
+Użyto następujących bibliotek do tworzenia i przeprowadzania testów:
+
+\begin{enumerate}
+\item HUnit
+\item QuickCheck
+\item test-framework
+\end{enumerate}
+
+\noindent Poniżej krótko charakteryzujemy i pokazujemy przykłady użycia każdej z nich.
+
+\subsubsection{HUnit}
+Jest to narzędzie do tworzenia testów zwanych \emph{testami jednostkowymi}, gdzie 
+specyfikujemy działanie testowanego systemu poprzez wykazanie jak ma się zachowywać w
+danych, konkretnych sytuacjach.
+
+Przykładowy test jednostkowy z projektu (plik \cmd{tests/transformations/tests.hs}):
+
+\begin{framed}
+\noindent test\_rotate90\_fixpoint :: Assertion \\
+test\_rotate90\_fixpoint = (5,5) @?= rotate90 (5,5)
+\end{framed}
+
+Operator @?= należy czytać tutaj jako ``powinno być równe'', funkcja \cmd{rotate90} to
+obrót o 90 stopni, cały test zaś specyfikuje, że punkt (5,5) [środkowy punkt planszy]
+powinien być niezmienniczy względem obrotu.
+
+\subsubsection{QuickCheck}
+
+QuickCheck to narzędzie pozwalający wyrażać specyfikacje w sposób ogólniejszy niż 
+jest to możliwe przy pomocy testów jednostkowych. Możemy bowiem określać ogólne 
+\emph{własności} systemu; np. ``dla \emph{dowolnego} punktu p na planszy, czterokrotne
+wykonanie obrotu o 90 stopni daje w wyniku początkowy punkt p''.
+
+Powyższa właśność zapisana w Haskellu wygląda następująco:
+
+\begin{framed}
+\noindent property\_rotate90\_4\_times :: Move -> Bool \\
+property\_rotate90\_4\_times m = m == rotate90 (rotate90 (rotate90 (rotate90 m))) 
+\end{framed}
+
+Jak w praktyce sprawdzane są własności takie jak ta? Zwrócmy uwagę, że nie możemy po
+prostu sprawdzić wszystkich możliwości, gdyż punktów na płaszczyźnie jest nieskończenie
+wiele! W systemach dowodzenia twierdzeń, takich jak Coq \cite{coq}, czy Agda \cite{agda}
+możemy taką właśność \emph{udowodnić} (np. poprzez indukcję). Wymaga to jednak zazwyczaj
+dość sporo czasu i umiejętności. 
+
+Twórcy QuickChecka zdecydowali się na bardzo praktyczne podejście: podane właśności są
+testowane na danych \emph{losowych} i każdy test jest powtarzany wielokrotnie, np. 100 razy.
+Aby sprawdzić daną właśność należy (w programie napisanym w Haskellu) wywołać funkcję quickCheck.
+
+Przykładowe wywołanie \cmd{quickCheck property\_rotate90\_4\_times} da nam odpowiedź:
+
+\begin{framed}
+\noindent +++ OK, passed 100 tests.
+\end{framed}
+
+Jeśli podamy właśność, która nie zachodzi to (o ile będziemy mieli szczęście) otrzymamy:
+
+\begin{framed}
+\noindent *** Failed! Falsifiable (after 1 test and 1 shrink):  \\
+(0,0)
+\end{framed}
+
+Oznaczałoby to, że dla wartości (0,0) właśność nie jest spełniona.
+
+\subsubsection{test-framework}
+
+Test-framework to biblioteka, która w wygodny sposób pozwala nam łączyć zalety testów 
+jednostkowych i sprawdzania własności. Umożliwia ona grupowanie (katalogowanie) testów 
+obu rodzajów, uruchamianie całych grup jednocześnie oraz automatycznie generowanie
+raportów z wykonanaych testów. Przykładowy raport znajduje się w podrozdziale 
+\emph{Uruchamianie testów i analiza wyników} poniżej, w następnym podrozdziale omówimy
+na przykładzie projektu jak używać test-framework w praktyce.
+
+\subsection{Struktura testów}
+
+\subsection{Uruchamianie testów i analiza wyników}
+
+Aby wykonać cały pakiet dostępnych testów należy z poziomu katalogu głownego wydać polecenie \cmd{make test}.
+Spowoduje to kompilacje całego projektu i utworzenie, a następnie uruchomienie, pliku \cmd{GoStatTests}.
+
+Następnie na ekran wypisywane będą na bieżąco wyniki wykonywanych testów, na samym końcu zaś pokazane zostanie
+podsumowanie. W ramce poniżej widzimy fragment przykładowego raportu. Końcowa tabela pokazuje, że wszystkie
+testy zostały wykonane pomyślnie.
+
+\begin{framed}
+  \noindent \dots \\
+  normalizeMoves diagonal symmetry handling: [OK, passed 5000 tests] \\ 
+  normalizeMoves horizont symmetry handling: [OK, passed 5000 tests] \\
+  normalizeMoves start:55 handling: [OK, passed 5000 tests] \\
+
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{| c | c | c | c | } \hline
+         & Properties &  Test Cases &  Total        \\ \hline
+ Passed  & 26         &  14         &  40           \\ \hline
+ Failed  & 0          &  0          &  0            \\ \hline
+ Total   & 26         &  14         &  40           \\ \hline
+\end{tabular}
+\end{framed}
+
+\newpage
 
 \section{Wykorzystane narzędzia pomocnicze}
 
@@ -325,6 +433,14 @@ System \LaTeX pozwolił na utworzenie dokumentacji w formacie pdf, który jest s
 \bibitem{xhtml}
   \emph{Biblioteka xhtml dla Haskella} \\
   \url{http://hackage.haskell.org/package/xhtml-3000.2.0.1}
+
+\bibitem{coq}
+  \emph{Coq -- system dowodzenia twierdzeń oparty na OCamlu}
+  \url{http://coq.inria.fr/}
+
+\bibitem{agda}
+  \emph{Agda -- system dowodzenia twierdzeń oparty na Haskellu}
+  \url{http://wiki.portal.chalmers.se/agda/pmwiki.php}
 
 \end{thebibliography}
 
