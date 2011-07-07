@@ -30,6 +30,13 @@
   \texttt{#1}
 }
 
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+%\fancyhf{}
+\cfoot{\thepage}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+
 \usepackage{float}
 \floatstyle{boxed} 
 \restylefloat{figure}
@@ -51,7 +58,8 @@
 
 \maketitle 
 
-\thispagestyle{empty}
+\newpage
+
 \tableofcontents
 
 \newpage

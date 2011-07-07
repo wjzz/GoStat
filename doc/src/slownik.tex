@@ -1,4 +1,4 @@
-\documentclass[10pt,leqno]{article}
+\documentclass[12pt,leqno]{article}
 \usepackage[polish]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -7,12 +7,26 @@
 \usepackage{listings}
 \usepackage{framed}
 \usepackage[textwidth=14cm,textheight=24cm]{geometry}
+\usepackage{hanging}
 
 \title{\LARGE Licencjacki projekt programistyczny 2011 \\ 
        \ \\
        Program do wykonywania obliczeń statystycznych związanych z grą go \\ 
        \ \\
        Słownik pojęć }
+
+\newcommand{\entry}[2]{
+ \begin{hangparas}{.25in}{1}
+  \noindent \textbf{#1} -- #2 \\
+ \end{hangparas}
+}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+%\fancyhf{}
+\cfoot{\thepage}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
 
 % TODO autor wieksza czcionka
 
@@ -28,28 +42,65 @@
 \newpage
 
 \section{Słownik}
-Czarny \\
-Biały \\
-plik SGF \\
-interfejs WWW \\
-serwer HTTP \\
-Haskell \\
-zapis gry \\
-ranking (gracza) \\
-znormalizowany przebieg gry \\
-go \\
-serwer do gry w go \\
+
+\subsection{Pojęcia goistyczne}
+
+\entry{Go}{Gra planszowa dla dwóch osób, rozgrywana na kwadratowej planszy.}
+
+\entry{Gracz}{Osoba rozgrywaja partię go}
+
+\entry{Kamienie}{Sprzęt do gry w go; pojęcię używane zwyczajowo zamiast \emph{pionek}. Wyróżniamy kamienie
+ białe i czarne. Gracz rozpoczynający rozgrywkę używa kamieni czarnych.}
+
+\entry{Czarny}{Gracz, który rozpoczyna grę go i używa kamieni koloru czarnego}
+
+\entry{Biały}{Przeciwnik gracza czarnego, używa kamieni koloru białego}
+
+\entry{Zapis gry}{Przebieg partii go, zapisany w sposób symboliczny lub cyfrowy. Zazwyczaj zawiera
+  dodatkowe informacje takie jak: wynik końcowy, data i miejsce rozgrywki, informacje o graczach, wariant zasad.}
+
+\entry{SGF (ang. \emph{Smart Go Format})}{Tekstowy format do do przechowywania zapisów gier go.}
+
+\entry{Serwer do gry w go}{Serwis internetowy, który umożliwia grę w go z innymi graczami (zazwyczaj z całego świata).}
+
+\entry{Ranking (gracza), siła}{Przyznawany przez wyznaczoną do tego organizację (lub algorytm w przypadku serwerów do gry w go)
+  stopień mający określić poziom umiejętności danego zawodnika. Zazwyczaj używa się skali kyu/dan: początkujący gracz
+  otrzymuje stopień 30 kyu (w skrócie 30k). Lepsi od niego mają stopnie o \emph{niższym} numerze; gracz o rankingu (\emph{sile})
+  5k powinien zazwyczaj wygrywać z graczem o sile 6k. Skala kyu kończy się na pierwszym kyu (1k), dalej przyznawane są stopnie
+  w skali dan -- są to stopnie mistrzowskie. W skali dan sytuacja się odwraca: 1 dan (1d) to najniższy stopień w tej skali,
+  najwyższy to 7 dan (w skali amatorskiej) bądź 9 dan (w skali zawodowców).}
+
+\subsection{Terminy matematyczne}
+
+\entry{Symetria}{}
+
+\entry{Normalizacja (ruchu, gry)}{}
+
+\subsection{Terminy informatyczne}
+
+\entry{Interfejs WWW}{}
+
+\entry{HTTP (ang. \emph{Hypertext Transfer Protocol})}{Protokół internetowy do przesyłania dokumentów hipertekstowych}
+
+\entry{Baza danych}{}
+
+\entry{Moduł}{}
+
+\entry{Pakiet, pakiet Haskellowy}{}
+
+\entry{Haskell}{}
+
+\entry{Paradygmat funkcyjny}{}
+
+\entry{Język funkcyjny}{}
+
 gramatyka bezkontekstowa \\
 postac EBNF \\ 
 
-%% 2.0. Organizacja projektu
-%% 2.0.0. Cykl życia aplikacji
-%% 2.0.1. Struktura modułów
-%% 2.0.2. Baza danych
-%% 2.0.3. Automatycznie generowana dokumentacja (API)
-%% 2.1. Kompilacja i testowanie projektu - konkretne polecenia
-%% 2.2. Omowienie modulow
-%% 2.2.1. Data.SGF
-%% 2.2.2. Transformations (opis funkcji i niezmiennikow)
+\subsection{Pojęcia ściśle związane z projektem}
+
+\entry{GoStat}{}
+
+\entry{Plik konfiguracyjny}{}
 
 \end{document}

@@ -5,8 +5,20 @@
 \frenchspacing
 %\usepackage{indentfirst}
 \usepackage{listings}
+\usepackage{hyperref}
 \usepackage{framed}
 \usepackage[textwidth=14cm,textheight=24cm]{geometry}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+%\fancyhf{}
+\cfoot{\thepage}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+
+\newcommand{\cmd}[1]{
+  \texttt{#1}
+}
 
 \title{\LARGE Licencjacki projekt programistyczny 2011 \\ 
        \ \\
@@ -23,7 +35,8 @@
 
 \maketitle 
 
-\thispagestyle{empty}
+\newpage
+
 \tableofcontents
 
 \newpage
@@ -31,16 +44,17 @@
 \section{Wprowadzenie}
 
 \subsection{Cel dokumentacji}
-Celem niniejszego dokumentu jest takie przedstawienie struktury projektu, aby umożliwić jego modyfikacje oraz utrzymywanie programistom, którzy
-znają Haskella, ale nie należeli do początkowego zespołu. Wykaz użytych bibliotek powinien był pomocą, gdy instalacja oprogrogramowania nie powiedzie się i 
-konieczna będzie kompilacja programu ze źródeł. Dodatkowo życzeniem autora jest nakreślenie wykonanej pracy tak, aby zainteresowane osoby
+Celem niniejszego dokumentu jest takie przedstawienie struktury projektu GoStat, aby umożliwić jego modyfikacje oraz utrzymywanie programistom, którzy
+znają Haskella, ale nie należeli do początkowego zespołu. Wykaz użytych bibliotek powinien był pomocny, jeśli instalacja oprogrogramowania nie powiedzie 
+się i konieczna będzie kompilacja programu ze źródeł. Dodatkowo życzeniem autora jest nakreślenie wykonanej pracy tak, aby zainteresowane osoby
 były w stanie (w razie potrzeby) na wykorzystanie opisanych tu rozwiązań w swoich projektach.
 
 \section{Organizacja projektu}
 
 \subsection{Ogólny opis}
-Program został napisany niemal w całości w Haskellu. Uruchamiany jest za pomocą wiersza poleceń, a komunikacja z użytkownikiem
-odbywa się za pomocą interfejsu WWW. Lista katalogów, które stanowią kolekcję plików SGF zapisywana jest do pliku konfiguracyjnego,
+Program został napisany niemal w całości w Haskellu. Po uruchomieniu pliku \cmd{GoStat} wewnętrzny serwer HTTP nasłuchuje na porcie 8000, 
+a komunikacja z użytkownikiem odbywa się za pomocą interfejsu WWW. 
+Lista katalogów, w których znajduje się kolekcja plików SGF, zapisywana jest do pliku konfiguracyjnego,
 wstępnie przetworzone (\emph{znormalizowane}) gry są przechowywane w bazie danych. Dialog z użytkownikiem może odbywać się w języku
 polskim bądź angielskim.
 
@@ -226,5 +240,62 @@ System \LaTeX pozwolił na utworzenie dokumentacji w formacie pdf, który jest s
 %% 2.2. Omowienie modulow
 %% 2.2.1. Data.SGF
 %% 2.2.2. Transformations (opis funkcji i niezmiennikow)
+
+\begin{thebibliography}{9}
+
+\bibitem{git}
+  \emph{Git -- narzędzie do kontroli wersji} \\
+  \url{http://git-scm.com/}
+
+\bibitem{github}
+  \emph{Portal github.com} \\
+  \url{https://github.com/}
+
+\bibitem{wjzz}
+  \emph{Repozytorium projektu GoStat w portalu github} \\
+  \url{https://github.com/wjzz}
+
+\bibitem{sqlite3}
+  \emph{SQLite3 -- lekka baza danych} \\
+  \url{http://www.sqlite.org/}
+
+\bibitem{jquery}
+  \emph{jQuery -- biblioteka dla JavaScriptu} \\
+  \url{http://jquery.com/}
+
+\bibitem{jqueryui}
+  \emph{jQuery IU -- biblioteka komponentów dla JavaScriptu} \\
+  \url{http://jqueryui.com/}
+
+\bibitem{eidogo}
+  \emph{Eidogo -- interaktywna plansza} \\
+  \url{http://eidogo.com/source}
+
+\bibitem{haskell}
+  \emph{Haskell -- strona główna} \\
+  \url{http://www.haskell.org/}
+
+\bibitem{ghc}
+  \emph{Glasgow Haskell Compiler} \\
+  \url{http://www.haskell.org/ghc/}
+
+\bibitem{hackage}
+  \emph{Hackage -- kolekcja pakietów Haskellowych} \\
+  \url{http://hackage.haskell.org/}
+
+\bibitem{cabal}
+  \emph{Cabal -- narzędzie do tworzenia i instalowania pakietów Haskellowych} \\
+  \url{http://www.haskell.org/cabal/}
+
+\bibitem{happstack}
+  \emph{Happstack -- serwer HTTP dla Haskella} \\
+  \url{http://happstack.com/index.html}
+
+\bibitem{xhtml}
+  \emph{Biblioteka xhtml dla Haskella} \\
+  \url{http://hackage.haskell.org/package/xhtml-3000.2.0.1}
+
+\end{thebibliography}
+
 
 \end{document}
