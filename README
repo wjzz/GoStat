@@ -19,10 +19,11 @@ Program do wykonywania obliczeń statystycznych związanych z grą go.
 Napisany przez Wojciecha Jedynaka w ramach Licencjackiego Projektu Programistycznego
 w Instytucie Informatyki Uniwersytetu Wrocławskiego w semestrze letnim 2011.
 
-Dokumentacja znajduje się w katalogu doc i składa się z trzech dokumentów:
+Dokumentacja znajduje się w katalogu doc i składa się z czterech dokumentów:
 * wprowadzenia do projektu (motywacja.pdf)
 * podręcznika użytkownika (użytkownik.pdf)
 * dokumentu technicznego dla inżynierów oprogramowania (programisty.pdf)
+* słownika pojęć używanych w pozostałych dokumentach
 
 Kod źródłowy znajduje się w katalogu src.
 

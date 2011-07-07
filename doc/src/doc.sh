@@ -1,1 +1,2 @@
-pdflatex programisty.tex ; evince programisty.pdf 
+pdflatex programisty.tex && sleep 1 && mv programisty.pdf .. && evince ../programisty.pdf
+
