@@ -20,10 +20,10 @@ Napisany przez Wojciecha Jedynaka w ramach Licencjackiego Projektu Programistycz
 w Instytucie Informatyki Uniwersytetu Wrocławskiego w semestrze letnim 2011.
 
 Dokumentacja znajduje się w katalogu doc i składa się z czterech dokumentów:
-* wprowadzenia do projektu (motywacja.pdf)
-* podręcznika użytkownika (użytkownik.pdf)
-* dokumentu technicznego dla inżynierów oprogramowania (programisty.pdf)
-* słownika pojęć używanych w pozostałych dokumentach
+* wprowadzenia do projektu (MotywacjaProjektu.pdf)
+* podręcznika użytkownika (PodrecznikUzytkownika.pdf)
+* dokumentu technicznego dla inżynierów oprogramowania (DokumentacjaProgramisty.pdf)
+* słownika pojęć używanych w pozostałych dokumentach (Slownik.pdf)
 
 Kod źródłowy znajduje się w katalogu src.
 
