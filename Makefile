@@ -20,3 +20,7 @@ windows-release:
 
 install:
 	cabal install
+
+sdist:  
+	cabal sdist
+	mv dist/GoStat-1.0.tar.gz dist/GoStat-source.tar.gz
