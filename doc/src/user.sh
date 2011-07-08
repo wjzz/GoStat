@@ -1,1 +1,1 @@
-pdflatex uzytkownika.tex && sleep 1 && mv uzytkownika.pdf .. && evince ../uzytkownika.pdf
+pdflatex PodrecznikUzytkownika.tex && sleep 1 && mv PodrecznikUzytkownika.pdf .. && evince ../PodrecznikUzytkownika.pdf

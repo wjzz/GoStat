@@ -1,1 +1,1 @@
-pdflatex slownik.tex && sleep 1 && mv slownik.pdf .. && evince ../slownik.pdf
+pdflatex Slownik.tex && sleep 1 && mv Slownik.pdf .. && evince ../Slownik.pdf

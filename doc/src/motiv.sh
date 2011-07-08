@@ -1,2 +1,2 @@
-pdflatex motywacja.tex && sleep 1 && mv motywacja.pdf .. && evince ../motywacja.pdf
+pdflatex MotywacjaProjektu.tex && sleep 1 && mv MotywacjaProjektu.pdf .. && evince ../MotywacjaProjektu.pdf
 
