@@ -52,7 +52,7 @@
 
 \subsection{Cel dokumentacji}
 Celem niniejszego dokumentu jest takie przedstawienie struktury projektu GoStat, aby umożliwić jego modyfikacje oraz utrzymywanie programistom, którzy
-znają Haskella, ale nie należeli do początkowego zespołu. Wykaz użytych bibliotek powinien był pomocny, jeśli instalacja oprogrogramowania nie powiedzie 
+znają Haskella, ale nie należeli do początkowego zespołu. Wykaz użytych bibliotek powinien był pomocny, jeśli instalacja oprogramowania nie powiedzie 
 się i konieczna będzie kompilacja programu ze źródeł. Dodatkowo życzeniem autora jest nakreślenie wykonanej pracy tak, aby zainteresowane osoby
 były w stanie (w razie potrzeby) na wykorzystanie opisanych tu rozwiązań w swoich projektach.
 
@@ -68,10 +68,10 @@ polskim bądź angielskim.
 
 \subsection{Konfiguracja programu}
 
-W programie potrzebujemy przechowywać dwie informacje: jakiej bazy danych używa (chce używać) użytkownik i gdzie znajduje się jego
-kolekcja zapisów partii go, które chciałby analizować naszym programem. Do przechowywania ww. danych używamy bardzo prostego, 
-autorskiego formatu. Funkcje związane z wczytywanien, analizą leksykalną oraz zapisywaniem znajdują się w module \emph{Configuration}
-(w pliku \cmd{src/Configuration.hs}).
+W programie potrzebujemy przechowywać dwie informacje: jak ma nazywać się plik bazy danych, której używa (chce używać) użytkownik i 
+gdzie znajduje się jego kolekcja zapisów partii go, które chciałby analizować naszym programem.
+ Do przechowywania ww. danych używamy bardzo prostego, 
+autorskiego formatu. Funkcje związane z wczytywaniem, analizą leksykalną oraz zapisywaniem znajdują się w module \emph{Configuration}.
 
 \subsubsection{Opis formatu pliku CONFIG}
 
@@ -121,7 +121,7 @@ Używana jest jedna tabela o nazwie \cmd{go\_stat\_data}.
  id      & PRIMARY KEY  & nie & unikatowy identyfikator gry       \\ \hline
  winner  & CHAR         & nie & zwycięzca gry ('b' lub 'w')       \\ \hline
  moves   & VARCHAR(700) & nie & znormalizowany przebieg rozgrywki \\ \hline
- path    & VARCHAR(255) & nie & bezwględna scieżka do gry         \\ \hline
+ path    & VARCHAR(255) & nie & bezwzględna ścieżka do gry        \\ \hline
  b\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) czarnego     \\ \hline
  w\_name & VARCHAR(30)  & nie & pseudonim (nazwisko) białego      \\ \hline
  b\_rank & VARCHAR(10)  & tak & ranking czarnego                  \\ \hline
@@ -152,13 +152,13 @@ getBlack, getWhite, getBlackRank, getWhiteRank, date :: SGF -> String
 \end{framed}
 
 Moduły \emph{Data.Sgf.Types} i \emph{Data.SGF.Parsing} zawierają deklaracje typów służących do 
-przechowywania informacji o danej partii (m.in. wynik, dane graczy, lista ruchów) oraz funkcje, które
-pozwalają dane te wyświetlać i analizować. 
-
-\subsubsection{Analiza leksykalna (Parsec)}
+przechowywania informacji o danej partii (m. in. wynik, dane graczy, lista ruchów) oraz funkcje, które
+pozwalają dane te wyświetlać i analizować. Do analizy leksykalnej plików SGF wykorzystana jest
+biblioteka Parsec.
 
 \subsubsection{Transformations}
-Przekształcenia matematyczne i normalizacja ruchów.
+W module \emph{Transformations} (plik \cmd{src/Transformations.hs}) określono przekształcenia matematyczne 
+i operację normalizacji ruchów.
 
 \begin{framed}
 \noindent normalizeMoves :: [Move] -> [Move] \\
@@ -185,24 +185,57 @@ findTriangle :: Move -> Triangle
 \subsubsection{SgfBatching}
 Konwersja plików SGF do formatu, który będzie łatwo zapisać w bazie danych.
 
+\begin{framed}
+\noindent getSGFs :: [FilePath] -> IO [FilePath] \\
+gameInfoToDB :: GameInfo -> (FilePath, Char, String, String, String, String, String) \\
+sgfToGameInfo :: FilePath -> SGF -> Maybe GameInfo
+\end{framed}
+
 \subsubsection{Lang}
-Komunikaty w języku polskim i angielskim.
+Moduł \emph{Lang} (w pliku \cmd{src/Lang.hs}) definiuje listę komunikatów, który
+wyświetlane są użytkownikowi. Komunikaty dostępne są w języku polskim i angielskim.
 
 \subsubsection{Configuration}
-Obsługa pliku CONFIG.
+Moduł \emph{Configuration} odpowiada za obsługę pliku CONFIG.
+
+\begin{framed}
+\noindent data DbServer = Sqlite3 FilePath \\                       
+data Configuration = Configuration \{ dbServer :: DbServer , gameDirs :: [FilePath] \} \\
+
+\noindent parseConfiguration :: String -> Either String Configuration \\
+showConfiguration :: Configuration -> String \\ 
+readConfig :: FilePath -> IO (Either String Configuration) \\
+writeConfig :: Configuration -> FilePath -> IO () \\
+defaultConfig :: Configuration
+
+\end{framed}
+
 
 \subsubsection{Pages}
-Tworzenie szablonów stron WWW.
-\subsubsection{Generowanie html (xhtml 3000)}
-\cite{xhtml}
+Moduł \emph{Pages} (plik \cmd{src/Pages.hs}) odpowiada za dynamiczne tworzenie stron WWW. Używana
+jest do tego biblioteka xhtml-3000 \cite{xhtml}. Do implementacji eleganckich efektów w JavaScript
+użyto bibliotek jQuery \cite{jquery} oraz jQuery UI \cite{jqueryui}. Interaktywne wyświetlanie 
+przebiegu gry zapewnia komponent Eidogo \cite{eidogo}.
 
-\cite{jquery}
-\cite{jqueryui}
+\begin{framed}
+\noindent -- Strona główna \\
+mainPage :: UrlBuilders -> Html \\ \\
+-- Strona pokazująca listę możliwych ruchów \\ 
+moveBrowser :: Int -> (Int, Int, Int) -> [(String, Int, Int, Int)] -> String -> UrlBuilders -> Html \\ \\
+-- Strona pokazująca listę gier \\
+gameBrowserPage :: [(Int, FilePath, String, String, String, String, String)] -> (Int, Int, Int) -> String -> UrlBuilders -> Html \\ \\
+-- Strona pokazująca szczegóły wybranej gry \\
+gameDetailsPage :: GameId -> SGF -> FilePath -> MovesSoFar -> UrlBuilders -> Html \\ \\
+-- Formularz konfiguracyjny \\
+configForm :: Configuration -> UrlBuilders -> Html \\ \\
+-- Strona pokazywana podczas przebudowy bazy danych \\
+rebuildingPage :: Int -> Int -> Int -> UrlBuilders -> Html
+\end{framed}
+
 
 \subsubsection{DB}
-Zarządzanie bazą danych.
-
-\subsubsection{Zarządzanie bazą danych (HDBC, HDBC-sqlite3)}
+Moduł \emph{DB} (plik \cmd{src/DB.hs}) odpowiada za zarządzanie bazą danych. Dialog
+z bazą danych jest możliwy dzięki HDBC i HDBC-sqlite3.
 
 \begin{framed}
 \noindent createDB :: GoStatM () \\
@@ -216,22 +249,27 @@ queryFindGameById :: Int -> GoStatM (Maybe (String, FilePath))
 \end{framed}          
 
 \subsubsection{Server}
-Serwer HTTP. 
+Moduł \emph{Server} (plik \cmd{src/Server.hs}) udostępnia aplikacji Serwer HTTP.
+Korzystamy tutaj z biblioteki Happstack \cite{happstack}, dzięki czemu naszym zadaniem
+jest jedynie określenie jakie akcje mają być wykonane w odpowiedzi na dane zapytanie.
 
-Serwer HTTP (Happstack)
-\cite{happstack}
+\begin{framed}
+\noindent server :: GoStatM () \\
+router :: MVar Configuration -> MVar (Maybe Int) -> ServerPart Response
+\end{framed}
 
 \subsubsection{Main}
-Punkt startowy aplikacji.
+Moduł \emph{Main} (plik \cmd{src/Main.hs}) to punkt startowy aplikacji.
 
 \subsection{Pozostałe pliki}
-Pliki css, javascript, obrazki
+W katalogu \cmd{public} umieszczone zostały wszystkie pozostałe pliki konieczne do
+wyświetlenia strony WWW, tj. dodatkowe skrypty w JavaScript, arkusze stylów CSS i obrazki.
 
 \newpage
 
 \section{Kompilacja}
 
-W głownym katalogu znajduje się plik \cmd{GoStat.cabal}. Pozwala on na wykorzystanie do kompilacji 
+W głðwnym katalogu znajduje się plik \cmd{GoStat.cabal}. Pozwala on na wykorzystanie do kompilacji 
 narzędzia Cabal \cite{cabal}, dzięki czemu:
 
 \begin{enumerate}
@@ -240,7 +278,7 @@ narzędzia Cabal \cite{cabal}, dzięki czemu:
 \item Cały projekt możemy skonfigurować i skompilować jednym poleceniem (\cmd{cabal configure \&\& cabal build}).
 \item Program można zainstalować jednym poleceniem (\cmd{cabal install}).
 \item Jednym poleceniem możemy utworzyć archiwum zawierające wszystkie pliki wykorzystywane w projekcie (\cmd{cabal sdist}).
-\item Wszystkie pliki tworzone podczas komplilacji (*.o, *.hi) są umieszczane w katalogu \cmd{dist} -- pozwala
+\item Wszystkie pliki tworzone podczas kompilacji (*.o, *.hi) są umieszczane w katalogu \cmd{dist} -- pozwala
   to na utrzymanie ładu w strukturze katalogów należących do projektu.
 \end{enumerate}
 
@@ -301,22 +339,22 @@ jest to możliwe przy pomocy testów jednostkowych. Możemy bowiem określać og
 \emph{własności} systemu; np. ``dla \emph{dowolnego} punktu p na planszy, czterokrotne
 wykonanie obrotu o 90 stopni daje w wyniku początkowy punkt p''.
 
-Powyższa właśność zapisana w Haskellu wygląda następująco:
+Powyższa własność zapisana w Haskellu wygląda następująco:
 
 \begin{framed}
 \noindent property\_rotate90\_4\_times :: Move -> Bool \\
 property\_rotate90\_4\_times m = m == rotate90 (rotate90 (rotate90 (rotate90 m))) 
 \end{framed}
 
-Jak w praktyce sprawdzane są własności takie jak ta? Zwrócmy uwagę, że nie możemy po
+Jak w praktyce sprawdzane są własności takie jak ta? Zwróćmy uwagę, że nie możemy po
 prostu sprawdzić wszystkich możliwości, gdyż punktów na płaszczyźnie jest nieskończenie
 wiele! W systemach dowodzenia twierdzeń, takich jak Coq \cite{coq}, czy Agda \cite{agda}
-możemy taką właśność \emph{udowodnić} (np. poprzez indukcję). Wymaga to jednak zazwyczaj
+możemy taką własność \emph{udowodnić} (np. poprzez indukcję). Wymaga to jednak zazwyczaj
 dość sporo czasu i umiejętności. 
 
-Twórcy QuickChecka zdecydowali się na bardzo praktyczne podejście: podane właśności są
+Twórcy QuickChecka zdecydowali się na bardzo praktyczne podejście: podane własności są
 testowane na danych \emph{losowych} i każdy test jest powtarzany wielokrotnie, np. 100 razy.
-Aby sprawdzić daną właśność należy (w programie napisanym w Haskellu) wywołać funkcję quickCheck.
+Aby sprawdzić daną własność należy (w programie napisanym w Haskellu) wywołać funkcję quickCheck.
 
 Przykładowe wywołanie \cmd{quickCheck property\_rotate90\_4\_times} da nam odpowiedź:
 
@@ -324,21 +362,21 @@ Przykładowe wywołanie \cmd{quickCheck property\_rotate90\_4\_times} da nam odp
 \noindent +++ OK, passed 100 tests.
 \end{framed}
 
-Jeśli podamy właśność, która nie zachodzi to (o ile będziemy mieli szczęście) otrzymamy:
+Jeśli podamy własność, która nie zachodzi to (o ile będziemy mieli szczęście) otrzymamy:
 
 \begin{framed}
 \noindent *** Failed! Falsifiable (after 1 test and 1 shrink):  \\
 (0,0)
 \end{framed}
 
-\noindent Oznaczałoby to, że dla wartości (0,0) właśność nie jest spełniona.
+\noindent Oznaczałoby to, że dla wartości (0,0) własność nie jest spełniona.
 
 \subsubsection{test-framework}
 
 Test-framework to biblioteka, która w wygodny sposób pozwala nam łączyć zalety testów 
 jednostkowych i sprawdzania własności. Umożliwia ona grupowanie (katalogowanie) testów 
 obu rodzajów, uruchamianie całych grup jednocześnie oraz automatycznie generowanie
-raportów z wykonanaych testów. Przykładowy raport znajduje się w podrozdziale 
+raportów z wykonanych testów. Przykładowy raport znajduje się w podrozdziale 
 \emph{Uruchamianie testów i analiza wyników} poniżej, w następnym podrozdziale omówimy
 na przykładzie projektu jak używać test-framework w praktyce.
 
@@ -369,7 +407,7 @@ tests = [ data\_sgf\_types\_tests, data\_sgf\_parsing\_tests, transformations\_t
 
 \subsection{Uruchamianie testów i analiza wyników}
 
-Aby wykonać cały pakiet dostępnych testów należy z poziomu katalogu głownego wydać polecenie \cmd{make test}.
+Aby wykonać cały pakiet dostępnych testów należy z poziomu katalogu głównego wydać polecenie \cmd{make test}.
 Spowoduje to kompilacje całego projektu i utworzenie, a następnie uruchomienie, pliku \cmd{GoStatTests}.
 
 Następnie na ekran wypisywane będą na bieżąco wyniki wykonywanych testów, na samym końcu zaś pokazane zostanie
@@ -410,6 +448,8 @@ można było wycofać jednym poleceniem.
 \subsection{Latex}
 System \LaTeX pozwolił na utworzenie dokumentacji.
 
+\addcontentsline{toc}{section}{Literatura}
+
 \begin{thebibliography}{9}
 
 \bibitem{git}
@@ -433,7 +473,7 @@ System \LaTeX pozwolił na utworzenie dokumentacji.
   \url{http://jquery.com/}
 
 \bibitem{jqueryui}
-  \emph{jQuery IU -- biblioteka komponentów dla JavaScriptu} \\
+  \emph{jQuery UI -- biblioteka komponentów dla JavaScriptu} \\
   \url{http://jqueryui.com/}
 
 \bibitem{eidogo}
